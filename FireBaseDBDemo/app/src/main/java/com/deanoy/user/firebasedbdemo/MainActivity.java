@@ -58,24 +58,12 @@ public class MainActivity extends Activity {
     }
 
     private void uploadImage() {
-        Log.e("uploadImage", "uploadImage 1>>");
         imageView.setDrawingCacheEnabled(true);
-        Log.e("uploadImage", "uploadImage 2>>");
-
         imageView.buildDrawingCache();
-        Log.e("uploadImage", "uploadImage 3>>");
-
         Bitmap bitmap = imageView.getDrawingCache();
-        Log.e("uploadImage", "uploadImage 4>>");
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Log.e("uploadImage", "uploadImage 5>>");
-
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        Log.e("uploadImage", "uploadImage 6>>");
-
         byte[] data = baos.toByteArray();
-        Log.e("uploadImage", "Uploading the image now");
         UploadTask uploadTask = storageRef.putBytes(data);
     }
 }
