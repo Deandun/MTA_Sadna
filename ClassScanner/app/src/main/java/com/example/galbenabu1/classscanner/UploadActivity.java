@@ -83,7 +83,7 @@ public class UploadActivity extends AppCompatActivity {
 
     // Temp code, will be replaced with DeaNoy's Camera2 API functionality in a different activity
     public void onTakePictureClick(View v) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(UploadActivity.this, TakePicActivity.class);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -95,7 +95,9 @@ public class UploadActivity extends AppCompatActivity {
         // Retrieve the captured image
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            byte[] imageBytes = (byte[]) extras.getByteArray("data");
+
+            Bitmap imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             ivImage.setImageBitmap(imageBitmap);
         }
     }
