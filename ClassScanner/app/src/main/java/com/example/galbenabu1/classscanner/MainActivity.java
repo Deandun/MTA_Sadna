@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, TakePicActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }

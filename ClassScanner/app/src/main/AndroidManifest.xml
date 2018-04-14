@@ -32,7 +32,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".UploadActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".TakePicActivity" />
     </application>
