@@ -36,11 +36,14 @@ import android.os.Handler;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,37 +53,30 @@ import java.util.List;
 public class TakePicActivity extends AppCompatActivity {
 
     private static String TAG = "TakePicActivity";
+    private static int DELAY_BETWEEN_PICTURES = 5;
     private static final int REQUEST_CAMERA_PERMISSION_RESULT = 0;
     private CaptureRequest.Builder mCaptureRequestBuilder;
+    private boolean mIsInProgress = false;
 
     //FireBase
     private StorageReference mStorageRef;
 
+    //Take pictures in a loop
+    private final Handler mHandler = new Handler();
+    private int mPictureNumber = 0;
 
-    //TEMP
-    private CameraCaptureSession mPreviewCaptureSession;
-    private CameraCaptureSession.CaptureCallback mPreviewCaptureCallback = new
-            CameraCaptureSession.CaptureCallback() {
-                private void process(CaptureResult captureResult) {
-                    //            switch(mCaptureState) {
-                    //                case STATE_PREVIEW:
-                    //                    //do nothing
-                    //                    break;
-                    //                case STATE_WAIT_LOCK:
-                    //                    mCaptureState = STATE_PREVIEW;
-                    //                    int afState = captureResult.get(CaptureResult.CONTROL_AF_STATE);
-                    //                    if(afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED || afState == CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED) {
-                    //                        Toast.makeText(getApplicationContext(), "AF locked", Toast.LENGTH_SHORT).show();
-                    //                    }
-                    //                    break;
-                    //            }
-                    int afState = captureResult.get(CaptureResult.CONTROL_AF_STATE);
-                    if (afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED || afState == CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED) {
-                        Toast.makeText(getApplicationContext(), "AF locked", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-    //END TEMP
+    private final Runnable mTakePictureRunnable = new Runnable() {
+        public void run() {
+           if(mIsInProgress) {
+                mPictureNumber++;
+                mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
+                uploadImage(mPictureNumber);
+                Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
+                mHandler.postDelayed(mTakePictureRunnable, 1000 * DELAY_BETWEEN_PICTURES);
+           }
+        }
+    };
+
 
     //Hardware
     private String mCameraID;
@@ -172,8 +168,7 @@ public class TakePicActivity extends AppCompatActivity {
         mTextureView = findViewById(R.id.bestTextureView);
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
-        mStorageRef = FirebaseStorage.getInstance().getReference("images.jpg");
-
+        mStorageRef = FirebaseStorage.getInstance().getReference("images");
     }
 
     @Override
@@ -181,6 +176,29 @@ public class TakePicActivity extends AppCompatActivity {
         this.closeCamera();
         this.stopBackgroundThread();
         super.onPause();
+    }
+
+    private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
+        if (deviceOrientation == android.view.OrientationEventListener.ORIENTATION_UNKNOWN) {
+            return 0;
+        }
+
+        int sensorOrientation = c.get(CameraCharacteristics.SENSOR_ORIENTATION);
+
+        // Round device orientation to a multiple of 90
+        deviceOrientation = (deviceOrientation + 45) / 90 * 90;
+
+        // Reverse device orientation for front-facing cameras
+        boolean facingFront = c.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT;
+        if (facingFront) {
+            deviceOrientation = -deviceOrientation;
+        }
+
+        // Calculate desired JPEG orientation relative to camera orientation to make
+        // the image upright relative to the device orientation
+        int jpegOrientation = (sensorOrientation + deviceOrientation + 360) % 360;
+
+        return jpegOrientation;
     }
 
     // Camera
@@ -225,13 +243,20 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
+    public void surfaceChanged(int format, int width, int height) {
+
+    }
+
     private void startPreview() {
         SurfaceTexture surfaceTexture = mTextureView.getSurfaceTexture();
         surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         Surface previewSurface = new Surface(surfaceTexture);
 
         try {
+            CameraManager manager = (CameraManager)TakePicActivity.this.getSystemService(Context.CAMERA_SERVICE);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCameraID);
             mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+           // mCaptureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, getJpegOrientation(characteristics, TakePicActivity.this.getWindowManager().getDefaultDisplay().getRotation()));
             mCaptureRequestBuilder.addTarget(previewSurface);
 
             mCameraDevice.createCaptureSession(Arrays.asList(previewSurface), new CameraCaptureSession.StateCallback() {
@@ -254,38 +279,6 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
-    //Temp
-    private void startStillCaptureRequest() {
-        SurfaceTexture surfaceTexture = mTextureView.getSurfaceTexture();
-        surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
-        Surface previewSurface = new Surface(surfaceTexture);
-
-        try {
-            mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            mCaptureRequestBuilder.addTarget(previewSurface);
-            CameraCaptureSession.CaptureCallback stillCaptureCallback = new
-                    CameraCaptureSession.CaptureCallback() {
-                        @Override
-                        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-                            super.onCaptureStarted(session, request, timestamp, frameNumber);
-                            Log.e(TAG, "Starting still capture");
-                            Toast.makeText(getApplicationContext(), "Still capture callback", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-                            super.onCaptureCompleted(session, request, result);
-                            Log.e(TAG, "Still capture completed");
-                        }
-                    };
-            mPreviewCaptureSession.capture(mCaptureRequestBuilder.build(), stillCaptureCallback, null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    //End Temp
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.close();
@@ -294,14 +287,15 @@ public class TakePicActivity extends AppCompatActivity {
     }
 
     public void onTakeAPicClick(View v) {
-        Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
-        mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
-    }
-
-    public void onSelectPicClick(View v) {
-        Log.e(TAG, "onSelectPicClick <<");
-        uploadImage();
-        Log.e(TAG, "onSelectPicClick >>");
+        if(!mIsInProgress) {
+            // Start repetative action to take a picture, every 15 seconds
+            mHandler.post(mTakePictureRunnable);
+            mBtnTakePicture.setText("Stop");
+            mIsInProgress = true;
+        } else {
+            mBtnTakePicture.setText("Start");
+            mIsInProgress = false;
+        }
     }
 
     //Thread
@@ -347,7 +341,7 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage() {
+    private void uploadImage(int imageNumber) {
         //Prepare image to be uploaded
         Log.e(TAG, "Preparing image for upload");
         mIVSavedPicture.setDrawingCacheEnabled(true);
@@ -357,9 +351,11 @@ public class TakePicActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Upload image
         Log.e(TAG, "Uploading image...");
-        UploadTask uploadTask = mStorageRef.putBytes(data);
+        StorageReference imageRef = mStorageRef.child(userId).child(Integer.toString(imageNumber));
+        UploadTask uploadTask = imageRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {

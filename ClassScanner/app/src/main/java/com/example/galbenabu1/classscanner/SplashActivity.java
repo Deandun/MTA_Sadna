@@ -9,7 +9,7 @@ import android.util.Log;
 
 
 public class SplashActivity extends Activity {
-    private final int SPLASH_DISPLAY_LENGTH = 7000; // 7 seconds of splash madness
+    private final int SPLASH_DISPLAY_LENGTH = 3; // 7 seconds of splash madness
     private final String TAG = "SplashScreenActivity";
 
     @Override

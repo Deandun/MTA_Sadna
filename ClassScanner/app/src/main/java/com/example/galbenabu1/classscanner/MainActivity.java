@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     // UI references.
     private EditText mEmail, mPassword;
-    private Button btnSignOut;
     private Button btnCreateAccount;
     private Button btnResetPassword;
 
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
         Button btnSignIn = (Button) findViewById(R.id.email_sign_in_button);
-        btnSignOut = (Button) findViewById(R.id.email_sign_out_button);
         btnCreateAccount= (Button) findViewById(R.id.create_account_button);
         btnResetPassword= (Button) findViewById(R.id.btn_reset_password);
         mAuth = FirebaseAuth.getInstance();
@@ -65,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
+                    Intent intent = new Intent(MainActivity.this, TakePicActivity.class);
+                    startActivity(intent);
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -125,14 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     toastMessage("You didn't fill in all the fields.");
                 }
-            }
-        });
-
-        btnSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                toastMessage("Signing Out...");
             }
         });
     }

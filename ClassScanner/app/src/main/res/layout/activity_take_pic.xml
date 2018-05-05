@@ -21,7 +21,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:onClick="onTakeAPicClick"
-        android:text="Take Picture"
+        android:text="Start"
         app:layout_constraintBottom_toBottomOf="@+id/bestTextureView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,16 +38,4 @@
         app:layout_constraintTop_toBottomOf="@+id/bestTextureView"
         app:srcCompat="@android:color/holo_orange_dark" />
 
-    <Button
-        android:id="@+id/btnSelectPic"
-        android:layout_width="139dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="onSelectPicClick"
-        android:text="Upload Picture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivSavedPic" />
 </android.support.constraint.ConstraintLayout>
