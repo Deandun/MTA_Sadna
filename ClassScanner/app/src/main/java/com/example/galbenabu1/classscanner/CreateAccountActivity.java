@@ -56,11 +56,11 @@ public class CreateAccountActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    Log.e(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
                 }
             }
@@ -69,7 +69,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         mBtnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "mBtnCreateAccount:" );
+                Log.e(TAG, "mBtnCreateAccount:" );
 
                 String email = mEmail.getText().toString().trim();
                 String pass = mPassword.getText().toString().trim();
@@ -79,17 +79,18 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                 //boolean isRegister=true;
                 boolean isValid= validateForm(email, pass, confirmPass, userName, academic);
-                Log.d(TAG, "after validation: is valid- " + isValid );
+                Log.e(TAG, "after validation: is valid- " + isValid );
 
                 if (isValid) {
-                    Log.d(TAG, " valid- before createAccount " );
+                    Log.e(TAG, " valid- before createAccount " );
 
                     createAccount(email, pass);
-                    Log.d(TAG, "after createAccount " );
+                    Log.e(TAG, "after createAccount " );
+
 
 //                    if (isRegister)
 //                    {
-//                        Log.d(TAG, "onClick: Switching Activities.");
+//                        Log.e(TAG, "onClick: Switching Activities.");
 //                        Intent intent = new Intent(CreateAccountActivity.this, UploadActivity.class);
 //                        startActivity(intent);
 //                    }
@@ -116,7 +117,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 //    }
 
     private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
+        Log.e(TAG, "createAccount:" + email);
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -124,10 +125,10 @@ public class CreateAccountActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
+                            Log.e(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             toastMessage( "Authentication: success.");
-                            Log.d(TAG, "onClick: Switching Activities.");
+                            Log.e(TAG, "onClick: Switching Activities.");
                             Intent intent = new Intent(CreateAccountActivity.this, TakePicActivity.class);
                             startActivity(intent);
                         } else {
@@ -193,7 +194,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 this.requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1001); //Any number
             }
         } else {
-            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < M.");
+            Log.e(TAG, "checkBTPermissions: No need to check permissions. SDK version < M.");
         }
     }
 

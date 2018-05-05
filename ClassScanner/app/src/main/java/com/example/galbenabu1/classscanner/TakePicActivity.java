@@ -178,6 +178,7 @@ public class TakePicActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    //TEMP trying to fix orientation bug
     private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
         if (deviceOrientation == android.view.OrientationEventListener.ORIENTATION_UNKNOWN) {
             return 0;

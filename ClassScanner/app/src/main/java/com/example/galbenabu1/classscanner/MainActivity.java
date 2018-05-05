@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG, "onCreate >> ");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //declare buttons and edit texts in oncreate
@@ -61,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                    Intent intent = new Intent(MainActivity.this, TakePicActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    Log.e(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
                 }
             }
@@ -84,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Switching Activities.");
+                Log.e(TAG, "onClick: Switching Activities.");
+
                 Intent intent = new Intent(MainActivity.this, CreateAccountActivity.class);
                 startActivity(intent);
 
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        Intent intent = new Intent(MainActivity.this, TakePicActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
@@ -127,10 +130,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Log.e(TAG, "onCreate >>");
+
     }
 
 //    private void createAccount(String email, String password) {
-//        Log.d(TAG, "createAccount:" + email);
+//        Log.e(TAG, "createAccount:" + email);
 //        if (!validateForm()) {
 //            return;
 //        }
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 //                    public void onComplete(@NonNull Task<AuthResult> task) {
 //                        if (task.isSuccessful()) {
 //                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "createUserWithEmail:success");
+//                            Log.e(TAG, "createUserWithEmail:success");
 //                            FirebaseUser user = mAuth.getCurrentUser();
 //                            toastMessage( "Authentication: success.");
 //                        } else {
@@ -198,15 +203,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetPassword() {
-        Log.d(TAG, "in reset password");
+        Log.e(TAG, "in reset password");
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        Log.d(TAG, "in reset password- after LayoutInflater");
+        Log.e(TAG, "in reset password- after LayoutInflater");
         final View dialogView = inflater.inflate(R.layout.activity_reset_password, null);
-        Log.d(TAG, "in reset password- after dialogView");
+        Log.e(TAG, "in reset password- after dialogView");
 
         dialogBuilder.setView(dialogView);
-        Log.d(TAG, "in reset password- after setView");
+        Log.e(TAG, "in reset password- after setView");
 
         final EditText editEmail = (EditText) dialogView.findViewById(R.id.email);
         final Button btnReset = (Button) dialogView.findViewById(R.id.btn_reset_password);
@@ -214,13 +219,13 @@ public class MainActivity extends AppCompatActivity {
 
         //dialogBuilder.setTitle("Send Photos");
         final AlertDialog dialog = dialogBuilder.create();
-        Log.d(TAG, "in reset password- after create dialog");
+        Log.e(TAG, "in reset password- after create dialog");
 
         btnReset.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 String email = editEmail.getText().toString().trim();
-                Log.d(TAG, "in reset password- on click");
+                Log.e(TAG, "in reset password- on click");
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
