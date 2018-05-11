@@ -176,7 +176,7 @@ public class TakePicActivity extends AppCompatActivity {
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName= Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName+="/recoerAudio.3gp";
+        mFileName+="/recordAudio.3gp";
     }
 
     @Override
