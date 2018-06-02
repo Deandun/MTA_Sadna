@@ -26,24 +26,37 @@ public class HomeActivity extends Activity {
             String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
          //   mtvGreeting.setText("Hello " + userName);
         }
+
         Log.e(TAG, "onCreate <<");
     }
 
-    //on click signature
     public void onSignoutClick(View v) {
+        Log.e(TAG, "onCreate >>");
         FirebaseAuth.getInstance().signOut();
         finish();
+        Log.e(TAG, "onCreate <<");
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Log.e(TAG, "onCreate >>");
         FirebaseAuth.getInstance().signOut();
         finish();
+        Log.e(TAG, "onCreate <<");
     }
 
     public void onTmpTakePicClick(View v) {
+        Log.e(TAG, "onCreate >>");
         Intent intent = new Intent(HomeActivity.this, TakePicActivity.class);
         startActivity(intent);
+        Log.e(TAG, "onCreate <<");
+    }
+
+    public void onViewMyCoursesClick(View v) {
+        Log.e(TAG, "onCreate >>");
+        Intent intent = new Intent(HomeActivity.this, MyCoursesActivity.class);
+        startActivity(intent);
+        Log.e(TAG, "onCreate <<");
     }
 }

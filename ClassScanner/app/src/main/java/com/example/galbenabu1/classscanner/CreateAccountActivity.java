@@ -129,7 +129,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             toastMessage( "Authentication: success.");
                             Log.e(TAG, "onClick: Switching Activities.");
-                            Intent intent = new Intent(CreateAccountActivity.this, TakePicActivity.class);
+                            Intent intent = new Intent(CreateAccountActivity.this, HomeActivity.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
