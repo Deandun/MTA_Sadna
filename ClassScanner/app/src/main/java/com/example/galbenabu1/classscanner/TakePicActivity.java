@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -55,6 +56,14 @@ public class TakePicActivity extends AppCompatActivity {
     private static String TAG = "TakePicActivity";
     private static int DELAY_BETWEEN_PICTURES = 5;
     private static final int REQUEST_CAMERA_PERMISSION_RESULT = 0;
+    private static final SparseIntArray CAMERA_ORIENTATIONS = new SparseIntArray();
+    static {
+        CAMERA_ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        CAMERA_ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        CAMERA_ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        CAMERA_ORIENTATIONS.append(Surface.ROTATION_270, 270);
+    }
+
     private CaptureRequest.Builder mCaptureRequestBuilder;
     private boolean mIsInProgress = false;
 
@@ -178,30 +187,6 @@ public class TakePicActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    //TEMP trying to fix orientation bug
-    private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
-        if (deviceOrientation == android.view.OrientationEventListener.ORIENTATION_UNKNOWN) {
-            return 0;
-        }
-
-        int sensorOrientation = c.get(CameraCharacteristics.SENSOR_ORIENTATION);
-
-        // Round device orientation to a multiple of 90
-        deviceOrientation = (deviceOrientation + 45) / 90 * 90;
-
-        // Reverse device orientation for front-facing cameras
-        boolean facingFront = c.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT;
-        if (facingFront) {
-            deviceOrientation = -deviceOrientation;
-        }
-
-        // Calculate desired JPEG orientation relative to camera orientation to make
-        // the image upright relative to the device orientation
-        int jpegOrientation = (sensorOrientation + deviceOrientation + 360) % 360;
-
-        return jpegOrientation;
-    }
-
     // Camera
     private void setupCamera(int width, int height) {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -212,8 +197,15 @@ public class TakePicActivity extends AppCompatActivity {
                     continue;
                 }
 
+                // Forces the camera orientation to be in landscape mode
+                int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
+                int totalRotation = sensorToDeviceRotation(cameraCharacteristics, deviceOrientation);
+                boolean swapRotation = totalRotation == 90 || totalRotation == 270; // Check if in portrait mode
+                int rotatedWidth = swapRotation ? height : width;
+                int rotatedHeight = swapRotation ? width : height;
+
                 StreamConfigurationMap scaleStreamConfigsMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                mPreviewSize = chooseOptimalSize(scaleStreamConfigsMap.getOutputSizes(SurfaceTexture.class), width, height);
+                mPreviewSize = chooseOptimalSize(scaleStreamConfigsMap.getOutputSizes(SurfaceTexture.class), rotatedWidth, rotatedHeight);
                 mCameraID = cameraID;
                 Log.e(TAG, "Camera ID: " + mCameraID + "With optimal size: " + mPreviewSize);
                 return;
@@ -244,20 +236,13 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
-    public void surfaceChanged(int format, int width, int height) {
-
-    }
-
     private void startPreview() {
         SurfaceTexture surfaceTexture = mTextureView.getSurfaceTexture();
         surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         Surface previewSurface = new Surface(surfaceTexture);
 
         try {
-            CameraManager manager = (CameraManager)TakePicActivity.this.getSystemService(Context.CAMERA_SERVICE);
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCameraID);
             mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-           // mCaptureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, getJpegOrientation(characteristics, TakePicActivity.this.getWindowManager().getDefaultDisplay().getRotation()));
             mCaptureRequestBuilder.addTarget(previewSurface);
 
             mCameraDevice.createCaptureSession(Arrays.asList(previewSurface), new CameraCaptureSession.StateCallback() {
@@ -287,7 +272,26 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
+    private static int sensorToDeviceRotation(CameraCharacteristics cameraCharacteristics, int deviceOrientation) {
+        Log.e(TAG, "sensorToDeviceRotation >>");
+
+        int sensorOrientation;
+
+        try {
+            sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+        } catch(Exception e) {
+            Log.e(TAG, "sensorToDeviceRotation >> Exception thrown: " + e.getMessage());
+            sensorOrientation = 0;
+        }
+
+        deviceOrientation = CAMERA_ORIENTATIONS.get(deviceOrientation);
+
+        return (sensorOrientation + deviceOrientation + 360) % 360;
+    }
+
     public void onTakeAPicClick(View v) {
+        Log.e(TAG, "onTakeAPicClick >>");
+
         if(!mIsInProgress) {
             // Start repetative action to take a picture, every 15 seconds
             mHandler.post(mTakePictureRunnable);

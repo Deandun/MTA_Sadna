@@ -1,6 +1,7 @@
 package com.example.galbenabu1.classscanner;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,22 +12,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MyCoursesActivity extends Activity {
+public class ShowCoursesActivity extends Activity {
 
     private static final String TAG = "MyCoursesActivity";
+    private static final String IS_MY_COURSES = "is_my_courses";
 
     private List<Course> mCoursesList = new ArrayList<>();
     private RecyclerView mCoursesRecycleView;
     private CoursesAdapter mCoursesAdapter;
+    private boolean mIsMyCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_courses);
+        setContentView(R.layout.activity_show_courses);
         Log.e(TAG, "onCreate >>");
+        mIsMyCourses = getIntent().getExtras().getBoolean(IS_MY_COURSES);
 
         bindUI();
-        setUI();
         getCoursesFromDB();
 
         Log.e(TAG, "onCreate <<");
@@ -35,15 +38,15 @@ public class MyCoursesActivity extends Activity {
     // UI
 
     private void bindUI() {
-        mCoursesRecycleView = findViewById(R.id.recyclerView);
+        mCoursesRecycleView = findViewById(R.id.my_courses_recyclerView);
         mCoursesRecycleView.setHasFixedSize(true);
         mCoursesRecycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mCoursesRecycleView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    // Call this function when UI changes need to occur
     private void setUI() {
-        mCoursesRecycleView.getAdapter().notifyDataSetChanged();
+        //TODO: If mIsMyCourses, do not allow filtering by creater name. Else, allow it
+        mCoursesRecycleView.getAdapter().notifyDataSetChanged(); // Call this function when UI changes need to occur
     }
 
     // Data
@@ -53,7 +56,8 @@ public class MyCoursesActivity extends Activity {
         mCoursesAdapter = new CoursesAdapter(mCoursesList);
         mCoursesRecycleView.setAdapter(mCoursesAdapter);
 
-        getCoursesTemp(); // Need to get courses from the DB manager
+        //TODO: If mIsMyCourses, fetch only user's courses from DB. Else (showing all courses), fetch all courses
+        getCoursesTemp(); //TODO: Need to get courses from the DB manager instead of using this temp function
         setUI();
     }
 

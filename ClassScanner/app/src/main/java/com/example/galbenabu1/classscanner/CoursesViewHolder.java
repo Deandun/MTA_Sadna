@@ -1,14 +1,18 @@
 package com.example.galbenabu1.classscanner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder{
     private static final String TAG = "CourseViewHolder";
+    private static final String COURSE_DATA = "course_data";
+
     private CardView mCourseCardView;
     private TextView mCreatorName;
     private TextView mCourseName;
@@ -29,12 +33,12 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View view) {
 
-                //Log.e(TAG, "CardView.onClick() >> Dare =" + mSelectedDare.toString());
+                Log.e(TAG, "CardView.onClick() >> Course: " + mSelectedCourse.toString());
 
                 Context context = view.getContext();
-                //Intent intent = new Intent(context, DareDetailsActivity.class);
-                //intent.putExtra("course", mSelectedCourse);
-                //context.startActivity(intent);
+                Intent intent = new Intent(context, CourseInfoActivity.class);
+                intent.putExtra(COURSE_DATA, mSelectedCourse);
+                context.startActivity(intent);
             }
         });
     }

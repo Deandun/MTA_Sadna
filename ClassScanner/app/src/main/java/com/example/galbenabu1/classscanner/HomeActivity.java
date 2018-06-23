@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class HomeActivity extends Activity {
 
     private static final String TAG = "HomeActivity";
+    private static final String IS_MY_COURSES = "is_my_courses";
+
     private TextView mtvGreeting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,39 +26,48 @@ public class HomeActivity extends Activity {
         if (FirebaseAuth.getInstance().getCurrentUser() != null)
         {
             String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-         //   mtvGreeting.setText("Hello " + userName);
+            //mtvGreeting.setText("Hello " + userName);
         }
 
         Log.e(TAG, "onCreate <<");
     }
 
     public void onSignoutClick(View v) {
-        Log.e(TAG, "onCreate >>");
+        Log.e(TAG, "onSignoutClick >>");
         FirebaseAuth.getInstance().signOut();
         finish();
-        Log.e(TAG, "onCreate <<");
+        Log.e(TAG, "onSignoutClick <<");
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.e(TAG, "onCreate >>");
+        Log.e(TAG, "onBackPressed >>");
         FirebaseAuth.getInstance().signOut();
         finish();
-        Log.e(TAG, "onCreate <<");
+        Log.e(TAG, "onBackPressed <<");
     }
 
     public void onTmpTakePicClick(View v) {
-        Log.e(TAG, "onCreate >>");
+        Log.e(TAG, "onTmpTakePicClick >>");
         Intent intent = new Intent(HomeActivity.this, TakePicActivity.class);
         startActivity(intent);
-        Log.e(TAG, "onCreate <<");
+        Log.e(TAG, "onTmpTakePicClick <<");
     }
 
     public void onViewMyCoursesClick(View v) {
-        Log.e(TAG, "onCreate >>");
-        Intent intent = new Intent(HomeActivity.this, MyCoursesActivity.class);
+        Log.e(TAG, "onViewMyCoursesClick >>");
+        Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);
+        intent.putExtra(IS_MY_COURSES, true);
         startActivity(intent);
-        Log.e(TAG, "onCreate <<");
+        Log.e(TAG, "onViewMyCoursesClick <<");
+    }
+
+    public void onShowPrivateAlbumsClick(View v) {
+        Log.e(TAG, "onShowPrivateAlbumsClick >>");
+        //TODO: indicate to ShowAlbumsActivity that we want to display the user's private albums only
+        Intent intent = new Intent(HomeActivity.this, ShowAlbumsActivity.class);
+        startActivity(intent);
+        Log.e(TAG, "onShowPrivateAlbumsClick <<");
     }
 }
