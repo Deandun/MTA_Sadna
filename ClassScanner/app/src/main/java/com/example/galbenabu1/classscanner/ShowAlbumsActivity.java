@@ -63,13 +63,13 @@ public class ShowAlbumsActivity extends Activity {
         long timeToDecrease = 10000;
         for(int i = 0; i < 15; i++) {
             Album album = new Album();
-            album.setAlbumName("Dummy course" + i);
+            album.setAlbumName("Dummy Album" + i);
             album.setPublisherName(namesArr[i % namesArr.length]);
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
             album.setmCreationDate(date);
             timeToDecrease *= (i + 1);
-            Log.e(TAG, "Course created: " + album.toString());
+            Log.e(TAG, "Album created: " + album.toString());
             mAlbumsList.add(album);
         }
     }

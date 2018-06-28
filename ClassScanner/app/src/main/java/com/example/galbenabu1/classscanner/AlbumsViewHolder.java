@@ -1,6 +1,7 @@
 package com.example.galbenabu1.classscanner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private static final String TAG = "AlbumViewHolder";
+    private static final String ALBUM_DATA = "album_data";
+
     private CardView mAlbumCardView;
     private TextView mCreatorName;
     private TextView mAlbumName;
@@ -33,9 +36,9 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                 Log.e(TAG, "CardView.onClick() >> Album: " + mSelectedAlbum.toString());
 
                 Context context = view.getContext();
-                //Intent intent = new Intent(context, DareDetailsActivity.class);
-                //intent.putExtra("course", mSelectedCourse);
-                //context.startActivity(intent);
+                Intent intent = new Intent(context, AlbumInfoActivity.class);
+                intent.putExtra(ALBUM_DATA, mSelectedAlbum);
+                context.startActivity(intent);
             }
         });
     }
