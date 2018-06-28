@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -41,6 +42,7 @@
         <activity android:name=".ShowCoursesActivity" />
         <activity android:name=".ShowAlbumsActivity" />
         <activity android:name=".AlbumInfoActivity"></activity>
+        <activity android:name=".ForgetPasswordActivity"></activity>
     </application>
 
 </manifest>

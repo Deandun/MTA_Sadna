@@ -17,8 +17,10 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -44,6 +46,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +70,8 @@ public class TakePicActivity extends AppCompatActivity {
 
     private CaptureRequest.Builder mCaptureRequestBuilder;
     private boolean mIsInProgress = false;
+    private MediaRecorder mRecorder;
+    private String mFileName=null;
 
     //FireBase
     private StorageReference mStorageRef;
@@ -178,6 +184,8 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
+        mFileName= Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFileName+="/recordAudio.3gp";
     }
 
     @Override
@@ -297,10 +305,45 @@ public class TakePicActivity extends AppCompatActivity {
             mHandler.post(mTakePictureRunnable);
             mBtnTakePicture.setText("Stop");
             mIsInProgress = true;
+            startRecording();
         } else {
             mBtnTakePicture.setText("Start");
             mIsInProgress = false;
+            stopRecording();
         }
+    }
+
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(mFileName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            //Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+    }
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+
+        uploadAudio();
+    }
+
+    private void uploadAudio() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        StorageReference audioRef = mStorageRef.child(userId).child("audioFile.3gp");
+        Uri uri = Uri.fromFile(new File(mFileName));
+
+        audioRef.putFile(uri);
     }
 
     //Thread
