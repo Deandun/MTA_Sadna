@@ -27,7 +27,11 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mEmail = (EditText) findViewById(R.id.email);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+
+
     }
+
+
 
     public void onResetPasswordClicked(View v) {
         final String email = mEmail.getText().toString();
