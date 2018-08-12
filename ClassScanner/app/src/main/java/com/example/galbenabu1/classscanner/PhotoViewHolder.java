@@ -7,11 +7,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import Logic.PictureAudioData;
+
 public class PhotoViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "PhotoViewHolder";
     private TextView mtvTitle;
     private ImageView mivPhoto;
-    private Photo mSelectedPhoto;
+    private PictureAudioData mSelectedPhoto;
 
     public PhotoViewHolder(View view) {
         super(view);
@@ -48,11 +50,11 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
         this.mivPhoto = photo;
     }
 
-    public Photo getSelectedPhoto() {
+    public PictureAudioData getSelectedPhoto() {
         return mSelectedPhoto;
     }
 
-    public void setSelectedPhoto(Photo selectedPhoto) {
+    public void setSelectedPhoto(PictureAudioData selectedPhoto) {
         this.mSelectedPhoto = selectedPhoto;
     }
 }

@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import Logic.Course;
+
 public class CoursesViewHolder extends RecyclerView.ViewHolder{
     private static final String TAG = "CourseViewHolder";
     private static final String COURSE_DATA = "course_data";

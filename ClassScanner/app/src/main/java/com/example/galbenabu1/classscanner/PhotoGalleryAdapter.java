@@ -14,13 +14,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import Logic.PictureAudioData;
+
 //TODO: add logs
 public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private static final String TAG = "PhotoGalleryAdapter";
-    private ArrayList<Photo> mPhotoList;
+    private ArrayList<PictureAudioData> mPhotoList;
     private Context mContext;
 
-    public PhotoGalleryAdapter(ArrayList<Photo> photoList, Context context) {
+    public PhotoGalleryAdapter(ArrayList<PictureAudioData> photoList, Context context) {
         mPhotoList = photoList;
         mContext = context;
     }
@@ -35,10 +37,10 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         Log.e(TAG, "onBindViewHolder() >> " + position);
 
-        Photo photo = mPhotoList.get(position);
+        PictureAudioData photo = mPhotoList.get(position);
 
         holder.setSelectedPhoto(photo);
-        holder.getTvTitle().setText(photo.getTitle());
+        holder.getTvTitle().setText(photo.getM_Description());
         //holder.getIvPhoto().setImageBitmap(fetchImageBitmapFromDB(photo.getImagePath()));
         // For now, get dummy image
         holder.getIvPhoto().setImageDrawable(mContext.getResources().getDrawable(R.drawable.lazershark, null));

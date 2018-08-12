@@ -1,14 +1,18 @@
 package Logic;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by galbenabu1 on 08/05/2018.
  */
 
-public class PictureAudioData {
-    String m_Id;
-    String m_CreationDate;
-    String m_Description;
-    String m_Path;
+//TODO: Add missing fields to parcelable implementation
+public class PictureAudioData implements Parcelable {
+    private String m_Id;
+    private String m_CreationDate;
+    private String m_Description;
+    private String m_Path;
 
     public PictureAudioData(String m_Id, String m_CreationDate, String m_Description, String m_Path) {
         this.m_Id = m_Id;
@@ -16,6 +20,38 @@ public class PictureAudioData {
         this.m_Description = m_Description;
         this.m_Path = m_Path;
     }
+
+    protected PictureAudioData(Parcel in) {
+        m_Id = in.readString();
+        m_CreationDate = in.readString();
+        m_Description = in.readString();
+        m_Path = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(m_Id);
+        dest.writeString(m_CreationDate);
+        dest.writeString(m_Description);
+        dest.writeString(m_Path);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PictureAudioData> CREATOR = new Creator<PictureAudioData>() {
+        @Override
+        public PictureAudioData createFromParcel(Parcel in) {
+            return new PictureAudioData(in);
+        }
+
+        @Override
+        public PictureAudioData[] newArray(int size) {
+            return new PictureAudioData[size];
+        }
+    };
 
     public String getM_Description() {
         return m_Description;

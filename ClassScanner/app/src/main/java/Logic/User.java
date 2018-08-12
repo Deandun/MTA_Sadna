@@ -6,13 +6,14 @@ import java.util.List;
  * Created by galbenabu1 on 08/05/2018.
  */
 
+//TODO: Add parcelable implementation
 public class User {
 
-    String m_Id;
-    String m_UserName;
-    String m_Mail;
-    String m_NickName;
-    List <String> m_CoursesId;
+    private String m_Id;
+    private String m_UserName;
+    private String m_Mail;
+    private String m_NickName;
+    private List <String> m_CoursesId;
 
     public User(String m_UserName, String m_Mail) {
         this.m_UserName = m_UserName;

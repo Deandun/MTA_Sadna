@@ -1,5 +1,8 @@
 package Logic;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -7,20 +10,57 @@ import java.util.List;
  * Created by galbenabu1 on 08/05/2018.
  */
 
-public class Course {
-    String m_Id;
-    String m_ManegerId; //maybe User?
-    String m_CourseName;
-    Date m_CreationDate;
-    String m_Description;
-    List<String> m_UsersId;
-    List<String> m_AlbumsId;
+//TODO: Add missing fields to parcelable implementation
+public class Course implements Parcelable {
+    private String m_Id;
+    private String m_ManegerId; //maybe User?
+    private String m_CourseName;
+    private Date m_CreationDate;
+    private String m_Description;
+    private List<String> m_UsersId;
+    private List<String> m_AlbumsId;
 
     public Course(String m_ManegerId, String m_CourseName, Date m_CreationDate) {
         this.m_ManegerId = m_ManegerId;
         this.m_CourseName = m_CourseName;
         this.m_CreationDate = m_CreationDate;
     }
+
+    protected Course(Parcel in) {
+        m_Id = in.readString();
+        m_ManegerId = in.readString();
+        m_CourseName = in.readString();
+        m_Description = in.readString();
+        m_UsersId = in.createStringArrayList();
+        m_AlbumsId = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(m_Id);
+        dest.writeString(m_ManegerId);
+        dest.writeString(m_CourseName);
+        dest.writeString(m_Description);
+        dest.writeStringList(m_UsersId);
+        dest.writeStringList(m_AlbumsId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Course> CREATOR = new Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 
     public String getM_Id() {
         return m_Id;

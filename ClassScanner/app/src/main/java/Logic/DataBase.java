@@ -26,6 +26,4 @@ public class DataBase {
 
         mDatabase.updateChildren(childUpdates);
     }
-
-
 }

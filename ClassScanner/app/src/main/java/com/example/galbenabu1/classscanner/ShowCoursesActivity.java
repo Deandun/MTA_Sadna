@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Course;
+
 public class ShowCoursesActivity extends Activity {
 
     private static final String TAG = "MyCoursesActivity";
@@ -63,16 +65,12 @@ public class ShowCoursesActivity extends Activity {
 
     //Temp method that creates dummy courses
     private void getCoursesTemp() {
-        String namesArr[] = {"Jerry", "Tom", "Chen", "Noy Toy", "Tal Galya"};
         long timeToDecrease = 10000;
         for(int i = 0; i < 15; i++) {
-            Course course = new Course();
-            course.setCourseName("Dummy course" + i);
-            course.setPublisherName(namesArr[i % namesArr.length]);
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
-            course.setmCreationDate(date);
             timeToDecrease *= (i + 1);
+            Course course = new Course(Integer.toString(i), "dummy course" + i, date);
             Log.e(TAG, "Course created: " + course.toString());
             mCoursesList.add(course);
         }

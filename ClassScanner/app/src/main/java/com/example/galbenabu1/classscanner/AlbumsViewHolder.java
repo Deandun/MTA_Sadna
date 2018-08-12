@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import Logic.Album;
+
 public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private static final String TAG = "AlbumViewHolder";
     private static final String ALBUM_DATA = "album_data";

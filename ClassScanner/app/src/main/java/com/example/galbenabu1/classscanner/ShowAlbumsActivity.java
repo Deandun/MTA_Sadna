@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Album;
+
 public class ShowAlbumsActivity extends Activity {
 
     private static final String TAG = "ShowAlbumsActivity";
@@ -59,16 +61,12 @@ public class ShowAlbumsActivity extends Activity {
 
     //Temp method that creates dummy courses
     private void getAlbumsTemp() {
-        String namesArr[] = {"Album1", "Album2", "Album3", "Album3", "Album4"};
         long timeToDecrease = 10000;
         for(int i = 0; i < 15; i++) {
-            Album album = new Album();
-            album.setAlbumName("Dummy Album" + i);
-            album.setPublisherName(namesArr[i % namesArr.length]);
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
-            album.setmCreationDate(date);
             timeToDecrease *= (i + 1);
+            Album album = new Album(Integer.toString(i), "dummy album " + i, date.toString());
             Log.e(TAG, "Album created: " + album.toString());
             mAlbumsList.add(album);
         }

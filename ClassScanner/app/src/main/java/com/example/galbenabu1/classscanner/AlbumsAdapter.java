@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import Logic.Album;
+
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
     private final String TAG = "AlbumsAdapter";
 
@@ -39,8 +41,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
         // bind Album data to it's view items
         holder.setSelectedAlbum(album);
         holder.getAlbumName().setText("Name: " + album.getAlbumName());
-        holder.getCreatorName().setText("Publisher: " + album.getPublisherName());
-        holder.getCreationDate().setText("Creation date: " + album.getmCreationDate().toString());
+        holder.getCreatorName().setText("Publisher: " + album.getAlbumName());
+        holder.getCreationDate().setText("Creation date: " + album.getCreationDate());
 
 
         Log.e(TAG, "onBindViewHolder() << " + position);

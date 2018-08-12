@@ -9,13 +9,16 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Logic.Album;
+import Logic.PictureAudioData;
+
 //TODO: add logs
 public class AlbumInfoActivity extends Activity {
     private static final String TAG = "AlbumInfoActivity";
     private static final String ALBUM_DATA = "album_data";
 
     private Album mAlbum;
-    private ArrayList<Photo> mAlbumPhotosList = new ArrayList();
+    private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<PictureAudioData>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +46,10 @@ public class AlbumInfoActivity extends Activity {
         long timeToDecrease = 10000;
 
         for(int i = 0; i < 15; i++) {
-            Photo photo = new Photo();
-            photo.setTitle("Dummy Photo" + i);
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
-            photo.setCreationDate(date);
             timeToDecrease *= (i + 1);
-            Log.e(TAG, "Photo created: " + photo.toString());
+            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date.toString(), "dummy photo " + i, "dummy path");
             mAlbumPhotosList.add(photo);
         }
     }

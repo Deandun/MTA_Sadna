@@ -14,13 +14,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Course;
+
 public class CourseInfoActivity extends AppCompatActivity {
 
     private static final String TAG = "CourseInfoActivity";
     private static final String COURSE_DATA = "course_data";
 
     // Course info
-    Course mCourse = new Course();
+    Course mCourse;
     private TextView mtvCourseName;
     private TextView mtvCourseCreationDate;
     private TextView mtvCourseCreaterName;
@@ -49,8 +51,8 @@ public class CourseInfoActivity extends AppCompatActivity {
     private void setUI() {
         // Course info
         mtvCourseName.setText(mCourse.getCourseName());
-        mtvCourseCreationDate.setText("Created at:" + mCourse.getmCreationDate().toString());
-        mtvCourseCreaterName.setText("Created by: " + mCourse.getPublisherName());
+        mtvCourseCreationDate.setText("Created at:" + mCourse.getCreationDate());
+        mtvCourseCreaterName.setText("Created by: " + mCourse.getCourseName());
     }
 
     public void onShowMyAlbumsClick(View v) {

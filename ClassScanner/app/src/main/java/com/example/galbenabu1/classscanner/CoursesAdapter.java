@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import Logic.Course;
+
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
     private final String TAG = "CoursessAdapter";
 
@@ -39,8 +41,8 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
         // bind Course data to it's view items
         holder.setSelectedCourse(course);
         holder.getCourseName().setText("Name: " + course.getCourseName());
-        holder.getCreatorName().setText("Publisher: " + course.getPublisherName());
-        holder.getCreationDate().setText("Creation date: " + course.getmCreationDate().toString());
+        holder.getCreatorName().setText("Publisher: " + course.getCourseName());
+        holder.getCreationDate().setText("Creation date: " + course.getCreationDate());
 
 
         Log.e(TAG,"onBindViewHolder() << "+ position);
