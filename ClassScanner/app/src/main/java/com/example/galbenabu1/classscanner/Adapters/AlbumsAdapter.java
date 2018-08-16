@@ -1,10 +1,13 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.galbenabu1.classscanner.ViewHolders.AlbumsViewHolder;
+import com.example.galbenabu1.classscanner.R;
 
 import java.util.List;
 

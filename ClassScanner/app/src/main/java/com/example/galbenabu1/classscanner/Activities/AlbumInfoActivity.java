@@ -1,10 +1,13 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import com.example.galbenabu1.classscanner.Adapters.PhotoGalleryAdapter;
+import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
 import java.util.Date;

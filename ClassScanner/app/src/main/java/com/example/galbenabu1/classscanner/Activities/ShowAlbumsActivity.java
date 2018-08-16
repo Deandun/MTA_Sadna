@@ -1,4 +1,4 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,13 +6,16 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.TextView;
+
+import com.example.galbenabu1.classscanner.Adapters.AlbumsAdapter;
+import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import Logic.Album;
+import Logic.DBManager;
 
 public class ShowAlbumsActivity extends Activity {
 
@@ -61,6 +64,10 @@ public class ShowAlbumsActivity extends Activity {
 
     //Temp method that creates dummy courses
     private void getAlbumsTemp() {
+        DBManager db = new DBManager(); //NOY - temp
+       // mAlbumsList = db.getAlbumsList();
+
+
         long timeToDecrease = 10000;
         for(int i = 0; i < 15; i++) {
             Date date = new Date();

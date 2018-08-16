@@ -1,13 +1,13 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends Activity {

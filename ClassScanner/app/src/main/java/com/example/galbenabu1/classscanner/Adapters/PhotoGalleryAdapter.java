@@ -1,16 +1,14 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.galbenabu1.classscanner.ViewHolders.PhotoViewHolder;
+import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Activities;
 
 
 import android.app.Activity;
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
+import com.example.galbenabu1.classscanner.R;
 
 
 public class SplashActivity extends Activity {

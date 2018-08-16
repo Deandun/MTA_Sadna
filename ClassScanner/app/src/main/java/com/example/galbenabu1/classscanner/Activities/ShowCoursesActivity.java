@@ -1,12 +1,14 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import com.example.galbenabu1.classscanner.Adapters.CoursesAdapter;
+import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.example.galbenabu1.classscanner;
+package com.example.galbenabu1.classscanner.ViewHolders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.galbenabu1.classscanner.Activities.CourseInfoActivity;
+import com.example.galbenabu1.classscanner.R;
 
 import Logic.Course;
 

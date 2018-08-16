@@ -8,7 +8,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context=".AlbumInfoActivity">
+    tools:context=".Activities.AlbumInfoActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_gallery"
