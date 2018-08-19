@@ -3,6 +3,8 @@ package Logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 /**
  * Created by galbenabu1 on 08/05/2018.
  */
@@ -10,11 +12,13 @@ import android.os.Parcelable;
 //TODO: Add missing fields to parcelable implementation
 public class PictureAudioData implements Parcelable {
     private String m_Id;
-    private String m_CreationDate;
+    private Date m_CreationDate;
     private String m_Description;
     private String m_Path;
 
-    public PictureAudioData(String m_Id, String m_CreationDate, String m_Description, String m_Path) {
+    public PictureAudioData() {}
+
+    public PictureAudioData(String m_Id, Date m_CreationDate, String m_Description, String m_Path) {
         this.m_Id = m_Id;
         this.m_CreationDate = m_CreationDate;
         this.m_Description = m_Description;
@@ -23,7 +27,8 @@ public class PictureAudioData implements Parcelable {
 
     protected PictureAudioData(Parcel in) {
         m_Id = in.readString();
-        m_CreationDate = in.readString();
+        //TODO: read date
+        // m_CreationDate = in.readString();
         m_Description = in.readString();
         m_Path = in.readString();
     }
@@ -31,7 +36,8 @@ public class PictureAudioData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
-        dest.writeString(m_CreationDate);
+        //TODO: write date
+        // dest.writeString(m_CreationDate);
         dest.writeString(m_Description);
         dest.writeString(m_Path);
     }
@@ -67,5 +73,21 @@ public class PictureAudioData implements Parcelable {
 
     public void setM_Path(String m_Path) {
         this.m_Path = m_Path;
+    }
+
+    public void setM_Id(String m_Id) {
+        this.m_Id = m_Id;
+    }
+
+    public void setM_CreationDate(Date m_CreationDate) {
+        this.m_CreationDate = m_CreationDate;
+    }
+
+    public String getM_Id() {
+        return m_Id;
+    }
+
+    public Date getM_CreationDate() {
+        return m_CreationDate;
     }
 }

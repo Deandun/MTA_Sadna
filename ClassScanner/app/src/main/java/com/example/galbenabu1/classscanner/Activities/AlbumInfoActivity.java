@@ -52,7 +52,7 @@ public class AlbumInfoActivity extends Activity {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
             timeToDecrease *= (i + 1);
-            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date.toString(), "dummy photo " + i, "dummy path");
+            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, "dummy photo " + i, "dummy path");
             mAlbumPhotosList.add(photo);
         }
     }

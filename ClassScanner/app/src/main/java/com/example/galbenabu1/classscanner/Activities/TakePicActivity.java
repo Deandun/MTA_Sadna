@@ -50,6 +50,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import Logic.Album;
+import Logic.DBManager;
+import Logic.Interfaces.ObjectUploadSuccessListener;
+import Logic.PictureAudioData;
+
 public class TakePicActivity extends AppCompatActivity {
 
     private static String TAG = "TakePicActivity";
@@ -64,12 +69,23 @@ public class TakePicActivity extends AppCompatActivity {
     }
 
     private CaptureRequest.Builder mCaptureRequestBuilder;
-    private boolean mIsInProgress = false;
     private MediaRecorder mRecorder;
-    private String mFileName=null;
+    private String mFileName = null;
+
+    // Sending pics to DB.
+    private DBManager mDBManager;
+    private List<PictureAudioData> mPictureList;
 
     //FireBase
     private StorageReference mStorageRef;
+
+    // An enum that represents the state of this activity.
+    private enum eTakePicActivityState {
+        InActive,
+        InProgress,
+        Paused
+    }
+    private eTakePicActivityState mActivityState = eTakePicActivityState.InActive;
 
     //Take pictures in a loop
     private final Handler mHandler = new Handler();
@@ -77,10 +93,9 @@ public class TakePicActivity extends AppCompatActivity {
 
     private final Runnable mTakePictureRunnable = new Runnable() {
         public void run() {
-           if(mIsInProgress) {
-                mPictureNumber++;
+           if(mActivityState.equals(eTakePicActivityState.InProgress)) {
                 mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
-                uploadImage(mPictureNumber);
+                uploadImage();
                 Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(mTakePictureRunnable, 1000 * DELAY_BETWEEN_PICTURES);
            }
@@ -116,7 +131,9 @@ public class TakePicActivity extends AppCompatActivity {
 
     //UI
     private Size mPreviewSize;
+    private Button mBtnClearPicturesTaken;
     private Button mBtnTakePicture;
+    private Button mBtnFinishTakingPictures;
     private TextureView mTextureView;
     private ImageView mIVSavedPicture;
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -147,6 +164,7 @@ public class TakePicActivity extends AppCompatActivity {
     //Threads
     private HandlerThread mBackgroundHandlerThread;
     private Handler mBackgroundHandler;
+    private String mAlbumID;
 
     // App life cycle functions
     @Override
@@ -176,11 +194,17 @@ public class TakePicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_pic);
         mTextureView = findViewById(R.id.bestTextureView);
+        mBtnClearPicturesTaken = findViewById(R.id.btnClearPicturesTaken);
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
+        mBtnFinishTakingPictures = findViewById(R.id.btnFinishTakingPictures);
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
-        mFileName= Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName+="/recordAudio.3gp";
+        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFileName += "/recordAudio.3gp";
+        mDBManager = new DBManager();
+        mPictureList = new ArrayList<>();
+        mAlbumID = mDBManager.getNewAlbumID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mBtnTakePicture.setOnClickListener(this::onStartTakingPictures);
     }
 
     @Override
@@ -292,19 +316,74 @@ public class TakePicActivity extends AppCompatActivity {
         return (sensorOrientation + deviceOrientation + 360) % 360;
     }
 
-    public void onTakeAPicClick(View v) {
-        Log.e(TAG, "onTakeAPicClick >>");
+    public void onClearPicturesTakenClick(View v) {
+        Log.e(TAG, "onClearPicturesTakenClick >>");
 
-        if(!mIsInProgress) {
-            // Start repetative action to take a picture, every 15 seconds
-            mHandler.post(mTakePictureRunnable);
-            mBtnTakePicture.setText("Stop");
-            mIsInProgress = true;
-            startRecording();
-        } else {
-            mBtnTakePicture.setText("Start");
-            mIsInProgress = false;
-            stopRecording();
+        // stopRecording();
+        // TODO: implement mDBManager.removePicturesFromDB(mPictureList);
+        mPictureList.clear();
+        mActivityState = eTakePicActivityState.InActive;
+        handleActivityStateChanged();
+        Log.e(TAG, "onClearPicturesTakenClick <<");
+    }
+
+    public void onStartTakingPictures(View v) {
+        Log.e(TAG, "onStartTakingPictures >> activity state: " + mActivityState.name());
+
+        switch(mActivityState) {
+            case InActive:
+                // Button clicked when state was inactive.
+                // Start repetative action to take a picture, every 15 seconds
+                // startRecording(); //TODO: figure out why stopped working.
+                mActivityState = eTakePicActivityState.InProgress;
+                mHandler.post(mTakePictureRunnable);
+                mBtnTakePicture.setText("Pause");
+                break;
+            case InProgress:
+                // Button clicked when state was InProgress.
+                // Pause taking pictures.
+                // stopRecording(); TODO: can we Pause the recording?
+                mActivityState = eTakePicActivityState.Paused;
+                mBtnTakePicture.setText("Continue");
+                break;
+            case Paused:
+                // Button clicked when state was Paused.
+                // Continue taking pictures.
+                // TODO: Can we Continue recording?
+                mActivityState = eTakePicActivityState.InProgress;
+                mBtnTakePicture.setText("Pause");
+                break;
+        }
+
+        handleActivityStateChanged();
+    }
+
+    public void onFinishTakingPictures(View v) {
+        Log.e(TAG, "onFinishTakingPicturesClick >>");
+        // stopRecording();
+
+        //TODO: open new Album creation activity
+        mActivityState = eTakePicActivityState.InActive;
+        handleActivityStateChanged();
+    }
+
+    private void handleActivityStateChanged() {
+        switch(mActivityState) {
+            case InActive:
+                mBtnClearPicturesTaken.setVisibility(View.INVISIBLE);
+                mBtnTakePicture.setText("Start");
+                mBtnFinishTakingPictures.setVisibility(View.INVISIBLE);
+                break;
+            case InProgress:
+                mBtnClearPicturesTaken.setVisibility(View.INVISIBLE);
+                mBtnTakePicture.setText("Pause");
+                mBtnFinishTakingPictures.setVisibility(View.INVISIBLE);
+                break;
+            case Paused:
+                mBtnClearPicturesTaken.setVisibility(View.VISIBLE);
+                mBtnTakePicture.setText("Continue");
+                mBtnFinishTakingPictures.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -384,35 +463,28 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage(int imageNumber) {
+    private void uploadImage() {
         //Prepare image to be uploaded
         Log.e(TAG, "Preparing image for upload");
         mIVSavedPicture.setDrawingCacheEnabled(true);
         mIVSavedPicture.buildDrawingCache();
         Bitmap bitmap = mIVSavedPicture.getDrawingCache();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Upload image
-        Log.e(TAG, "Uploading image...");
-        StorageReference imageRef = mStorageRef.child(userId).child(Integer.toString(imageNumber));
-        UploadTask uploadTask = imageRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Log.e(TAG, "Failed reading from storage.");
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                Log.e(TAG, "Successfully read " + downloadUrl.toString() + " from storage!");
-                Toast.makeText(getApplicationContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        // TODO: run using a task.
+        mDBManager.uploadImageToPrivateAlbum(bitmap, userId, mAlbumID,
+                (ObjectUploadSuccessListener<PictureAudioData>) this::uploadImageSuccess, // on Success
+                this::uploadImageFailure); // On failure
     }
+
+    private void uploadImageSuccess(PictureAudioData uploadedPictureData) {
+        mPictureList.add(uploadedPictureData);
+        Toast.makeText(getApplicationContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void uploadImageFailure() {
+        Toast.makeText(getApplicationContext(), "Failed to upload image.", Toast.LENGTH_SHORT).show();
+    }
+
 }
 

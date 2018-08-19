@@ -29,6 +29,20 @@ public class HomeActivity extends Activity {
             //mtvGreeting.setText("Hello " + userName);
         }
 
+        // Get root view
+//        ConstraintLayout constraintLayout = (ConstraintLayout) ((ViewGroup) this
+//                .findViewById(android.R.id.content)).getChildAt(0);
+//
+//        // Init dynamic menu for this view
+//        DynamicMenu.getInstance().setView(constraintLayout, this.getApplicationContext());
+//        DynamicMenu.MenuItem menuItem =
+//                DynamicMenu.getInstance()
+//                        .createMenuItem(this.getApplicationContext().getDrawable(R.drawable.common_google_signin_btn_icon_dark),
+//                this.getApplicationContext(),
+//                () -> Toast.makeText(this, "Woohoo dynamic menu is working!!", Toast.LENGTH_SHORT).show()
+//                        );
+//        DynamicMenu.getInstance().addMenuItem(menuItem, eMenuItemPosition.Bottom);
+
         Log.e(TAG, "onCreate <<");
     }
 
