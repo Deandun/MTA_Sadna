@@ -27,8 +27,8 @@ public class PictureAudioData implements Parcelable {
 
     protected PictureAudioData(Parcel in) {
         m_Id = in.readString();
-        //TODO: read date
-        // m_CreationDate = in.readString();
+        long tempDateAsLong = in.readLong();
+        m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
         m_Description = in.readString();
         m_Path = in.readString();
     }
@@ -36,8 +36,7 @@ public class PictureAudioData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
-        //TODO: write date
-        // dest.writeString(m_CreationDate);
+        dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_Description);
         dest.writeString(m_Path);
     }

@@ -10,7 +10,6 @@ import java.util.List;
  * Created by galbenabu1 on 08/05/2018.
  */
 
-//TODO: Add missing fields to parcelable implementation
 public class Course implements Parcelable {
     private String m_Id;
     private String m_ManegerId; //maybe User?
@@ -29,6 +28,8 @@ public class Course implements Parcelable {
     protected Course(Parcel in) {
         m_Id = in.readString();
         m_ManegerId = in.readString();
+        long tempDateAsLong = in.readLong();
+        m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
         m_CourseName = in.readString();
         m_Description = in.readString();
         m_UsersId = in.createStringArrayList();
@@ -39,6 +40,7 @@ public class Course implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
         dest.writeString(m_ManegerId);
+        dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_CourseName);
         dest.writeString(m_Description);
         dest.writeStringList(m_UsersId);

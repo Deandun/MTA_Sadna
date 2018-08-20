@@ -3,6 +3,7 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -18,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.HandlerThread;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,14 +36,10 @@ import android.widget.Toast;
 import android.os.Handler;
 
 import com.example.galbenabu1.classscanner.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,12 +48,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import Logic.Album;
-import Logic.DBManager;
-import Logic.Interfaces.ObjectUploadSuccessListener;
+import Logic.Database.DBManager;
+import Logic.Interfaces.MyConsumer;
 import Logic.PictureAudioData;
 
 public class TakePicActivity extends AppCompatActivity {
+
+    private final static String NEW_ALBUM_PICTURE_AUDIO_DATA = "new_album_picture_audio_data";
+    private final static String NEW_ALBUM_ID = "new_album_id";
 
     private static String TAG = "TakePicActivity";
     private static int DELAY_BETWEEN_PICTURES = 5;
@@ -319,11 +319,13 @@ public class TakePicActivity extends AppCompatActivity {
     public void onClearPicturesTakenClick(View v) {
         Log.e(TAG, "onClearPicturesTakenClick >>");
 
-        // stopRecording();
-        // TODO: implement mDBManager.removePicturesFromDB(mPictureList);
+        stopRecording();
+        mDBManager.removePicturesFromDB(mAlbumID, FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                true, this.mPictureList);
         mPictureList.clear();
         mActivityState = eTakePicActivityState.InActive;
-        handleActivityStateChanged();
+        handleUIForActivityStateChanged();
+
         Log.e(TAG, "onClearPicturesTakenClick <<");
     }
 
@@ -334,7 +336,7 @@ public class TakePicActivity extends AppCompatActivity {
             case InActive:
                 // Button clicked when state was inactive.
                 // Start repetative action to take a picture, every 15 seconds
-                // startRecording(); //TODO: figure out why stopped working.
+                startRecording(); //TODO: figure out why stopped working.
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
@@ -355,19 +357,24 @@ public class TakePicActivity extends AppCompatActivity {
                 break;
         }
 
-        handleActivityStateChanged();
+        handleUIForActivityStateChanged();
     }
 
     public void onFinishTakingPictures(View v) {
         Log.e(TAG, "onFinishTakingPicturesClick >>");
-        // stopRecording();
+        stopRecording();
 
-        //TODO: open new Album creation activity
+        Intent createAlbumIntent = new Intent(TakePicActivity.this, CreateAlbumActivity.class);
+        createAlbumIntent.putParcelableArrayListExtra(NEW_ALBUM_PICTURE_AUDIO_DATA,
+                (ArrayList<? extends Parcelable>) mPictureList);
+        createAlbumIntent.putExtra(NEW_ALBUM_ID, mAlbumID);
+        startActivity(createAlbumIntent);
+
         mActivityState = eTakePicActivityState.InActive;
-        handleActivityStateChanged();
+        handleUIForActivityStateChanged();
     }
 
-    private void handleActivityStateChanged() {
+    private void handleUIForActivityStateChanged() {
         switch(mActivityState) {
             case InActive:
                 mBtnClearPicturesTaken.setVisibility(View.INVISIBLE);
@@ -414,7 +421,7 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadAudio() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        StorageReference audioRef = mStorageRef.child(userId).child("audioFile.3gp");
+        StorageReference audioRef = mStorageRef.child("Albums/").child("privateAlbums").child(userId).child(mAlbumID).child("audioFile.3gp");
         Uri uri = Uri.fromFile(new File(mFileName));
 
         audioRef.putFile(uri);
@@ -473,7 +480,7 @@ public class TakePicActivity extends AppCompatActivity {
 
         // TODO: run using a task.
         mDBManager.uploadImageToPrivateAlbum(bitmap, userId, mAlbumID,
-                (ObjectUploadSuccessListener<PictureAudioData>) this::uploadImageSuccess, // on Success
+                (MyConsumer<PictureAudioData>) this::uploadImageSuccess, // on Success
                 this::uploadImageFailure); // On failure
     }
 

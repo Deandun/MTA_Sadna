@@ -9,21 +9,25 @@ import android.util.Log;
 
 import com.example.galbenabu1.classscanner.Adapters.AlbumsAdapter;
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import Logic.Album;
-import Logic.DBManager;
+import Logic.Database.DBManager;
+import Logic.Interfaces.MyConsumer;
 
 public class ShowAlbumsActivity extends Activity {
 
+    private static final String COURSE_ID_DATA = "course_id_data";
+    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
     private static final String TAG = "ShowAlbumsActivity";
 
     private List<Album> mAlbumsList = new ArrayList<>();
     private RecyclerView mAlbumsRecycleView;
     private AlbumsAdapter mAlbumssAdapter;
+    private boolean mShouldShowPrivateAlbums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,7 @@ public class ShowAlbumsActivity extends Activity {
         setContentView(R.layout.activity_show_albums);
         Log.e(TAG, "onCreate >>");
 
+        mShouldShowPrivateAlbums = getIntent().getExtras().getBoolean(SHOULD_SHOW_PRIVATE_ALBUMS_DATA);
         bindUI();
         getAlbumsFromDB();
 
@@ -58,24 +63,33 @@ public class ShowAlbumsActivity extends Activity {
         mAlbumssAdapter = new AlbumsAdapter(mAlbumsList);
         mAlbumsRecycleView.setAdapter(mAlbumssAdapter);
 
-        getAlbumsTemp(); // Need to get albums from the DB manager
-        setUI();
+        fetchAlbumsFromDB();
     }
 
-    //Temp method that creates dummy courses
-    private void getAlbumsTemp() {
-        DBManager db = new DBManager(); //NOY - temp
-       // mAlbumsList = db.getAlbumsList();
+    private void fetchAlbumsFromDB() {
+        DBManager dbManager = new DBManager();
+        MyConsumer<List<Album>> onFinishFetchingAlbums = (fetchedAlbumList) -> {
+            this.mAlbumsList.addAll(fetchedAlbumList);
+            this.setUI();
+        };
 
-
-        long timeToDecrease = 10000;
-        for(int i = 0; i < 15; i++) {
-            Date date = new Date();
-            date.setTime(date.getTime() - timeToDecrease);
-            timeToDecrease *= (i + 1);
-            Album album = new Album(Integer.toString(i), "dummy album " + i, date.toString());
-            Log.e(TAG, "Album created: " + album.toString());
-            mAlbumsList.add(album);
+        if(mShouldShowPrivateAlbums) {
+            dbManager.fetchUserPrivateAlbumsFromDB(FirebaseAuth.getInstance().getCurrentUser().getUid(), onFinishFetchingAlbums);
+        } else {
+            String courseID = getIntent().getExtras().getString(COURSE_ID_DATA);
+            dbManager.fetchCourseSharedAlbumsFromDB(courseID, onFinishFetchingAlbums);
         }
+
+
+//
+//        long timeToDecrease = 10000;
+//        for(int i = 0; i < 15; i++) {
+//            Date date = new Date();
+//            date.setTime(date.getTime() - timeToDecrease);
+//            timeToDecrease *= (i + 1);
+//            Album album = new Album(Integer.toString(i), "dummy album " + i, date);
+//            Log.e(TAG, "Album created: " + album.toString());
+//            mAlbumsList.add(album);
+//        }
     }
 }

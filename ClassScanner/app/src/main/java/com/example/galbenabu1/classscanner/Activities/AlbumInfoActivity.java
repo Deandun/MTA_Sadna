@@ -15,7 +15,6 @@ import java.util.Date;
 import Logic.Album;
 import Logic.PictureAudioData;
 
-//TODO: add logs
 public class AlbumInfoActivity extends Activity {
     private static final String TAG = "AlbumInfoActivity";
     private static final String ALBUM_DATA = "album_data";

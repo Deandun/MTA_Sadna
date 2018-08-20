@@ -41,8 +41,9 @@
         <activity android:name=".Activities.CourseInfoActivity" />
         <activity android:name=".Activities.ShowCoursesActivity" />
         <activity android:name=".Activities.ShowAlbumsActivity" />
-        <activity android:name=".Activities.AlbumInfoActivity"></activity>
-        <activity android:name=".Activities.ForgetPasswordActivity"></activity>
+        <activity android:name=".Activities.AlbumInfoActivity" />
+        <activity android:name=".Activities.ForgetPasswordActivity" />
+        <activity android:name=".Activities.CreateAlbumActivity"></activity>
     </application>
 
 </manifest>

@@ -3,6 +3,8 @@ package Logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,13 +15,15 @@ import java.util.List;
 public class Album implements Parcelable {
     private String m_Id;
     private String m_AlbumName;
-    private String m_CreationDate;
+    private Date m_CreationDate;
     private String m_Description;
     private int m_NumOfPictures;
     private List <PictureAudioData> m_Pictures;
     private List <PictureAudioData> m_Audio;
 
-    public Album(String m_Id, String m_AlbumName, String m_CreationDate) {
+    public Album() {}
+
+    public Album(String m_Id, String m_AlbumName, Date m_CreationDate) {
         this.m_Id = m_Id;
         this.m_AlbumName = m_AlbumName;
         this.m_CreationDate = m_CreationDate;
@@ -28,18 +32,26 @@ public class Album implements Parcelable {
     protected Album(Parcel in) {
         m_Id = in.readString();
         m_AlbumName = in.readString();
-        m_CreationDate = in.readString();
+        long tempDateAsLong = in.readLong();
+        m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
         m_Description = in.readString();
         m_NumOfPictures = in.readInt();
+
+        m_Pictures = in.readArrayList(PictureAudioData.class.getClassLoader());
+        if(m_Pictures == null) {
+            m_Pictures = new ArrayList<>();
+        }
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
         dest.writeString(m_AlbumName);
-        dest.writeString(m_CreationDate);
+        dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_Description);
         dest.writeInt(m_NumOfPictures);
+
+        dest.writeList(m_Pictures);
     }
 
     @Override
@@ -67,7 +79,7 @@ public class Album implements Parcelable {
         this.m_AlbumName = m_AlbumName;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return m_CreationDate;
     }
 
@@ -101,5 +113,9 @@ public class Album implements Parcelable {
 
     public void setAudio(List<PictureAudioData> m_Audio) {
         this.m_Audio = m_Audio;
+    }
+
+    public String getM_Id() {
+        return m_Id;
     }
 }

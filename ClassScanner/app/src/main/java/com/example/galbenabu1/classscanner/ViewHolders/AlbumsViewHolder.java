@@ -34,17 +34,13 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         mCreationDate = itemView.findViewById(R.id.tvCreationDate);
         mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);
 
-        mAlbumCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mAlbumCardView.setOnClickListener(view -> {
+            Log.e(TAG, "CardView.onClick() >> Album: " + mSelectedAlbum.toString());
 
-                Log.e(TAG, "CardView.onClick() >> Album: " + mSelectedAlbum.toString());
-
-                Context context = view.getContext();
-                Intent intent = new Intent(context, AlbumInfoActivity.class);
-                intent.putExtra(ALBUM_DATA, mSelectedAlbum);
-                context.startActivity(intent);
-            }
+            Context context1 = view.getContext();
+            Intent intent = new Intent(context1, AlbumInfoActivity.class);
+            intent.putExtra(ALBUM_DATA, mSelectedAlbum);
+            context1.startActivity(intent);
         });
     }
 

@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends Activity {
 
+    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
     private static final String TAG = "HomeActivity";
     private static final String IS_MY_COURSES = "is_my_courses";
 
@@ -79,9 +80,11 @@ public class HomeActivity extends Activity {
 
     public void onShowPrivateAlbumsClick(View v) {
         Log.e(TAG, "onShowPrivateAlbumsClick >>");
-        //TODO: indicate to ShowAlbumsActivity that we want to display the user's private albums only
+
         Intent intent = new Intent(HomeActivity.this, ShowAlbumsActivity.class);
+        intent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
         startActivity(intent);
+
         Log.e(TAG, "onShowPrivateAlbumsClick <<");
     }
 }
