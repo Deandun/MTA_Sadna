@@ -70,6 +70,14 @@ public class HomeActivity extends Activity {
         Log.e(TAG, "onTmpTakePicClick <<");
     }
 
+    public void onCreateNewCourseClick(View v){
+        Log.e(TAG, "onCreateNewCourseClick >>");
+        Intent intent = new Intent(HomeActivity.this, CreateCourseActivity.class);
+        intent.putExtra(IS_MY_COURSES, true);
+        startActivity(intent);
+        Log.e(TAG, "onCreateNewCourseClick <<");
+    }
+
     public void onViewMyCoursesClick(View v) {
         Log.e(TAG, "onViewMyCoursesClick >>");
         Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);

@@ -79,17 +79,5 @@ public class ShowAlbumsActivity extends Activity {
             String courseID = getIntent().getExtras().getString(COURSE_ID_DATA);
             dbManager.fetchCourseSharedAlbumsFromDB(courseID, onFinishFetchingAlbums);
         }
-
-
-//
-//        long timeToDecrease = 10000;
-//        for(int i = 0; i < 15; i++) {
-//            Date date = new Date();
-//            date.setTime(date.getTime() - timeToDecrease);
-//            timeToDecrease *= (i + 1);
-//            Album album = new Album(Integer.toString(i), "dummy album " + i, date);
-//            Log.e(TAG, "Album created: " + album.toString());
-//            mAlbumsList.add(album);
-//        }
     }
 }

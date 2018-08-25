@@ -9,12 +9,15 @@ import android.util.Log;
 
 import com.example.galbenabu1.classscanner.Adapters.CoursesAdapter;
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import Logic.Course;
+import Logic.Database.DBManager;
+import Logic.Interfaces.MyConsumer;
 
 public class ShowCoursesActivity extends Activity {
 
@@ -31,7 +34,7 @@ public class ShowCoursesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_courses);
         Log.e(TAG, "onCreate >>");
-        mIsMyCourses = getIntent().getExtras().getBoolean(IS_MY_COURSES);
+        this.mIsMyCourses = getIntent().getExtras().getBoolean(IS_MY_COURSES);
 
         bindUI();
         getCoursesFromDB();
@@ -42,27 +45,39 @@ public class ShowCoursesActivity extends Activity {
     // UI
 
     private void bindUI() {
-        mCoursesRecycleView = findViewById(R.id.my_courses_recyclerView);
-        mCoursesRecycleView.setHasFixedSize(true);
-        mCoursesRecycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mCoursesRecycleView.setItemAnimator(new DefaultItemAnimator());
+        this.mCoursesRecycleView = findViewById(R.id.my_courses_recyclerView);
+        this.mCoursesRecycleView.setHasFixedSize(true);
+        this.mCoursesRecycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        this.mCoursesRecycleView.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void setUI() {
         //TODO: If mIsMyCourses, do not allow filtering by creater name. Else, allow it
-        mCoursesRecycleView.getAdapter().notifyDataSetChanged(); // Call this function when UI changes need to occur
+        this.mCoursesRecycleView.getAdapter().notifyDataSetChanged(); // Call this function when UI changes need to occur
     }
 
     // Data
 
     private void getCoursesFromDB() {
-        mCoursesList.clear();
-        mCoursesAdapter = new CoursesAdapter(mCoursesList);
-        mCoursesRecycleView.setAdapter(mCoursesAdapter);
+        this.mCoursesList.clear();
+        this.mCoursesAdapter = new CoursesAdapter(this.mCoursesList);
+        this.mCoursesRecycleView.setAdapter(this.mCoursesAdapter);
 
         //TODO: If mIsMyCourses, fetch only user's courses from DB. Else (showing all courses), fetch all courses
-        getCoursesTemp(); //TODO: Need to get courses from the DB manager instead of using this temp function
-        setUI();
+        fetchCourses();
+        //getCoursesTemp(); //TODO: Need to get courses from the DB manager instead of using this temp function
+    }
+
+    private void fetchCourses(){
+      //  if (mIsMyCourses){ //TODO
+            DBManager dbManager = new DBManager();
+            MyConsumer<List<Course>> onFinishFetchingCourses = (fetchedCourseList) -> {
+                this.mCoursesList.addAll(fetchedCourseList);
+                this.setUI();
+            };
+            //get all courses that relative to current user
+            dbManager.fetchUserCoursesFromDB(FirebaseAuth.getInstance().getCurrentUser().getUid(), onFinishFetchingCourses);
+        //}
     }
 
     //Temp method that creates dummy courses
@@ -72,7 +87,7 @@ public class ShowCoursesActivity extends Activity {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
             timeToDecrease *= (i + 1);
-            Course course = new Course(Integer.toString(i), "dummy course" + i, date);
+            Course course = new Course("1", Integer.toString(i), "dummy course" + i, date);
             Log.e(TAG, "Course created: " + course.toString());
             mCoursesList.add(course);
         }

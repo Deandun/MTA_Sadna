@@ -12,25 +12,28 @@ import java.util.List;
 
 public class Course implements Parcelable {
     private String m_Id;
-    private String m_ManegerId; //maybe User?
+    private String m_UserID; //maybe User?
     private String m_CourseName;
+    private String mCreatorName;
     private Date m_CreationDate;
     private String m_Description;
     private List<String> m_UsersId;
     private List<String> m_AlbumsId;
 
-    public Course(String m_ManegerId, String m_CourseName, Date m_CreationDate) {
-        this.m_ManegerId = m_ManegerId;
-        this.m_CourseName = m_CourseName;
-        this.m_CreationDate = m_CreationDate;
+    public Course(String courseID, String userID, String courseName, Date creationDate) {
+        this.m_Id = courseID;
+        this.m_UserID = userID;
+        this.m_CourseName = courseName;
+        this.m_CreationDate = creationDate;
     }
 
     protected Course(Parcel in) {
         m_Id = in.readString();
-        m_ManegerId = in.readString();
+        m_UserID = in.readString();
         long tempDateAsLong = in.readLong();
         m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
         m_CourseName = in.readString();
+        mCreatorName = in.readString();
         m_Description = in.readString();
         m_UsersId = in.createStringArrayList();
         m_AlbumsId = in.createStringArrayList();
@@ -39,9 +42,10 @@ public class Course implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
-        dest.writeString(m_ManegerId);
+        dest.writeString(m_UserID);
         dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_CourseName);
+        dest.writeString(mCreatorName);
         dest.writeString(m_Description);
         dest.writeStringList(m_UsersId);
         dest.writeStringList(m_AlbumsId);
@@ -64,28 +68,26 @@ public class Course implements Parcelable {
         }
     };
 
-    public String getM_Id() {
-        return m_Id;
-    }
+    public String getID() { return this.m_Id; }
 
-    public void setId(String m_Id) {
-        this.m_Id = m_Id;
+    public void setId(String id) {
+        this.m_Id = id;
     }
 
     public String getManegerId() {
-        return m_ManegerId;
+        return m_UserID;
     }
 
-    public void setManegerId(String m_ManegerId) {
-        this.m_ManegerId = m_ManegerId;
+    public void setManegerId(String manegerId) {
+        this.m_UserID = manegerId;
     }
 
     public String getCourseName() {
         return m_CourseName;
     }
 
-    public void setCourseName(String m_CourseName) {
-        this.m_CourseName = m_CourseName;
+    public void setCourseName(String courseName) {
+        this.m_CourseName = courseName;
     }
 
     public Date getCreationDate() {
@@ -96,23 +98,29 @@ public class Course implements Parcelable {
         return m_Description;
     }
 
-    public void setDescription(String m_Description) {
-        this.m_Description = m_Description;
+    public void setDescription(String description) {
+        this.m_Description = description;
     }
 
     public List<String> getUsersId() {
         return m_UsersId;
     }
 
-    public void setUsersId(List<String> m_UsersId) {
-        this.m_UsersId = m_UsersId;
+    public void setUsersId(List<String> usersId) {
+        this.m_UsersId = usersId;
     }
 
     public List<String> getAlbumsId() {
         return m_AlbumsId;
     }
 
-    public void setAlbumsId(List<String> m_AlbumsId) {
-        this.m_AlbumsId = m_AlbumsId;
+    public void setAlbumsId(List<String> albumsId) {
+        this.m_AlbumsId = albumsId;
+    }
+
+    public String getCreatorName(){ return this.mCreatorName; }
+
+    public void setCreatorName(String creatorName) {
+        this.mCreatorName = creatorName;
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import Logic.Album;
+import Logic.Course;
 import Logic.Interfaces.MyConsumer;
 import Logic.PictureAudioData;
 
@@ -192,14 +193,14 @@ public class DBManager {
     }
 
     public void addAlbumDetailsToDB(Album newAlbum, String userID) {
-        Log.e(TAG, "Adding new album details with ID: " + newAlbum.getM_Id() + " to DB");
+        Log.e(TAG, "Adding new album details with ID: " + newAlbum.getID() + " to DB");
 
-        DatabaseReference privateAlbumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(newAlbum.getM_Id(), userID);
+        DatabaseReference privateAlbumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(newAlbum.getID(), userID);
 
         privateAlbumRef.setValue(newAlbum).addOnSuccessListener(
-                (aVoid) -> Log.e(TAG, "Successfully added album details for album with ID: " + newAlbum.getM_Id())
+                (aVoid) -> Log.e(TAG, "Successfully added album details for album with ID: " + newAlbum.getID())
         ).addOnFailureListener(
-                (exception) -> Log.e(TAG, "failed to add album details for album with ID: " + newAlbum.getM_Id() + System.lineSeparator() +
+                (exception) -> Log.e(TAG, "failed to add album details for album with ID: " + newAlbum.getID() + System.lineSeparator() +
                         "Error message: " + exception.getMessage())
         );
 
@@ -243,6 +244,52 @@ public class DBManager {
                 Log.e(TAG, "Failed fetching " + albumTypeString + " for user with ID: " + albumHolderID);
             }
         });
+    }
+
+    public void fetchUserCoursesFromDB(String userID, MyConsumer<List<Course>> onFinishConsumer) {
+        Log.e(TAG, "Fetching courses for user with ID: " + userID);
+        DatabaseReference userCoursesRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
+
+        fetchCourses(userCoursesRef, userID, onFinishConsumer);
+    }
+
+    //private void fetchAlbums(DatabaseReference albumsRef, String albumHolderID, boolean isPrivateAlbums, MyConsumer<List<Album>> onFinishFetchingAlbums) {
+        //String albumTypeString = isPrivateAlbums ? eFirebaseDBEntityTypes.PrivateAlbums.getReferenceName() :
+          //      eFirebaseDBEntityTypes.SharedAlbums.getReferenceName();
+        //albumsRef.addValueEventListener(new ValueEventListener() {
+    private void fetchCourses(DatabaseReference courseRef, String courseHolderID, MyConsumer<List<Course>> onFinishFetchingCourses){
+        courseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e(TAG, "Received Course ID =" + courseHolderID);
+                List<Course> courseList = new ArrayList<>();
+                Course course;
+
+                for(DataSnapshot courseSnapshot: dataSnapshot.getChildren()) {
+                    course = courseSnapshot.getValue(Course.class);
+                    courseList.add(course);
+                }
+
+                onFinishFetchingCourses.accept(courseList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Failed fetching course ID = " + courseHolderID);
+            }
+        });
+    }
+
+    public void addCourseDetailsToDB(Course newCourse) {
+        Log.e(TAG, "Adding new course details with ID: " + newCourse.getID() + " to DB");
+        DatabaseReference privateCourseRef = FirebaseDBReferenceGenerator.getCourseReference(newCourse.getID());
+
+        privateCourseRef.setValue(newCourse).addOnSuccessListener(
+                (aVoid) -> Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID())
+        ).addOnFailureListener(
+                (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + newCourse.getID() + System.lineSeparator() +
+                        "Error message: " + exception.getMessage())
+        );
     }
 
 

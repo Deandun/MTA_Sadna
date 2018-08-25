@@ -50,7 +50,6 @@ public class Album implements Parcelable {
         dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_Description);
         dest.writeInt(m_NumOfPictures);
-
         dest.writeList(m_Pictures);
     }
 
@@ -75,8 +74,8 @@ public class Album implements Parcelable {
         return m_AlbumName;
     }
 
-    public void setAlbumName(String m_AlbumName) {
-        this.m_AlbumName = m_AlbumName;
+    public void setAlbumName(String albumName) {
+        this.m_AlbumName = albumName;
     }
 
     public Date getCreationDate() {
@@ -87,35 +86,35 @@ public class Album implements Parcelable {
         return m_Description;
     }
 
-    public void setDescription(String m_Description) {
-        this.m_Description = m_Description;
+    public void setDescription(String description) {
+        this.m_Description = description;
     }
 
     public int getNumOfPictures() {
         return m_NumOfPictures;
     }
 
-    public void setNumOfPictures(int m_NumOfPictures) {
-        this.m_NumOfPictures = m_NumOfPictures;
+    public void setNumOfPictures(int numOfPictures) {
+        this.m_NumOfPictures = numOfPictures;
     }
 
     public List<PictureAudioData> getPictures() {
         return m_Pictures;
     }
 
-    public void setPictures(List<PictureAudioData> m_Pictures) {
-        this.m_Pictures = m_Pictures;
+    public void setPictures(List<PictureAudioData> pictures) {
+        this.m_Pictures = pictures;
     }
 
     public List<PictureAudioData> getAudio() {
         return m_Audio;
     }
 
-    public void setAudio(List<PictureAudioData> m_Audio) {
-        this.m_Audio = m_Audio;
+    public void setAudio(List<PictureAudioData> audio) {
+        this.m_Audio = audio;
     }
 
-    public String getM_Id() {
+    public String getID() {
         return m_Id;
     }
 }

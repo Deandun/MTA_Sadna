@@ -14,6 +14,7 @@ import com.example.galbenabu1.classscanner.R;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: not working yet, if theres no time, delete this class
 // A singleton class. A dynamic menu that allows any view to initialize by adding MenuItems to it.
 public class DynamicMenu {
     private static final String TAG = "DynamicMenu";
