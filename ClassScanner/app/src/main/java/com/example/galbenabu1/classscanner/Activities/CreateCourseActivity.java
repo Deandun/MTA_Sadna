@@ -18,11 +18,10 @@ import Logic.Database.DBManager;
 public class CreateCourseActivity extends AppCompatActivity {
 
     private final static String TAG = "CreateCourseActivity";
-    private final static String NEW_COURSE_ID = "new_course_id";
+
     private final static String NEW_ALBUM_DATA = "new_album_data";
 
     private List<Album> mAlbumsCollection;
-    private String mNewCourseID;
 
     // UI
     private EditText metCourseName;
@@ -52,7 +51,6 @@ public class CreateCourseActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
 
         this.mAlbumsCollection = (List<Album>) extras.get(NEW_ALBUM_DATA);
-        this.mNewCourseID = (String)extras.get(NEW_COURSE_ID);
     }
 
     private void bindUI(){
@@ -66,28 +64,33 @@ public class CreateCourseActivity extends AppCompatActivity {
     public void onFinishCreatingCourseClick(View v) {
         Log.e(TAG, "onFinishCreatingCourse >>");
 
-        String courseName = this.metCreatorName.getText().toString();
-        String courserDescription = this.metCourseDescription.getText().toString();
-        String courseCreator = this.metCreatorName.getText().toString();
-        this.mCreateDate = Calendar.getInstance().getTime();
-        Log.e(TAG, "************this.mCreateDate = " +   this.mCreateDate.toString());
-        Intent intent = getIntent();
 
-        Bundle extras = intent.getExtras();
-        this.mNewCourseID = (String)extras.get(NEW_COURSE_ID); //TODO: make it work
-        Log.e(TAG, "ID = " + this.mNewCourseID);
+        Course newCourse = this.createNewCourse();
 
-        Course newCourse = new Course(this.mNewCourseID, this.mNewCourseID, courseName, this.mCreateDate);
-        newCourse.setDescription(courserDescription);
-        newCourse.setCreatorName(courseCreator);
-
-        this.mDBManager.addCourseDetailsToDB(newCourse);
+        this.mDBManager.addNewCourseDetailsToDBAndSetCourseID(newCourse);
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
 
         Log.e(TAG, "onFinishCreatingCourse <<");
 
+    }
+
+    private Course createNewCourse() {
+        Course newCourse = new Course();
+
+        //TODO: finish setting newCourse's values.
+        String courseName = this.metCreatorName.getText().toString();
+        String courserDescription = this.metCourseDescription.getText().toString();
+        String courseCreator = this.metCreatorName.getText().toString();
+        this.mCreateDate = Calendar.getInstance().getTime();
+        newCourse.setDescription(courserDescription);
+        newCourse.setCourseName(courseName);
+        newCourse.setCreatorName(courseCreator);
+
+        Log.e(TAG, "************this.mCreateDate = " +   this.mCreateDate.toString());
+
+        return newCourse;
     }
 
 

@@ -253,10 +253,6 @@ public class DBManager {
         fetchCourses(userCoursesRef, userID, onFinishConsumer);
     }
 
-    //private void fetchAlbums(DatabaseReference albumsRef, String albumHolderID, boolean isPrivateAlbums, MyConsumer<List<Album>> onFinishFetchingAlbums) {
-        //String albumTypeString = isPrivateAlbums ? eFirebaseDBEntityTypes.PrivateAlbums.getReferenceName() :
-          //      eFirebaseDBEntityTypes.SharedAlbums.getReferenceName();
-        //albumsRef.addValueEventListener(new ValueEventListener() {
     private void fetchCourses(DatabaseReference courseRef, String courseHolderID, MyConsumer<List<Course>> onFinishFetchingCourses){
         courseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -280,9 +276,13 @@ public class DBManager {
         });
     }
 
-    public void addCourseDetailsToDB(Course newCourse) {
+    public void addNewCourseDetailsToDBAndSetCourseID(Course newCourse) {
         Log.e(TAG, "Adding new course details with ID: " + newCourse.getID() + " to DB");
-        DatabaseReference privateCourseRef = FirebaseDBReferenceGenerator.getCourseReference(newCourse.getID());
+        // Set new course ID.
+        DatabaseReference privateCourseRef = FirebaseDBReferenceGenerator.getAllCoursesReference().push();
+        String courseID = privateCourseRef.getKey();
+
+        newCourse.setId(courseID);
 
         privateCourseRef.setValue(newCourse).addOnSuccessListener(
                 (aVoid) -> Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID())

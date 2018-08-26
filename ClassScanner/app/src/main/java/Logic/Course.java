@@ -20,6 +20,8 @@ public class Course implements Parcelable {
     private List<String> m_UsersId;
     private List<String> m_AlbumsId;
 
+    public Course() {}
+
     public Course(String courseID, String userID, String courseName, Date creationDate) {
         this.m_Id = courseID;
         this.m_UserID = userID;

@@ -52,7 +52,6 @@ public class ShowCoursesActivity extends Activity {
     }
 
     private void setUI() {
-        //TODO: If mIsMyCourses, do not allow filtering by creater name. Else, allow it
         this.mCoursesRecycleView.getAdapter().notifyDataSetChanged(); // Call this function when UI changes need to occur
     }
 

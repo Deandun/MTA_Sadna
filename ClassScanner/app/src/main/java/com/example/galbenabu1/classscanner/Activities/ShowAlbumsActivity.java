@@ -20,8 +20,10 @@ import Logic.Interfaces.MyConsumer;
 
 public class ShowAlbumsActivity extends Activity {
 
+    // If showing shared albums, need course ID to fetch them from DB.
     private static final String COURSE_ID_DATA = "course_id_data";
     private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
+
     private static final String TAG = "ShowAlbumsActivity";
 
     private List<Album> mAlbumsList = new ArrayList<>();
