@@ -13,6 +13,8 @@ import Logic.Course;
 
 public class CourseInfoActivity extends AppCompatActivity {
 
+    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums"; // Send this flag to show albums activity so it will fetch shared albums.
+    private static final String COURSE_ID_DATA = "course_id_data"; // Send the course ID to show albums activity to show the courses albums.
     private static final String TAG = "CourseInfoActivity";
     private static final String COURSE_DATA = "course_data";
 
@@ -54,7 +56,10 @@ public class CourseInfoActivity extends AppCompatActivity {
         Log.e(TAG, "onShowCoursesClick >>");
 
         //TODO: send parameters to ShowAlbumsActivity to indicate we want it to show this course's albums
+
         Intent showAlbumsIntent = new Intent(getApplicationContext(), ShowAlbumsActivity.class);
+        showAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, false); // Should fetch shared albums and not private ones.
+        showAlbumsIntent.putExtra(COURSE_ID_DATA, this.mCourse.getID());
         startActivity(showAlbumsIntent);
 
         Log.e(TAG, "onShowCoursesClick <<");

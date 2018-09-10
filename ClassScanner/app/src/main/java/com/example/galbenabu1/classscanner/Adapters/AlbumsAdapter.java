@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner.Adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +13,17 @@ import com.example.galbenabu1.classscanner.R;
 import java.util.List;
 
 import Logic.Album;
+import Logic.Interfaces.MyConsumer;
 
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
     private final String TAG = "AlbumsAdapter";
 
     private List<Album> mAlbumsList;
+    private MyConsumer<Album> mOnLongClickListener;
 
-    public AlbumsAdapter(List<Album> albumsList) {
+    public AlbumsAdapter(List<Album> albumsList, MyConsumer<Album> onLongClickListener) {
         mAlbumsList = albumsList;
+        mOnLongClickListener = onLongClickListener;
     }
 
     @Override
@@ -43,10 +47,11 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
 
         // bind Album data to it's view items
         holder.setSelectedAlbum(album);
-        holder.getAlbumName().setText("Name: " + album.getAlbumName());
-        holder.getCreatorName().setText("Publisher: " + album.getAlbumName());
-        holder.getCreationDate().setText("Creation date: " + album.getCreationDate());
-
+        holder.getAlbumName().setText("Name: " + album.getM_AlbumName());
+        holder.getCreatorName().setText("Publisher: " + album.getM_AlbumName());
+        holder.getCreationDate().setText("Creation date: " + album.getM_CreationDate());
+        holder.getAlbumCardView().setBackgroundColor(Color.WHITE);
+        holder.setOnLongClickListener(mOnLongClickListener);
 
         Log.e(TAG, "onBindViewHolder() << " + position);
     }

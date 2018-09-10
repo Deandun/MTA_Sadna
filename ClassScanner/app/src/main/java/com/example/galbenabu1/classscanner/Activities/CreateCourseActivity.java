@@ -9,9 +9,8 @@ import android.widget.EditText;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import Logic.Album;
+
 import Logic.Course;
 import Logic.Database.DBManager;
 
@@ -19,9 +18,13 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private final static String TAG = "CreateCourseActivity";
 
+    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums"; // Showing private albums if true, shared albums if false.
+    private static final String IS_SELECTING_ALBUMS_FOR_COURSE = "is_selecting_albums"; // In an album selecting mode. Returns selected albums to previous activity.
+    private static final String SELECTED_ALBUM_IDS_DATA = "selected_albums_data"; // The selected albums that return from show albums activity.
     private final static String NEW_ALBUM_DATA = "new_album_data";
+    private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
 
-    private List<Album> mAlbumsCollection;
+    private List<String> mAlbumIDCollection;
 
     // UI
     private EditText metCourseName;
@@ -29,7 +32,6 @@ public class CreateCourseActivity extends AppCompatActivity {
     private EditText metCreateDate;
     private EditText metCourseDescription;
     private DBManager mDBManager = new DBManager();
-    private Date mCreateDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        this.mAlbumsCollection = (List<Album>) extras.get(NEW_ALBUM_DATA);
+        //this.mAlbumsCollection = (List<Album>) extras.get(NEW_ALBUM_DATA);
     }
 
     private void bindUI(){
@@ -64,7 +66,6 @@ public class CreateCourseActivity extends AppCompatActivity {
     public void onFinishCreatingCourseClick(View v) {
         Log.e(TAG, "onFinishCreatingCourse >>");
 
-
         Course newCourse = this.createNewCourse();
 
         this.mDBManager.addNewCourseDetailsToDBAndSetCourseID(newCourse);
@@ -76,19 +77,49 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     }
 
+    public void onChooseAlbumsClick(View v) {
+        Log.e(TAG, "onChooseAlbumsClick >>");
+
+        if(this.mAlbumIDCollection != null) {
+            this.mAlbumIDCollection.clear(); // Reset previous albums collection before selecting new albums.
+        }
+
+        Intent chooseAlbumsIntent = new Intent(this.getApplicationContext(), ShowAlbumsActivity.class);
+        chooseAlbumsIntent.putExtra(IS_SELECTING_ALBUMS_FOR_COURSE, true);
+        chooseAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
+        startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
+
+        Log.e(TAG, "onChooseAlbumsClick <<");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "onActivityResult >>");
+
+        if(requestCode == SELECT_ALBUMS_CODE) {
+            this.mAlbumIDCollection = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
+            Log.e(TAG, "onActivityResult >> received album IDs: " + mAlbumIDCollection);
+        }
+
+        Log.e(TAG, "onActivityResult <<");
+    }
+
     private Course createNewCourse() {
         Course newCourse = new Course();
 
-        //TODO: finish setting newCourse's values.
-        String courseName = this.metCreatorName.getText().toString();
+        String courseName = this.metCourseName.getText().toString();
         String courserDescription = this.metCourseDescription.getText().toString();
+        String creatorID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //TODO: get user name from Current User.
         String courseCreator = this.metCreatorName.getText().toString();
-        this.mCreateDate = Calendar.getInstance().getTime();
+
+        newCourse.setCreationDate(Calendar.getInstance().getTime());
         newCourse.setDescription(courserDescription);
         newCourse.setCourseName(courseName);
         newCourse.setCreatorName(courseCreator);
-
-        Log.e(TAG, "************this.mCreateDate = " +   this.mCreateDate.toString());
+        newCourse.setCreatorID(creatorID);
+        newCourse.setM_AlbumIds(this.mAlbumIDCollection);
 
         return newCourse;
     }

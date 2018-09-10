@@ -63,9 +63,9 @@ public class CreateAlbumActivity extends Activity {
         String albumDescription = metAlbumDescription.getText().toString();
 
         Album newAlbum = new Album(mNewAlbumID, albumName, Calendar.getInstance().getTime());
-        newAlbum.setDescription(albumDescription);
-        newAlbum.setNumOfPictures(mPictureAudioDataCollection.size());
-        newAlbum.setPictures(mPictureAudioDataCollection);
+        newAlbum.setM_Description(albumDescription);
+        newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());
+        newAlbum.setM_Pictures(mPictureAudioDataCollection);
         //TODO: set audio
 
         //TODO: do in a seporate task and add success/failure listeners

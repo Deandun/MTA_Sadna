@@ -193,14 +193,14 @@ public class DBManager {
     }
 
     public void addAlbumDetailsToDB(Album newAlbum, String userID) {
-        Log.e(TAG, "Adding new album details with ID: " + newAlbum.getID() + " to DB");
+        Log.e(TAG, "Adding new album details with ID: " + newAlbum.getM_Id() + " to DB");
 
-        DatabaseReference privateAlbumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(newAlbum.getID(), userID);
+        DatabaseReference privateAlbumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(newAlbum.getM_Id(), userID);
 
         privateAlbumRef.setValue(newAlbum).addOnSuccessListener(
-                (aVoid) -> Log.e(TAG, "Successfully added album details for album with ID: " + newAlbum.getID())
+                (aVoid) -> Log.e(TAG, "Successfully added album details for album with ID: " + newAlbum.getM_Id())
         ).addOnFailureListener(
-                (exception) -> Log.e(TAG, "failed to add album details for album with ID: " + newAlbum.getID() + System.lineSeparator() +
+                (exception) -> Log.e(TAG, "failed to add album details for album with ID: " + newAlbum.getM_Id() + System.lineSeparator() +
                         "Error message: " + exception.getMessage())
         );
 
@@ -210,7 +210,7 @@ public class DBManager {
         Log.e(TAG, "Fetching private albums for user with ID: " + userID);
         DatabaseReference userPrivateAlbumsRef = FirebaseDBReferenceGenerator.getAllUserPrivateAlbumsReference(userID);
 
-        fetchAlbums(userPrivateAlbumsRef, userID, true, onFinishConsumer);
+        this.fetchAlbums(userPrivateAlbumsRef, userID, true, onFinishConsumer);
     }
 
     public void fetchCourseSharedAlbumsFromDB(String courseID, MyConsumer<List<Album>> onFinishFetchingAlbums) {
@@ -257,7 +257,7 @@ public class DBManager {
         courseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e(TAG, "Received Course ID =" + courseHolderID);
+                Log.e(TAG, "Received Course ID = " + courseHolderID);
                 List<Course> courseList = new ArrayList<>();
                 Course course;
 
@@ -285,32 +285,50 @@ public class DBManager {
         newCourse.setId(courseID);
 
         privateCourseRef.setValue(newCourse).addOnSuccessListener(
-                (aVoid) -> Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID())
+                (aVoid) -> {
+                    Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID());
+                    // Remove album IDs from private albums to shared albums.
+                    this.moveAlbumIDsFromPrivateToShared(newCourse.getID(), newCourse.getCreatorID(), newCourse.getM_AlbumIds());
+                }
         ).addOnFailureListener(
                 (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + newCourse.getID() + System.lineSeparator() +
                         "Error message: " + exception.getMessage())
         );
     }
 
+    private void moveAlbumIDsFromPrivateToShared(String courseID, String albumCreatorUserID, List<String> albumIDs) {
+        Log.e(TAG, "Removing album IDs " + albumIDs + " From private albums of user with iD: " + albumCreatorUserID + " To shared albums of course with ID: " + courseID);
+        DatabaseReference userPrivateAlbumsRef = FirebaseDBReferenceGenerator.getAllUserPrivateAlbumsReference(albumCreatorUserID);
+        DatabaseReference courseSharedAlbumsRef = FirebaseDBReferenceGenerator.getAllCourseSharedAlbumsReference(courseID);
 
-/*  public List<Album> getAlbumsList (Parcel in) {
+        for(String albumID: albumIDs) {
+            userPrivateAlbumsRef.child(albumID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Album currentAlbum = dataSnapshot.getValue(Album.class);
+                    if(currentAlbum == null) {
+                        // Album does not exist in DB. Might be because this function is called again after removing the album the first time.
+                        return;
+                    }
+                    Log.e(TAG, "Finished fetching album with ID: " + currentAlbum.getM_Id());
 
-        List<Album> albums = new ArrayList<>();
+                    // Remove album from private albums
+                    userPrivateAlbumsRef.child(currentAlbum.getM_Id()).removeValue(
+                            (error, dbRef) -> {
+                                String errorMsg = error == null ? "" : " Error message: " + error.getMessage();
+                                Log.e(TAG, "Finished removing album with ID: " + albumID + errorMsg);
+                            }
+                    );
 
-        Album album = new Album(in);
-        albums.add(Album.CREATOR.createFromParcel(in));
+                    // Add album to shared albums.
+                    courseSharedAlbumsRef.child(currentAlbum.getM_Id()).setValue(currentAlbum);
+                }
 
-        return albums;
-    }*/
-    /*
-    @GlideModule
-    public class classScannetGlideModule extends AppGlideModule {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-        @Override
-        public void registerComponents(Context context, Glide glide, Registry registry) {
-            // Register FirebaseImageLoader to handle StorageReference
-            registry.append(StorageReference.class, InputStream.class,
-                    new FirebaseImageLoader.Factory());
+                }
+            });
         }
-    }*/
+    }
 }

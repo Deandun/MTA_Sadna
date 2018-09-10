@@ -70,51 +70,59 @@ public class Album implements Parcelable {
         }
     };
 
-    public String getAlbumName() {
+    public void setM_Id(String m_Id) {
+        this.m_Id = m_Id;
+    }
+
+    public String getM_AlbumName() {
         return m_AlbumName;
     }
 
-    public void setAlbumName(String albumName) {
-        this.m_AlbumName = albumName;
+    public void setM_AlbumName(String m_AlbumName) {
+        this.m_AlbumName = m_AlbumName;
     }
 
-    public Date getCreationDate() {
+    public Date getM_CreationDate() {
         return m_CreationDate;
     }
 
-    public String getDescription() {
+    public void setM_CreationDate(Date m_CreationDate) {
+        this.m_CreationDate = m_CreationDate;
+    }
+
+    public String getM_Description() {
         return m_Description;
     }
 
-    public void setDescription(String description) {
-        this.m_Description = description;
+    public void setM_Description(String m_Description) {
+        this.m_Description = m_Description;
     }
 
-    public int getNumOfPictures() {
+    public int getM_NumOfPictures() {
         return m_NumOfPictures;
     }
 
-    public void setNumOfPictures(int numOfPictures) {
-        this.m_NumOfPictures = numOfPictures;
+    public void setM_NumOfPictures(int m_NumOfPictures) {
+        this.m_NumOfPictures = m_NumOfPictures;
     }
 
-    public List<PictureAudioData> getPictures() {
+    public List<PictureAudioData> getM_Pictures() {
         return m_Pictures;
     }
 
-    public void setPictures(List<PictureAudioData> pictures) {
-        this.m_Pictures = pictures;
+    public void setM_Pictures(List<PictureAudioData> m_Pictures) {
+        this.m_Pictures = m_Pictures;
     }
 
-    public List<PictureAudioData> getAudio() {
+    public List<PictureAudioData> getM_Audio() {
         return m_Audio;
     }
 
-    public void setAudio(List<PictureAudioData> audio) {
-        this.m_Audio = audio;
+    public void setM_Audio(List<PictureAudioData> m_Audio) {
+        this.m_Audio = m_Audio;
     }
 
-    public String getID() {
+    public String getM_Id() {
         return m_Id;
     }
 }
