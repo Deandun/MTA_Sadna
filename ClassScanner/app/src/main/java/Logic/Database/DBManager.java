@@ -129,9 +129,13 @@ public class DBManager {
 
         this.removeAlbumFromStorage(albumID, userID, isPrivateAlbum, pictureDataCollection);
 
+
         albumRef.removeValue(
-                (error, dbRef) -> Log.e(TAG, "Removing album with ID: " + albumID + " received code: " + error.getCode() +
-                        ". and message: " + error.getMessage())
+                (error, dbRef) -> {
+                    String errorMsg = error == null ? "" :" received code: " + error.getCode() +
+                    ". and message: " + error.getMessage();
+                    Log.e(TAG, "Removing album with ID: " + albumID +  errorMsg);
+                }
         );
     }
 
@@ -249,7 +253,7 @@ public class DBManager {
     }
 
     public void fetchFilteredCourses(MyFunction<Course, Boolean> filterFunction, MyConsumer<List<Course>> onFinishFetchingCourses) {
-        Log.e(TAG, "Fetching all courses");
+        Log.e(TAG, "Fetching filtered courses");
         DatabaseReference courseRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
 
         courseRef.addValueEventListener(new ValueEventListener() {

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.Adapters.CoursesAdapter;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,24 +24,54 @@ import Logic.Interfaces.MyFunction;
 public class ShowCoursesActivity extends Activity {
 
     private static final String TAG = "ShowCoursesActivity";
-    private static final String IS_MY_COURSES = "is_my_courses";
+    private static final String SHOW_COURSES_OPTIONS = "show_courses_options";
 
     private List<Course> mCoursesList = new ArrayList<>();
     private RecyclerView mCoursesRecycleView;
     private CoursesAdapter mCoursesAdapter;
-    private boolean mIsMyCourses;
+    private eShowCoursesOptions mShowCoursesOptions;
+
+    private DBManager mDBManager = new DBManager();
+    private MyFunction<Course, Boolean> mCourseFilterFunction;
+    private MyConsumer<List<Course>> mOnFinishFetchingCourses = (fetchedCourseList) -> {
+        Log.e(TAG, "Finished fetching courses for option: " + this.mShowCoursesOptions.name());
+        this.mCoursesList.addAll(fetchedCourseList);
+        this.setUI();
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_courses);
         Log.e(TAG, "onCreate >>");
-        this.mIsMyCourses = getIntent().getExtras().getBoolean(IS_MY_COURSES);
+        this.mShowCoursesOptions = (eShowCoursesOptions) getIntent().getExtras().getSerializable(SHOW_COURSES_OPTIONS);
 
-        bindUI();
-        getCoursesFromDB();
+        this.bindUI();
+        this.initCoursesAdapter();
+        this.handleShowCoursesOption();
 
         Log.e(TAG, "onCreate <<");
+    }
+
+    private void handleShowCoursesOption() {
+        this.mOnFinishFetchingCourses = (courseList) -> {
+            Log.e(TAG, "onFinishedFetchingCourses >>");
+
+            this.mCoursesList.addAll(courseList);
+            this.setUI();
+        };
+
+       switch(this.mShowCoursesOptions) {
+           case ShowCoursesTheCurrentUserIsIn:
+               //TODO: figure out if the user is a member of the current course.
+               this.mCourseFilterFunction =
+                       (course) -> course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
+               break;
+           case ShowSearchedCourses:
+               this.mCourseFilterFunction = (course) -> true; // Show all courses - filter nothing.
+       }
+
+        this.fetchCourses();
     }
 
     // UI
@@ -53,38 +84,22 @@ public class ShowCoursesActivity extends Activity {
     }
 
     private void setUI() {
+        if(this.mShowCoursesOptions.equals(eShowCoursesOptions.ShowSearchedCourses)) {
+            //TODO: set course filtering UI so the user can search for courses.
+        }
         this.mCoursesRecycleView.getAdapter().notifyDataSetChanged(); // Call this function when UI changes need to occur
     }
 
     // Data
 
-    private void getCoursesFromDB() {
+    private void initCoursesAdapter() {
         this.mCoursesList.clear();
         this.mCoursesAdapter = new CoursesAdapter(this.mCoursesList);
         this.mCoursesRecycleView.setAdapter(this.mCoursesAdapter);
-        this.fetchCourses();
     }
 
     private void fetchCourses(){
-        DBManager dbManager = new DBManager();
-        MyFunction<Course, Boolean> courseFilterFunction;
-        MyConsumer<List<Course>> onFinishFetchingCourses = (fetchedCourseList) -> {
-            Log.e(TAG, "Finished fetching courses: ");
-            this.mCoursesList.addAll(fetchedCourseList);
-            this.setUI();
-        };
-
-        if (mIsMyCourses){
-            // Only get courses that the current user is in.
-            // TODO: figure out how to determine if the user is in a course. Check course for user IDs or check the user for CourseIDs
-            courseFilterFunction =
-                    (course) -> course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            dbManager.fetchFilteredCourses(courseFilterFunction, onFinishFetchingCourses);
-        } else {
-            courseFilterFunction = (course) -> true; // Return all courses
-            //TODO: For now, we fetch all courses. In the future, add filtering abilities (filter courses by name/date/etc... decide as a team).
-            dbManager.fetchFilteredCourses(courseFilterFunction, onFinishFetchingCourses);
-        }
+        // TODO: For search courses options - implement the filtering functionality and UI. When the search button is clicked - fetchCourses
+        mDBManager.fetchFilteredCourses(this.mCourseFilterFunction, this.mOnFinishFetchingCourses);
     }
 }

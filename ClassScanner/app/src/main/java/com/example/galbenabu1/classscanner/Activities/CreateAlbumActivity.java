@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -68,7 +69,6 @@ public class CreateAlbumActivity extends Activity {
         newAlbum.setM_Pictures(mPictureAudioDataCollection);
         //TODO: set audio
 
-        //TODO: do in a seporate task and add success/failure listeners
         mDBManager.addAlbumDetailsToDB(newAlbum, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         // Return to home screen
@@ -76,13 +76,10 @@ public class CreateAlbumActivity extends Activity {
         startActivity(homeIntent);
     }
 
-    public void onAddAlbumToCourseClick(View v) {
-        Log.e(TAG, "onAddAlbumToCourseClick >>");
-        //TODO
-    }
-
     public void onAbortAlbumCreationClick(View v) {
         Log.e(TAG, "onAbortAlbumCreationClick >>");
-        //TODO
+        this.mDBManager.removeAlbumFromDB(this.mNewAlbumID, FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                true, this.mPictureAudioDataCollection);
+        finish();
     }
 }
