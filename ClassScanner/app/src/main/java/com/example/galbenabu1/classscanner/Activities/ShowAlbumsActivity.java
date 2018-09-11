@@ -38,6 +38,7 @@ public class ShowAlbumsActivity extends Activity {
     private RecyclerView mAlbumsRecycleView;
     private AlbumsAdapter mAlbumssAdapter;
     private boolean mShouldShowPrivateAlbums;
+    private boolean mIsUserSelectingPrivateAlbums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +46,15 @@ public class ShowAlbumsActivity extends Activity {
         setContentView(R.layout.activity_show_albums);
         Log.e(TAG, "onCreate >>");
 
-        boolean isUserSelectingAlbumsForPreviousActivity = getIntent().getExtras().getBoolean(IS_SELECTING_ALBUMS);
+        this.mIsUserSelectingPrivateAlbums = getIntent().getExtras().getBoolean(IS_SELECTING_ALBUMS);
+        Button btnFinishedSelectingAlbums = findViewById(R.id.btnFinishSelectingAlbums);
 
-        if(isUserSelectingAlbumsForPreviousActivity) {
-            Button btnFinishedSelectingAlbums = findViewById(R.id.btnFinishSelectingAlbums);
+        if(this.mIsUserSelectingPrivateAlbums) {
+            // Set on click for button.
             btnFinishedSelectingAlbums.setOnClickListener(this::onFinishSelectingAlbumsClick);
+        } else {
+            // Make button invisible.
+            btnFinishedSelectingAlbums.setVisibility(View.INVISIBLE);
         }
 
         mShouldShowPrivateAlbums = getIntent().getExtras().getBoolean(SHOULD_SHOW_PRIVATE_ALBUMS_DATA);
@@ -57,6 +62,16 @@ public class ShowAlbumsActivity extends Activity {
         getAlbumsFromDB();
 
         Log.e(TAG, "onCreate <<");
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.e(TAG, "onBack >>");
+
+        super.onBackPressed();
+        Intent resultIntent = new Intent();
+
+        setResult(RESULT_CANCELED, resultIntent);
     }
 
     // UI

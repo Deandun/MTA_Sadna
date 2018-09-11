@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import Logic.Album;
 import Logic.Course;
 import Logic.Database.DBManager;
 
@@ -97,7 +100,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e(TAG, "onActivityResult >>");
 
-        if(requestCode == SELECT_ALBUMS_CODE) {
+        if(requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
             this.mAlbumIDCollection = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
             Log.e(TAG, "onActivityResult >> received album IDs: " + mAlbumIDCollection);
         }
@@ -119,10 +122,8 @@ public class CreateCourseActivity extends AppCompatActivity {
         newCourse.setCourseName(courseName);
         newCourse.setCreatorName(courseCreator);
         newCourse.setCreatorID(creatorID);
-        newCourse.setM_AlbumIds(this.mAlbumIDCollection);
+        newCourse.setM_AlbumIds(this.mAlbumIDCollection != null ? this.mAlbumIDCollection : new ArrayList<>());
 
         return newCourse;
     }
-
-
 }
