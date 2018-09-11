@@ -95,4 +95,14 @@ public class HomeActivity extends Activity {
 
         Log.e(TAG, "onShowPrivateAlbumsClick <<");
     }
+
+    public void onSearchCoursesClick(View v) {
+        Log.e(TAG, "onSearchCoursesClick >>");
+
+        Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);
+        intent.putExtra(IS_MY_COURSES, false);
+        startActivity(intent);
+
+        Log.e(TAG, "onSearchCoursesClick <<");
+    }
 }

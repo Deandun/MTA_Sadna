@@ -18,10 +18,11 @@ import java.util.List;
 import Logic.Course;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
+import Logic.Interfaces.MyFunction;
 
 public class ShowCoursesActivity extends Activity {
 
-    private static final String TAG = "MyCoursesActivity";
+    private static final String TAG = "ShowCoursesActivity";
     private static final String IS_MY_COURSES = "is_my_courses";
 
     private List<Course> mCoursesList = new ArrayList<>();
@@ -61,34 +62,29 @@ public class ShowCoursesActivity extends Activity {
         this.mCoursesList.clear();
         this.mCoursesAdapter = new CoursesAdapter(this.mCoursesList);
         this.mCoursesRecycleView.setAdapter(this.mCoursesAdapter);
-
-        //TODO: If mIsMyCourses, fetch only user's courses from DB. Else (showing all courses), fetch all courses
-        fetchCourses();
-        //getCoursesTemp(); //TODO: Need to get courses from the DB manager instead of using this temp function
+        this.fetchCourses();
     }
 
     private void fetchCourses(){
-      //  if (mIsMyCourses){ //TODO
-            DBManager dbManager = new DBManager();
-            MyConsumer<List<Course>> onFinishFetchingCourses = (fetchedCourseList) -> {
-                this.mCoursesList.addAll(fetchedCourseList);
-                this.setUI();
-            };
-            //get all courses that relative to current user
-            dbManager.fetchUserCoursesFromDB(FirebaseAuth.getInstance().getCurrentUser().getUid(), onFinishFetchingCourses);
-        //}
-    }
+        DBManager dbManager = new DBManager();
+        MyFunction<Course, Boolean> courseFilterFunction;
+        MyConsumer<List<Course>> onFinishFetchingCourses = (fetchedCourseList) -> {
+            Log.e(TAG, "Finished fetching courses: ");
+            this.mCoursesList.addAll(fetchedCourseList);
+            this.setUI();
+        };
 
-    //Temp method that creates dummy courses
-    private void getCoursesTemp() {
-        long timeToDecrease = 10000;
-        for(int i = 0; i < 15; i++) {
-            Date date = new Date();
-            date.setTime(date.getTime() - timeToDecrease);
-            timeToDecrease *= (i + 1);
-            Course course = new Course("1", Integer.toString(i), "dummy course" + i, date);
-            Log.e(TAG, "Course created: " + course.toString());
-            mCoursesList.add(course);
+        if (mIsMyCourses){
+            // Only get courses that the current user is in.
+            // TODO: figure out how to determine if the user is in a course. Check course for user IDs or check the user for CourseIDs
+            courseFilterFunction =
+                    (course) -> course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            dbManager.fetchFilteredCourses(courseFilterFunction, onFinishFetchingCourses);
+        } else {
+            courseFilterFunction = (course) -> true; // Return all courses
+            //TODO: For now, we fetch all courses. In the future, add filtering abilities (filter courses by name/date/etc... decide as a team).
+            dbManager.fetchFilteredCourses(courseFilterFunction, onFinishFetchingCourses);
         }
     }
 }
