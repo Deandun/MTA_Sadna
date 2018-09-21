@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     toastMessage("Successfully signed in with: " + user.getEmail());
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
+//                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+//                    startActivity(intent);
                 } else {
                     // User is signed out
                     Log.e(TAG, "onAuthStateChanged:signed_out");

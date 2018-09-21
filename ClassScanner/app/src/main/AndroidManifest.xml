@@ -44,7 +44,8 @@
         <activity android:name=".Activities.AlbumInfoActivity" />
         <activity android:name=".Activities.ForgetPasswordActivity" />
         <activity android:name=".Activities.CreateAlbumActivity" />
-        <activity android:name=".Activities.CreateCourseActivity"></activity>
+        <activity android:name=".Activities.CreateCourseActivity"/>
+        <activity android:name=".Activities.CropImageActivity"></activity>
     </application>
 
 </manifest>
