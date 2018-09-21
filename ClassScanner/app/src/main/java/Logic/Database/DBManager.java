@@ -20,10 +20,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import Logic.Album;
 import Logic.Course;
 import Logic.Interfaces.MyConsumer;
+import Logic.Interfaces.MyFunction;
 import Logic.PictureAudioData;
 
 /**
@@ -127,9 +129,13 @@ public class DBManager {
 
         this.removeAlbumFromStorage(albumID, userID, isPrivateAlbum, pictureDataCollection);
 
+
         albumRef.removeValue(
-                (error, dbRef) -> Log.e(TAG, "Removing album with ID: " + albumID + " received code: " + error.getCode() +
-                        ". and message: " + error.getMessage())
+                (error, dbRef) -> {
+                    String errorMsg = error == null ? "" :" received code: " + error.getCode() +
+                    ". and message: " + error.getMessage();
+                    Log.e(TAG, "Removing album with ID: " + albumID +  errorMsg);
+                }
         );
     }
 
@@ -246,24 +252,22 @@ public class DBManager {
         });
     }
 
-    public void fetchUserCoursesFromDB(String userID, MyConsumer<List<Course>> onFinishConsumer) {
-        Log.e(TAG, "Fetching courses for user with ID: " + userID);
-        DatabaseReference userCoursesRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
+    public void fetchFilteredCourses(MyFunction<Course, Boolean> filterFunction, MyConsumer<List<Course>> onFinishFetchingCourses) {
+        Log.e(TAG, "Fetching filtered courses");
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
 
-        fetchCourses(userCoursesRef, userID, onFinishConsumer);
-    }
-
-    private void fetchCourses(DatabaseReference courseRef, String courseHolderID, MyConsumer<List<Course>> onFinishFetchingCourses){
         courseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e(TAG, "Received Course ID = " + courseHolderID);
+                Log.e(TAG, "Fetched courses from DB");
                 List<Course> courseList = new ArrayList<>();
                 Course course;
 
                 for(DataSnapshot courseSnapshot: dataSnapshot.getChildren()) {
                     course = courseSnapshot.getValue(Course.class);
-                    courseList.add(course);
+                    if(filterFunction.apply(course)) {
+                        courseList.add(course);
+                    }
                 }
 
                 onFinishFetchingCourses.accept(courseList);
@@ -271,7 +275,7 @@ public class DBManager {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Failed fetching course ID = " + courseHolderID);
+                Log.e(TAG, "Failed fetching courses");
             }
         });
     }

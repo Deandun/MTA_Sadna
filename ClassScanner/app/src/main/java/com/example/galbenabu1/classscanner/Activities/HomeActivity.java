@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -14,7 +15,8 @@ public class HomeActivity extends Activity {
 
     private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
     private static final String TAG = "HomeActivity";
-    private static final String IS_MY_COURSES = "is_my_courses";
+    // Decides which courses will be displayed in the ShowCoursesActivity
+    private static final String SHOW_COURSES_OPTIONS = "show_courses_options";
 
     private TextView mtvGreeting;
     @Override
@@ -72,16 +74,17 @@ public class HomeActivity extends Activity {
 
     public void onCreateNewCourseClick(View v){
         Log.e(TAG, "onCreateNewCourseClick >>");
+
         Intent intent = new Intent(HomeActivity.this, CreateCourseActivity.class);
-        intent.putExtra(IS_MY_COURSES, true);
         startActivity(intent);
+
         Log.e(TAG, "onCreateNewCourseClick <<");
     }
 
     public void onViewMyCoursesClick(View v) {
         Log.e(TAG, "onViewMyCoursesClick >>");
         Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);
-        intent.putExtra(IS_MY_COURSES, true);
+        intent.putExtra(SHOW_COURSES_OPTIONS, eShowCoursesOptions.ShowCoursesTheCurrentUserIsIn);
         startActivity(intent);
         Log.e(TAG, "onViewMyCoursesClick <<");
     }
@@ -94,5 +97,15 @@ public class HomeActivity extends Activity {
         startActivity(intent);
 
         Log.e(TAG, "onShowPrivateAlbumsClick <<");
+    }
+
+    public void onSearchCoursesClick(View v) {
+        Log.e(TAG, "onSearchCoursesClick >>");
+
+        Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);
+        intent.putExtra(SHOW_COURSES_OPTIONS, eShowCoursesOptions.ShowSearchedCourses);
+        startActivity(intent);
+
+        Log.e(TAG, "onSearchCoursesClick <<");
     }
 }
