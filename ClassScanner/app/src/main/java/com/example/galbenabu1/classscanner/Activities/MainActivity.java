@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-//                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-//                    startActivity(intent);
-                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
+//                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+//                    startActivity(intent);
                 } else {
                     // User is signed out
                     Log.e(TAG, "onAuthStateChanged:signed_out");
@@ -132,33 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void createAccount(String email, String password) {
-//        Log.e(TAG, "createAccount:" + email);
-//        if (!validateForm()) {
-//            return;
-//        }
-//
-//        // [START create_user_with_email]
-//        mAuth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.e(TAG, "createUserWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//                            toastMessage( "Authentication: success.");
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-//                            toastMessage( "Authentication failed- \n"+ task.getException().getMessage());
-//                        }
-//                    }
-//                });
-//        // [END create_user_with_email]
-//    }
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -200,74 +173,10 @@ public class MainActivity extends AppCompatActivity {
         return valid;
     }
 
-    private void resetPassword() {
-
+    private void resetPassword()
+    {
         Intent intent = new Intent(MainActivity.this, ForgetPasswordActivity.class);
         startActivity(intent);
-
-
-//        String email = mAuth.getCurrentUser().getEmail();
-//        Task<Void> task = mAuth.sendPasswordResetEmail(email).addOnCompleteListener(this, new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if (task.isSuccessful())
-//                    toastMessage("Password sent to email");
-//                else
-//                    toastMessage("resetPassword failed- \n" + task.getException().getMessage());
-//            }
-//        });
-
-        // [END create_user_with_email]
     }
-
-
-//        Log.e(TAG, "in reset password");
-//        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-//        LayoutInflater inflater = getLayoutInflater();
-//        Log.e(TAG, "in reset password- after LayoutInflater");
-//        final View dialogView = inflater.inflate(R.layout.activity_reset_password, null);
-//        Log.e(TAG, "in reset password- after dialogView");
-//
-//        dialogBuilder.setView(dialogView);
-//        Log.e(TAG, "in reset password- after setView");
-//
-//        final EditText editEmail = (EditText) dialogView.findViewById(R.id.email);
-//        final Button btnReset = (Button) dialogView.findViewById(R.id.btn_reset_password);
-//        final ProgressBar progressBar1 = (ProgressBar) dialogView.findViewById(R.id.progressBar);
-//
-//        //dialogBuilder.setTitle("Send Photos");
-//        final AlertDialog dialog = dialogBuilder.create();
-//        Log.e(TAG, "in reset password- after create dialog");
-//
-//        btnReset.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View v) {
-//                String email = editEmail.getText().toString().trim();
-//                Log.e(TAG, "in reset password- on click");
-//
-//                if (TextUtils.isEmpty(email)) {
-//                    Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                progressBar1.setVisibility(View.VISIBLE);
-//                mAuth.sendPasswordResetEmail(email)
-//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                if (task.isSuccessful()) {
-//                                    Toast.makeText(MainActivity.this, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
-//                                } else {
-//                                    Toast.makeText(MainActivity.this, "Failed to send reset email!", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                                progressBar1.setVisibility(View.GONE);
-//                                dialog.dismiss();
-//                            }
-//                        });
-//
-//            }
-//        });
-//        dialog.show();
 }
 
