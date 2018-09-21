@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(intent);
-//                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+//                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
 //                    startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+                    startActivity(intent);
                 } else {
                     // User is signed out
                     Log.e(TAG, "onAuthStateChanged:signed_out");
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 resetPassword();
-                //startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
             }
         });
 

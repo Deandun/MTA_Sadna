@@ -19,13 +19,17 @@ import android.widget.Toast;
 import android.graphics.Matrix;
 
 import com.example.galbenabu1.classscanner.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by galbenabu1 on 25/08/2018.
@@ -42,6 +46,8 @@ public class CropImageActivity extends AppCompatActivity {
     CropperView cropperView;
     Bitmap mBitmap;
     boolean isSnappedtoCenter = false;
+    private FirebaseStorage storage;
+    StorageReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +55,10 @@ public class CropImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_image);
 
         initViews();
+        storage = FirebaseStorage.getInstance();
+        ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
 
-        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.lazershark);
-
-        cropperView.setImageBitmap(originalBitmap);
-
-        btnCrop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cropImage();
-            }
-        });
+        getImageByPathAndBitmap();
 
         btnToggleGesture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,14 +66,14 @@ public class CropImageActivity extends AppCompatActivity {
                 boolean enabled = cropperView.isGestureEnabled();
                 enabled = !enabled;
                 cropperView.setGestureEnabled(enabled);
-                Toast.makeText(getBaseContext(),"Gesture : "+(enabled?"Enabled":"Disabled"),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Gesture : " + (enabled ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
             }
         });
 
         btnSnap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSnappedtoCenter)
+                if (isSnappedtoCenter)
                     cropperView.cropToCenter();
                 else
                     cropperView.fitToCenter();
@@ -86,43 +85,60 @@ public class CropImageActivity extends AppCompatActivity {
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cropperView.setImageBitmap(rotateBitmap(mBitmap,90));
+                cropperView.setImageBitmap(rotateBitmap(mBitmap, 90));
             }
         });
+    }
+
+    private void getImageByPathAndBitmap()
+    {
+        try {
+            final File localFile = File.createTempFile("Images", "jpg");
+            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap my_image = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    cropperView.setImageBitmap(my_image);
+
+                    btnCrop.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            cropImage();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        return Bitmap.createBitmap(mBitmap,0,0,mBitmap.getWidth(),mBitmap.getHeight(),matrix,true);
+        return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 
     private void cropImage() {
         mBitmap = cropperView.getCroppedBitmap();
-        if(mBitmap != null)
+        if (mBitmap != null)
             cropperView.setImageBitmap(mBitmap);
     }
 
     private void initViews() {
-        btnCrop = (Button)findViewById(R.id.btnCrop);
-        btnToggleGesture = (Button)findViewById(R.id.btnToggleGesture);
-        btnSnap = (ImageView)findViewById(R.id.snap_button);
-        btnRotate = (ImageView)findViewById(R.id.rotate_button);
-        cropperView = (CropperView)findViewById(R.id.imageView1);
+        btnCrop = (Button) findViewById(R.id.btnCrop);
+        btnToggleGesture = (Button) findViewById(R.id.btnToggleGesture);
+        btnSnap = (ImageView) findViewById(R.id.snap_button);
+        btnRotate = (ImageView) findViewById(R.id.rotate_button);
+        cropperView = (CropperView) findViewById(R.id.imageView1);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //
