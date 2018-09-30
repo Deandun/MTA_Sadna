@@ -15,8 +15,8 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums"; // Send this flag to show albums activity so it will fetch shared albums.
     private static final String COURSE_ID_DATA = "course_id_data"; // Send the course ID to show albums activity to show the courses albums.
-    private static final String TAG = "CourseInfoActivity";
     private static final String COURSE_DATA = "course_data";
+    private static final String TAG = "CourseInfoActivity";
 
     // Course info
     Course mCourse;

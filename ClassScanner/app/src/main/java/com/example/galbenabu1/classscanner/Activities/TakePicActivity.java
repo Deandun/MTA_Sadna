@@ -89,7 +89,6 @@ public class TakePicActivity extends AppCompatActivity {
 
     //Take pictures in a loop
     private final Handler mHandler = new Handler();
-    private int mPictureNumber = 0;
 
     private final Runnable mTakePictureRunnable = new Runnable() {
         public void run() {
