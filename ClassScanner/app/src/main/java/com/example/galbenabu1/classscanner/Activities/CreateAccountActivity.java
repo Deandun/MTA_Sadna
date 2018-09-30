@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import Logic.Database.DBManager;
+import Logic.Managers.LoggedInUserDetails;
+import Logic.Models.User;
+
 public class CreateAccountActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateAccountActivity";
@@ -79,45 +83,20 @@ public class CreateAccountActivity extends AppCompatActivity {
                 String academic = mAcademic_institution.getText().toString().trim();
 
                 //boolean isRegister=true;
-                boolean isValid= validateForm(email, pass, confirmPass, userName, academic);
+                boolean isValid = validateForm(email, pass, confirmPass, userName, academic);
                 Log.e(TAG, "after validation: is valid- " + isValid );
 
                 if (isValid) {
                     Log.e(TAG, " valid- before createAccount " );
 
-                    createAccount(email, pass);
+                    createAccount(email, pass, userName);
                     Log.e(TAG, "after createAccount " );
-
-
-//                    if (isRegister)
-//                    {
-//                        Log.e(TAG, "onClick: Switching Activities.");
-//                        Intent intent = new Intent(CreateAccountActivity.this, UploadActivity.class);
-//                        startActivity(intent);
-//                    }
                 }
             }
         });
     }
 
-//    private String checkValidation(String email, String pass, String confirmPass, String userName, String academic) {
-//        String msg = null;
-//
-//        if (email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty() || userName.isEmpty() || academic.isEmpty())
-//        {
-//            msg= "You didn't fill in all the fields.";
-//        }
-//
-//        else
-//        {
-//            if(!pass.equals(confirmPass))
-//                msg="Passwords do not match.";
-//        }
-//
-//        return msg;
-//    }
-
-    private void createAccount(String email, String password) {
+    private void createAccount(String email, String password, String userName) {
         Log.e(TAG, "createAccount:" + email);
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -128,6 +107,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.e(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            this.createUserInDBWithID(user.getUid(), email, userName);
                             toastMessage( "Authentication: success.");
                             Log.e(TAG, "onClick: Switching Activities.");
                             Intent intent = new Intent(CreateAccountActivity.this, HomeActivity.class);
@@ -137,6 +117,16 @@ public class CreateAccountActivity extends AppCompatActivity {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             toastMessage( "Authentication failed- \n"+ task.getException().getMessage());
                         }
+                    }
+
+                    private void createUserInDBWithID(String uid, String email, String userName) {
+                        User loggedInUser = new User(userName, email);
+                        loggedInUser.setM_Id(uid);
+
+                        DBManager dbManager = new DBManager();
+
+                        LoggedInUserDetails.setsLoggedInUser(loggedInUser);
+                        dbManager.addUserInfoToDataBase(loggedInUser);
                     }
                 });
         // [END create_user_with_email]

@@ -12,7 +12,7 @@ import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
 
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
 
 //TODO: add logs
 public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.Album;
+import Logic.Models.Album;
 import Logic.Interfaces.MyConsumer;
 
 public class AlbumsViewHolder  extends RecyclerView.ViewHolder{

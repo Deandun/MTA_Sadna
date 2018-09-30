@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.galbenabu1.classscanner.Activities.CourseInfoActivity;
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.Course;
+import Logic.Models.Course;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder{
     private static final String TAG = "CourseViewHolder";

@@ -12,7 +12,7 @@ import com.example.galbenabu1.classscanner.R;
 
 import java.util.List;
 
-import Logic.Album;
+import Logic.Models.Album;
 import Logic.Interfaces.MyConsumer;
 
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
