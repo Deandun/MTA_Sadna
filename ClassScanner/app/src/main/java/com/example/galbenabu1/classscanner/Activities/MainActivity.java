@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
 //                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
-//                    startActivity(intent);
+ //                   startActivity(intent);
                 } else {
                     // User is signed out
                     Log.e(TAG, "onAuthStateChanged:signed_out");

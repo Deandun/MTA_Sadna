@@ -54,8 +54,6 @@ public class CreateCourseActivity extends AppCompatActivity {
     private void getAlbumAndCourseID() {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-
-        //this.mAlbumsCollection = (List<Album>) extras.get(NEW_ALBUM_DATA);
     }
 
     private void bindUI(){

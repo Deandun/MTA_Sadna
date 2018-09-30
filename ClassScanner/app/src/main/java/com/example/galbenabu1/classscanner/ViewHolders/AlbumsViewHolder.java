@@ -29,18 +29,21 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private Album mSelectedAlbum;
     private boolean mIsAlbumSelected;
     private MyConsumer<Album> mOnLongClickListener;
+    private ImageView mCheckedSign;
 
     public AlbumsViewHolder(Context context, View itemView) {
         super(itemView);
 
-        mAlbumCardView = itemView.findViewById(R.id.cvAlbum);
-        mCreatorName = itemView.findViewById(R.id.tvPublisher);
-        mAlbumName = itemView.findViewById(R.id.tvAlbumName);
-        mCreationDate = itemView.findViewById(R.id.tvCreationDate);
-        mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);
-        mIsAlbumSelected = false;
+        this.mAlbumCardView = itemView.findViewById(R.id.cvAlbum);
+        this.mCreatorName = itemView.findViewById(R.id.tvPublisher);
+        this.mAlbumName = itemView.findViewById(R.id.tvAlbumName);
+        this.mCreationDate = itemView.findViewById(R.id.tvCreationDate);
+        this.mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);
+        this.mIsAlbumSelected = false;
+        this.mCheckedSign = itemView.findViewById(R.id.ivCheckedSign);
+        hideCheckedSign();
 
-        mAlbumCardView.setOnClickListener(view -> {
+        this.mAlbumCardView.setOnClickListener(view -> {
             Log.e(TAG, "CardView.onClick() >> Album: " + mSelectedAlbum.toString());
 
             if(mIsAlbumSelected) {
@@ -63,7 +66,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                     mIsAlbumSelected = true;
                     mAlbumCardView.setCardBackgroundColor(Color.BLUE);
                     mOnLongClickListener.accept(mSelectedAlbum); // Send selected album using a callback.
-
+                    displayCheckedSign();
                     return true; // Return true to signal that we have done what we need to do for the long press.
                 }
         );
@@ -115,5 +118,12 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
 
     public void setOnLongClickListener(MyConsumer<Album> onLongClickListener) {
         mOnLongClickListener = onLongClickListener;
+    }
+
+    public void displayCheckedSign(){
+        this.mCheckedSign.setVisibility(View.VISIBLE);
+    }
+    public void hideCheckedSign(){
+        this.mCheckedSign.setVisibility(View.INVISIBLE);
     }
 }

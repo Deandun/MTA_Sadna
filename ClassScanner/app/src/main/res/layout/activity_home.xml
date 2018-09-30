@@ -19,22 +19,22 @@
 
     <Button
         android:id="@+id/btnWatchCourses"
-        android:layout_width="362dp"
-        android:layout_height="45dp"
+        android:layout_width="274dp"
+        android:layout_height="49dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="228dp"
+        android:layout_marginTop="204dp"
         android:onClick="onViewMyCoursesClick"
         android:text="View My Courses"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnAddNewCourse"
-        android:layout_width="362dp"
-        android:layout_height="wrap_content"
+        android:layout_width="274dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -46,7 +46,7 @@
 
     <Button
         android:id="@+id/btnSearchExsistsCourse"
-        android:layout_width="359dp"
+        android:layout_width="274dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -59,7 +59,7 @@
 
     <Button
         android:id="@+id/brnPrivateAlbums"
-        android:layout_width="358dp"
+        android:layout_width="274dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -85,12 +85,12 @@
         app:layout_constraintHorizontal_bias="0.971"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/brnPrivateAlbums"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.192" />
 
     <Button
         android:id="@+id/btnTmpTakePic"
-        android:layout_width="358dp"
-        android:layout_height="wrap_content"
+        android:layout_width="274dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"

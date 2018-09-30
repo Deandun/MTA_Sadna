@@ -5,11 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import Logic.Course;
+import Logic.Database.DBManager;
 
 public class CourseInfoActivity extends AppCompatActivity {
 
@@ -17,12 +23,17 @@ public class CourseInfoActivity extends AppCompatActivity {
     private static final String COURSE_ID_DATA = "course_id_data"; // Send the course ID to show albums activity to show the courses albums.
     private static final String TAG = "CourseInfoActivity";
     private static final String COURSE_DATA = "course_data";
+    private static final String IS_SELECTING_ALBUMS = "is_selecting_albums";
+    private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
+
+    private DBManager mDBManager = new DBManager();
 
     // Course info
-    Course mCourse;
+    private Course mCourse;
     private TextView mtvCourseName;
     private TextView mtvCourseCreationDate;
-    private TextView mtvCourseCreaterName;
+    private TextView mtvCourseCreatorName;
+    private Button mbtnAddCourseAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +51,27 @@ public class CourseInfoActivity extends AppCompatActivity {
     // UI
 
     private void bindUI() {
-        mtvCourseName = findViewById(R.id.tv_course_name);
-        mtvCourseCreationDate = findViewById(R.id.tv_course_creation_date);
-        mtvCourseCreaterName = findViewById(R.id.tv_course_publisher_name);
+        this.mtvCourseName = findViewById(R.id.tv_course_name);
+        this.mtvCourseCreationDate = findViewById(R.id.tv_course_creation_date);
+        this.mtvCourseCreatorName = findViewById(R.id.tv_course_publisher_name);
+        this.mbtnAddCourseAlbum = findViewById(R.id.btnAddCourseAlbum);
     }
 
     private void setUI() {
         // Course info
-        mtvCourseName.setText(mCourse.getCourseName());
-        mtvCourseCreationDate.setText("Created at:" + mCourse.getCreationDate());
-        mtvCourseCreaterName.setText("Created by: " + mCourse.getCourseName());
+        this.mtvCourseName.setText(mCourse.getCourseName());
+        this.mtvCourseCreationDate.setText("Created at:" + mCourse.getCreationDate());
+        this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCourseName());
+
+        // Add albums to course
+        if (this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){ //check if this is my course
+            this.mbtnAddCourseAlbum.setVisibility(View.VISIBLE);
+        }else{
+            this.mbtnAddCourseAlbum.setVisibility(View.INVISIBLE);
+        }
     }
 
-    public void onShowMyAlbumsClick(View v) {
+    public void onDisplayCourseAlbumsClick(View v){
         Log.e(TAG, "onShowCoursesClick >>");
 
         Intent showAlbumsIntent = new Intent(getApplicationContext(), ShowAlbumsActivity.class);
@@ -62,4 +81,39 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         Log.e(TAG, "onShowCoursesClick <<");
     }
+
+    public void onChooseAlbumsClick(View v) {
+        Log.e(TAG, "onChooseAlbumsClick >>");
+
+        List<String> albumsIdList = this.mCourse.getM_AlbumIds();
+        if(albumsIdList != null) {
+            albumsIdList.clear();
+        }
+
+        Intent chooseAlbumsIntent = new Intent(this.getApplicationContext(), ShowAlbumsActivity.class);
+        chooseAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
+        chooseAlbumsIntent.putExtra(IS_SELECTING_ALBUMS, true);
+        startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
+
+        Log.e(TAG, "onChooseAlbumsClick <<");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "onActivityResult >>");
+
+        String SELECTED_ALBUM_IDS_DATA = "selected_albums_data";
+
+        if (requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
+            this.mCourse.getM_AlbumIds().addAll(data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA));
+            Log.e(TAG, "onActivityResult >> received album IDs: " + this.mCourse.getM_AlbumIds());
+            this.mDBManager.addAlbumsToExistsCourse(this.mCourse);
+            this.mDBManager.moveAlbumIDsFromPrivateToSharedHelper(this.mCourse.getID(), this.mCourse.getCreatorID(),
+                    this.mCourse.getM_AlbumIds());
+        }
+
+        Log.e(TAG, "onActivityResult <<");
+    }
+
 }

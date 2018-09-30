@@ -41,6 +41,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
                 Log.e(TAG, "CardView.onClick() >> Course: " + mSelectedCourse.toString());
 
                 Context context = view.getContext();
+                mSelectedCourse.toString();
                 Intent intent = new Intent(context, CourseInfoActivity.class);
                 intent.putExtra(COURSE_DATA, mSelectedCourse);
                 context.startActivity(intent);

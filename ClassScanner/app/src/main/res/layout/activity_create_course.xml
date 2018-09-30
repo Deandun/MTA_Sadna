@@ -10,11 +10,11 @@
         android:id="@+id/btnFinishCreatingAlbum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="50dp"
         android:onClick="onFinishCreatingCourseClick"
         android:text="Create course"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />
 
 
@@ -22,31 +22,31 @@
         android:id="@+id/btnChooseAlbums"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="50dp"
         android:onClick="onChooseAlbumsClick"
-        android:text="Choose Albums"
-        app:layout_constraintEnd_toStartOf="@+id/btnFinishCreatingAlbum"
+        android:text="Add Albums"
+        app:layout_constraintRight_toLeftOf="@+id/btnFinishCreatingAlbum"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />
 
     <EditText
         android:id="@+id/etCreatorName"
         android:layout_width="182dp"
         android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         android:hint="Creator name"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCreateNewCourseTitle" />
 
     <EditText
         android:id="@+id/etCreateCourseName"
         android:layout_width="182dp"
         android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         android:hint="Enter course name"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etCreatorName" />
 
     <EditText
