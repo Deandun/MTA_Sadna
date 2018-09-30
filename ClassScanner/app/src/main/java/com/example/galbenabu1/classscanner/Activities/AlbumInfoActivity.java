@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.example.galbenabu1.classscanner.Adapters.PhotoGalleryAdapter;
 import com.example.galbenabu1.classscanner.R;
@@ -54,5 +55,9 @@ public class AlbumInfoActivity extends Activity {
             PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, "dummy photo " + i, "dummy path");
             mAlbumPhotosList.add(photo);
         }
+    }
+
+    public void onBackBtnClick(View v){
+        //TODO: implement
     }
 }

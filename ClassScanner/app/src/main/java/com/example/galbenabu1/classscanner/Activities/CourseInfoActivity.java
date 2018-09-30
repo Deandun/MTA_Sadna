@@ -88,6 +88,10 @@ public class CourseInfoActivity extends AppCompatActivity {
         Log.e(TAG, "onShowCoursesClick <<");
     }
 
+    public void onBackButtonClick(View v){
+        //TODO: implement
+    }
+
     public void onActionButtonClick(View v) {
         Log.e(TAG, "onActionButtonClick >>");
 
@@ -99,7 +103,6 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         Log.e(TAG, "onActionButtonClick <<");
     }
-
     private void joinCourse(){
         LoggedInUserDetailsManager.addCourseIDToUser(this.mCourse.getID());
         this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser());
