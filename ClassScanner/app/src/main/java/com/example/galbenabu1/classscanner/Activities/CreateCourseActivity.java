@@ -78,7 +78,7 @@ public class CreateCourseActivity extends AppCompatActivity {
     }
 
     public void onChooseAlbumsClick(View v) {
-        Log.e(TAG, "onChooseAlbumsClick >>");
+        Log.e(TAG, "onActionButtonClick >>");
 
         if(this.mAlbumIDCollection != null) {
             this.mAlbumIDCollection.clear(); // Reset previous albums collection before selecting new albums.
@@ -89,7 +89,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         chooseAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
         startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
 
-        Log.e(TAG, "onChooseAlbumsClick <<");
+        Log.e(TAG, "onActionButtonClick <<");
     }
 
     @Override

@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_marginTop="50dp"
-        android:onClick="onChooseAlbumsClick"
+        android:onClick="onActionButtonClick"
         android:text="Add Albums"
         app:layout_constraintRight_toLeftOf="@+id/btnFinishCreatingAlbum"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />

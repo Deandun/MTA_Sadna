@@ -7,14 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import Logic.Course;
+import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Models.Course;
 import Logic.Database.DBManager;
 
 public class CourseInfoActivity extends AppCompatActivity {
@@ -62,12 +63,17 @@ public class CourseInfoActivity extends AppCompatActivity {
         this.mtvCourseName.setText(mCourse.getCourseName());
         this.mtvCourseCreationDate.setText("Created at:" + mCourse.getCreationDate());
         this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCourseName());
+        this.setActionButtonUI();
+    }
 
+    private void setActionButtonUI() {
         // Add albums to course
         if (this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){ //check if this is my course
-            this.mbtnAddCourseAlbum.setVisibility(View.VISIBLE);
-        }else{
+            this.mbtnAddCourseAlbum.setText("Add Albums");
+        }else if (LoggedInUserDetailsManager.getsLoggedInUser().getM_CourseIds().contains(this.mCourse.getID())){ //not our course but already joined
             this.mbtnAddCourseAlbum.setVisibility(View.INVISIBLE);
+        }else{
+            this.mbtnAddCourseAlbum.setText("Join Course");
         }
     }
 
@@ -82,9 +88,26 @@ public class CourseInfoActivity extends AppCompatActivity {
         Log.e(TAG, "onShowCoursesClick <<");
     }
 
-    public void onChooseAlbumsClick(View v) {
-        Log.e(TAG, "onChooseAlbumsClick >>");
+    public void onActionButtonClick(View v) {
+        Log.e(TAG, "onActionButtonClick >>");
 
+        if (this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            addAlbumsToExistCourse();
+        }else{
+            joinCourse();
+        }
+
+        Log.e(TAG, "onActionButtonClick <<");
+    }
+
+    private void joinCourse(){
+        LoggedInUserDetailsManager.addCourseIDToUser(this.mCourse.getID());
+        this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser());
+        this.setActionButtonUI();
+        Toast.makeText(this, "Successfully joined to " + this.mCourse.getCourseName() + " course!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void addAlbumsToExistCourse(){
         List<String> albumsIdList = this.mCourse.getM_AlbumIds();
         if(albumsIdList != null) {
             albumsIdList.clear();
@@ -95,7 +118,6 @@ public class CourseInfoActivity extends AppCompatActivity {
         chooseAlbumsIntent.putExtra(IS_SELECTING_ALBUMS, true);
         startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
 
-        Log.e(TAG, "onChooseAlbumsClick <<");
     }
 
     @Override
@@ -115,5 +137,4 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         Log.e(TAG, "onActivityResult <<");
     }
-
 }

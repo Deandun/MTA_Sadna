@@ -59,7 +59,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="36dp"
-        android:onClick="onChooseAlbumsClick"
+        android:onClick="onActionButtonClick"
         android:text="Add Albums"
         app:layout_constraintEnd_toStartOf="@+id/btnShowCourseAlbums"
         app:layout_constraintStart_toStartOf="parent"
