@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
 
 public class PhotoViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "PhotoViewHolder";

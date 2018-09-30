@@ -12,8 +12,8 @@ import com.example.galbenabu1.classscanner.R;
 import java.util.ArrayList;
 import java.util.Date;
 
-import Logic.Album;
-import Logic.PictureAudioData;
+import Logic.Models.Album;
+import Logic.Models.PictureAudioData;
 
 public class AlbumInfoActivity extends Activity {
     private static final String TAG = "AlbumInfoActivity";

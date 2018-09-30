@@ -1,4 +1,4 @@
-package Logic;
+package Logic.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

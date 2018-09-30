@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import Logic.Album;
-import Logic.Course;
+import Logic.Models.Album;
+import Logic.Models.Course;
 import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
+import Logic.Models.User;
 
 /**
  * Created by galbenabu1 on 08/05/2018.
@@ -56,24 +56,6 @@ public class DBManager {
         mDatabase.updateChildren(childUpdates);
     }
 
-    public List<Album> getAlbumsList(){//Parcel in) { //noy - TEMP
-
-        List<Album> albums = new ArrayList<>();
-        //DatabaseReference DB = mDatabase.getDatabase().getReference("/Albums");
-        mStorageRef = FirebaseStorage.getInstance().getReference("/Albums");
-        Log.e(TAG, "Got albums " + mStorageRef.getName());
-        Log.e(TAG, "Got dummyalbum = " + mStorageRef.child("DummyAlbum"));
-
-        mStorageRef.getName();
-        List a = new ArrayList();
-        a.add(mStorageRef);
-        Log.e(TAG, "******************DEBUG: size = " + a.size());
-       // Album album = new Album(in);
-       // albums.add(Album.CREATOR.createFromParcel(in));
-
-        return albums;
-    }
-
     public void uploadImageToPrivateAlbum(Bitmap imageBitmap, String userId, String albumID, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         Log.e(TAG, "Writing picture data to DB...");
         PictureAudioData pictureData = writeImageDataToPrivateAlbumsAndGetKey(userId, albumID);
@@ -82,19 +64,23 @@ public class DBManager {
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
+        this.uploadImage(data, pictureData, uploadImageSuccess, uploadImageFailure);
+    }
+
+    private void uploadImage(byte[] imageData, PictureAudioData imageMetaData, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         // Upload image
         Log.e(TAG, "Uploading image to DB...");
-        StorageReference imageRef = mStorageRef.child("Albums").child("privateAlbums").child(userId).child(albumID).child(pictureData.getM_Id());
+        StorageReference imageRef = mStorageRef.child("Images").child(imageMetaData.getM_Id());
 
-        UploadTask uploadTask = imageRef.putBytes(data);
+        UploadTask uploadTask = imageRef.putBytes(imageData);
         uploadTask.addOnFailureListener(exception -> {
             Log.e(TAG, "Failed reading from storage.");
             uploadImageFailure.run();
         }).addOnSuccessListener(taskSnapshot -> {
             Uri downloadUrl = taskSnapshot.getDownloadUrl();
             Log.e(TAG, "Successfully read " + downloadUrl.toString() + " from storage!");
-            pictureData.setM_Path(downloadUrl.getPath());
-            uploadImageSuccess.accept(pictureData);
+            imageMetaData.setM_Path(downloadUrl.getPath());
+            uploadImageSuccess.accept(imageMetaData);
         });
     }
 
@@ -128,7 +114,6 @@ public class DBManager {
         }
 
         this.removeAlbumFromStorage(albumID, userID, isPrivateAlbum, pictureDataCollection);
-
 
         albumRef.removeValue(
                 (error, dbRef) -> {
@@ -314,6 +299,7 @@ public class DBManager {
                         // Album does not exist in DB. Might be because this function is called again after removing the album the first time.
                         return;
                     }
+
                     Log.e(TAG, "Finished fetching album with ID: " + currentAlbum.getM_Id());
 
                     // Remove album from private albums
@@ -334,5 +320,31 @@ public class DBManager {
                 }
             });
         }
+    }
+
+    public void addUserInfoToDataBase(User loggedInUser) {
+        DatabaseReference userReference = FirebaseDBReferenceGenerator.getAllUsersReference();
+
+        userReference.child(loggedInUser.getM_Id()).setValue(loggedInUser);
+    }
+
+    public void fetchUserDetails(String uid, MyConsumer<User> onFetchedUserSuccess, Runnable onFetchedUserFailure) {
+        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(uid);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User userInfo = dataSnapshot.getValue(User.class);
+
+                Log.e(TAG, "Finished fetching user info with ID: " + userInfo.getM_Id());
+
+                onFetchedUserSuccess.accept(userInfo);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                onFetchedUserFailure.run();
+            }
+        });
     }
 }

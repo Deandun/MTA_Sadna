@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import Logic.Album;
+import Logic.Models.Album;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
 

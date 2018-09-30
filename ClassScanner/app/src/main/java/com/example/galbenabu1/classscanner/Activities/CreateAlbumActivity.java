@@ -7,16 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 import java.util.List;
 
-import Logic.Album;
+import Logic.Models.Album;
 import Logic.Database.DBManager;
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
 
 public class CreateAlbumActivity extends Activity {
 

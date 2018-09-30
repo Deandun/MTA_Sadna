@@ -1,4 +1,4 @@
-package Logic;
+package Logic.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,6 @@ import java.util.Date;
  * Created by galbenabu1 on 08/05/2018.
  */
 
-//TODO: Add missing fields to parcelable implementation
 public class PictureAudioData implements Parcelable {
     private String m_Id;
     private Date m_CreationDate;

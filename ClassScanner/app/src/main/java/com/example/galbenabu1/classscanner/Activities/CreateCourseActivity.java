@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import Logic.Album;
-import Logic.Course;
+import Logic.Models.Course;
 import Logic.Database.DBManager;
 
 public class CreateCourseActivity extends AppCompatActivity {

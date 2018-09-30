@@ -11,7 +11,7 @@ import com.example.galbenabu1.classscanner.R;
 
 import java.util.List;
 
-import Logic.Course;
+import Logic.Models.Course;
 
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
     private final String TAG = "CoursessAdapter";

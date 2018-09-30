@@ -13,10 +13,10 @@ import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import Logic.Course;
+import Logic.Managers.LoggedInUserDetails;
+import Logic.Models.Course;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
@@ -61,11 +61,16 @@ public class ShowCoursesActivity extends Activity {
             this.setUI();
         };
 
+        // Set the way the courses are filtered.
        switch(this.mShowCoursesOptions) {
            case ShowCoursesTheCurrentUserIsIn:
-               //TODO: figure out if the user is a member of the current course.
                this.mCourseFilterFunction =
-                       (course) -> course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                       (course) -> {
+                            boolean isCourseCreator = course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            boolean isCourseMember = LoggedInUserDetails.doesUserContainCourseID(course.getID());
+                            // Return true if the user is the course creator or a member
+                            return isCourseCreator || isCourseMember;
+                       };
                break;
            case ShowSearchedCourses:
                this.mCourseFilterFunction = (course) -> true; // Show all courses - filter nothing.

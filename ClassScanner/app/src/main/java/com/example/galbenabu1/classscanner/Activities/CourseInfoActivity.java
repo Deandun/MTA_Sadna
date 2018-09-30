@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.Course;
+import Logic.Models.Course;
 
 public class CourseInfoActivity extends AppCompatActivity {
 
