@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-import Logic.Course;
+import Logic.Models.Course;
 import Logic.Database.DBManager;
 
 public class CourseInfoActivity extends AppCompatActivity {
@@ -115,5 +115,4 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         Log.e(TAG, "onActivityResult <<");
     }
-
 }
