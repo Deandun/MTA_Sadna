@@ -3,17 +3,16 @@ package Logic.Managers;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import Logic.Database.DBManager;
 import Logic.Models.User;
 
-public class LoggedInUserDetails {
-    private static final String TAG = "LoggedInUserDetails";
+public class LoggedInUserDetailsManager {
+    private static final String TAG = "LoggedInUserDetailsMng";
     private static final String UNKNOWN_USER_NAME = "Unknown";
     private static final String UNKNOWN_USER_MAIL = "";
 
-    private LoggedInUserDetails() {
+    private LoggedInUserDetailsManager() {
 
     }
 
@@ -34,7 +33,7 @@ public class LoggedInUserDetails {
     public static void initUserDetails(String uid) {
         DBManager dbManager = new DBManager();
 
-        dbManager.fetchUserDetails(uid, LoggedInUserDetails::onFetchedUserSuccess, LoggedInUserDetails::onFetchedUserFailure);
+        dbManager.fetchUserDetails(uid, LoggedInUserDetailsManager::onFetchedUserSuccess, LoggedInUserDetailsManager::onFetchedUserFailure);
     }
 
     private static void onFetchedUserSuccess(User userInfo) {
@@ -55,5 +54,9 @@ public class LoggedInUserDetails {
 
     public static boolean doesUserContainCourseID(String courseID) {
         return sLoggedInUser.getM_CourseIds().contains(courseID);
+    }
+
+    public static void addCourseIDToUser(String courseID) {
+        sLoggedInUser.getM_CourseIds().add(courseID);
     }
 }

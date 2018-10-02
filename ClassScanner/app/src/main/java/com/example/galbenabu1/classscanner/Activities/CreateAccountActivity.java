@@ -23,7 +23,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import Logic.Database.DBManager;
-import Logic.Managers.LoggedInUserDetails;
+import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.User;
 
 public class CreateAccountActivity extends AppCompatActivity {
@@ -125,7 +125,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                         DBManager dbManager = new DBManager();
 
-                        LoggedInUserDetails.setsLoggedInUser(loggedInUser);
+                        LoggedInUserDetailsManager.setsLoggedInUser(loggedInUser);
                         dbManager.addUserInfoToDataBase(loggedInUser);
                     }
                 });

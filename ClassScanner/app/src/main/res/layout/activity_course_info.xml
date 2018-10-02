@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.galbenabu1.classscanner.Activities.MainActivity">
-
-
+    tools:context=".Activities.CourseInfoActivity">
+   <!-- tools:context="com.example.galbenabu1.classscanner.Activities.MainActivity">
+-->
     <TextView
         android:id="@+id/tv_course_name"
         android:layout_width="104dp"
@@ -59,12 +59,27 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="36dp"
-        android:onClick="onChooseAlbumsClick"
+        android:onClick="onActionButtonClick"
         android:text="Add Albums"
         app:layout_constraintEnd_toStartOf="@+id/btnShowCourseAlbums"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_course_publisher_name" />
 
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onBackButtonClick"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.872" />
 
 
 </android.support.constraint.ConstraintLayout>

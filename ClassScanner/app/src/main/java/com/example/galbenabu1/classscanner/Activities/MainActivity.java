@@ -18,8 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import Logic.Database.DBManager;
-import Logic.Managers.LoggedInUserDetails;
+import Logic.Managers.LoggedInUserDetailsManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                    LoggedInUserDetails.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    LoggedInUserDetailsManager.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
 //                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        LoggedInUserDetails.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        LoggedInUserDetailsManager.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                                         startActivity(intent);
                                         finish();
@@ -182,5 +181,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ForgetPasswordActivity.class);
         startActivity(intent);
     }
+
 }
 

@@ -17,9 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import Logic.Managers.LoggedInUserDetails;
+import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
@@ -70,7 +69,7 @@ public class ShowCoursesActivity extends Activity {
                 this.mCourseFilterFunction =
                         (course) -> {
                             boolean isCourseCreator = course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            boolean isCourseMember = LoggedInUserDetails.doesUserContainCourseID(course.getID());
+                            boolean isCourseMember = LoggedInUserDetailsManager.doesUserContainCourseID(course.getID());
                             // Return true if the user is the course creator or a member
                             return isCourseCreator || isCourseMember;
                         };

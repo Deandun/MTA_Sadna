@@ -343,8 +343,8 @@ public class DBManager {
         userReference.child(loggedInUser.getM_Id()).setValue(loggedInUser);
     }
 
-    public void fetchUserDetails(String uid, MyConsumer<User> onFetchedUserSuccess, Runnable onFetchedUserFailure) {
-        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(uid);
+    public void fetchUserDetails(String userID, MyConsumer<User> onFetchedUserSuccess, Runnable onFetchedUserFailure) {
+        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(userID);
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -361,5 +361,10 @@ public class DBManager {
                 onFetchedUserFailure.run();
             }
         });
+    }
+
+    public void userJoinsCourse(User user) {
+        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(user.getM_Id());
+        userRef.child("m_CourseIds").setValue(user.getM_CourseIds());
     }
 }
