@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import com.example.galbenabu1.classscanner.ViewHolders.CoursesViewHolder;
 import com.example.galbenabu1.classscanner.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import Logic.Models.Course;
@@ -45,8 +47,10 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
         holder.setSelectedCourse(course);
         holder.getCourseName().setText("Name: " + course.getCourseName());
         holder.getCreatorName().setText("Publisher: " + course.getCourseName());
-        holder.getCreationDate().setText("Creation date: " + course.getCourseCreationDateStr());
 
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String dateStr = dateFormat.format(course.getCreationDate());
+        holder.getCreationDate().setText("Creation date: " + dateStr);
 
         Log.e(TAG,"onBindViewHolder() << "+ position);
     }

@@ -88,17 +88,9 @@ public class Album implements Parcelable {
         this.m_AlbumName = m_AlbumName;
     }
 
-    public Date getM_CreationDate() {
-        return m_CreationDate;
-    }
+    public Date getM_CreationDate() { return this.m_CreationDate; }
 
-    public String getAlbumCreationDateStr() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        return dateFormat.format(this.m_CreationDate);
-    }
-
-    public String getAlbumCreatorName(){ return this.m_AlbumCreatorName; }
-
+    public String getM_AlbumCreatorName(){ return this.m_AlbumCreatorName; }
 
     public String getM_Description() {
         return m_Description;
@@ -135,4 +127,5 @@ public class Album implements Parcelable {
     public String getM_Id() {
         return m_Id;
     }
+
 }

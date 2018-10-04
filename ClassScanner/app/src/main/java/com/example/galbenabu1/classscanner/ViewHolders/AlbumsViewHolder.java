@@ -35,7 +35,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         super(itemView);
 
         this.mAlbumCardView = itemView.findViewById(R.id.cvAlbum);
-        this.mCreatorName = itemView.findViewById(R.id.tvPublisher);
+        this.mCreatorName = itemView.findViewById(R.id.tvAlbumPublisher);
         this.mAlbumName = itemView.findViewById(R.id.tvAlbumName);
         this.mCreationDate = itemView.findViewById(R.id.tvCreationDate);
         this.mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);

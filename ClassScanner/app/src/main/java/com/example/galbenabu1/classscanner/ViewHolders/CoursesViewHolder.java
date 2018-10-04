@@ -29,7 +29,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
 
         mCourseCardView = itemView.findViewById(R.id.cvCourse);
-        mCreatorName = itemView.findViewById(R.id.tvPublisher);
+        mCreatorName = itemView.findViewById(R.id.tvCoursePublisher);
         mCourseName = itemView.findViewById(R.id.tvCourseName);
         mCreationDate = itemView.findViewById(R.id.tvCreationDate);
         mCourseImg = itemView.findViewById(R.id.ivCourseImage);

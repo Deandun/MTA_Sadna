@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import Logic.Managers.LoggedInUserDetailsManager;
@@ -61,7 +63,11 @@ public class CourseInfoActivity extends AppCompatActivity {
     private void setUI() {
         // Course info
         this.mtvCourseName.setText(mCourse.getCourseName());
-        this.mtvCourseCreationDate.setText("Created at:" + mCourse.getCourseCreationDateStr());
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String dateStr = dateFormat.format(mCourse.getCreationDate());
+        this.mtvCourseCreationDate.setText("Created at:" + dateStr);
+
         this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCourseName());
         this.setActionButtonUI();
     }
