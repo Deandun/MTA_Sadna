@@ -61,7 +61,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private void setUI() {
         // Course info
         this.mtvCourseName.setText(mCourse.getCourseName());
-        this.mtvCourseCreationDate.setText("Created at:" + mCourse.getCreationDate());
+        this.mtvCourseCreationDate.setText("Created at:" + mCourse.getCourseCreationDateStr());
         this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCourseName());
         this.setActionButtonUI();
     }

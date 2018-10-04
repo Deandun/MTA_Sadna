@@ -9,8 +9,11 @@ import android.widget.EditText;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import Logic.Managers.LoggedInUserDetailsManager;
@@ -48,7 +51,10 @@ public class CreateCourseActivity extends AppCompatActivity {
     }
 
     private void setUI() {
-        this.metCreatorName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        this.metCreatorName.setText(LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        this.metCreateDate.setText(dateFormat.format(date));
     }
 
     private void getAlbumAndCourseID() {
@@ -62,7 +68,6 @@ public class CreateCourseActivity extends AppCompatActivity {
         this.metCreateDate = findViewById(R.id.etDate);
         this.metCreatorName = findViewById(R.id.etCreatorName);
     }
-
 
     public void onFinishCreatingCourseClick(View v) {
         Log.e(TAG, "onFinishCreatingCourse >>");
@@ -115,13 +120,12 @@ public class CreateCourseActivity extends AppCompatActivity {
         String courseName = this.metCourseName.getText().toString();
         String courserDescription = this.metCourseDescription.getText().toString();
         String creatorID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //TODO: get user name from Current User.
-        String courseCreator = this.metCreatorName.getText().toString();
+        String courseCreatorName = this.metCreatorName.getText().toString();
 
-        newCourse.setCreationDate(Calendar.getInstance().getTime());
+        newCourse.setCreationDate(new Date());
         newCourse.setDescription(courserDescription);
         newCourse.setCourseName(courseName);
-        newCourse.setCreatorName(courseCreator);
+        newCourse.setCreatorName(courseCreatorName);
         newCourse.setCreatorID(creatorID);
         newCourse.setM_AlbumIds(this.mAlbumIDCollection != null ? this.mAlbumIDCollection : new ArrayList<>());
 

@@ -3,6 +3,8 @@ package Logic.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +25,9 @@ public class Course implements Parcelable {
 
     public Course() {}
 
-    public Course(String courseID, String userID, String courseName, Date creationDate) {
+    public Course(String courseID, String creatorName, String userID, String courseName, Date creationDate) {
         this.m_Id = courseID;
+        this.mCreatorName = creatorName;
         this.m_CreatorID = userID;
         this.m_CourseName = courseName;
         this.m_CreationDate = creationDate;
@@ -33,6 +36,7 @@ public class Course implements Parcelable {
 
     protected Course(Parcel in) {
         m_Id = in.readString();
+        mCreatorName = in.readString();
         m_CreatorID = in.readString();
         long tempDateAsLong = in.readLong();
         m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
@@ -58,6 +62,7 @@ public class Course implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
+        dest.writeString(mCreatorName);
         dest.writeString(m_CreatorID);
         dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_CourseName);
@@ -114,6 +119,10 @@ public class Course implements Parcelable {
         this.m_CreationDate = date;
     }
 
+    public String getCourseCreationDateStr() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        return dateFormat.format(this.m_CreationDate);
+    }
 
     public String getDescription() {
         return m_Description;

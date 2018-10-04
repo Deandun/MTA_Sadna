@@ -45,7 +45,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
         holder.setSelectedCourse(course);
         holder.getCourseName().setText("Name: " + course.getCourseName());
         holder.getCreatorName().setText("Publisher: " + course.getCourseName());
-        holder.getCreationDate().setText("Creation date: " + course.getCreationDate());
+        holder.getCreationDate().setText("Creation date: " + course.getCourseCreationDateStr());
 
 
         Log.e(TAG,"onBindViewHolder() << "+ position);

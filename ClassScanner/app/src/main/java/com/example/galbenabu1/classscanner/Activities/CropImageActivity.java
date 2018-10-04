@@ -29,11 +29,13 @@ import com.fenchtose.nocropper.CropperView;
 
 public class CropImageActivity extends AppCompatActivity {
 
-    Button btnCrop, btnToggleGesture;
-    ImageView btnSnap, btnRotate;
-    CropperView cropperView;
-    Bitmap mBitmap;
-    boolean isSnappedtoCenter = false;
+    private Button btnCrop;
+    private Button btnToggleGesture;
+    private ImageView btnSnap;
+    private ImageView btnRotate;
+    private CropperView cropperView;
+    private Bitmap mBitmap;
+    private boolean isSnappedtoCenter = false;
     private FirebaseStorage storage;
     StorageReference ref;
 
