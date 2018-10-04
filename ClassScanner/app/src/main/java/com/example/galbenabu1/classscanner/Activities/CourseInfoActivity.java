@@ -62,13 +62,13 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     private void setUI() {
         // Course info
-        this.mtvCourseName.setText(mCourse.getCourseName());
+        this.mtvCourseName.setText("Course name: " + mCourse.getCourseName());
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String dateStr = dateFormat.format(mCourse.getCreationDate());
         this.mtvCourseCreationDate.setText("Created at:" + dateStr);
 
-        this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCourseName());
+        this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCreatorName());
         this.setActionButtonUI();
     }
 
