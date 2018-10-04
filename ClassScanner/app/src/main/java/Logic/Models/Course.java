@@ -118,7 +118,7 @@ public class Course implements Parcelable {
     }
 
     public String getCourseCreationDateStr() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(this.m_CreationDate);
     }
 

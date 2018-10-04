@@ -48,8 +48,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
         // bind Album data to it's view items
         holder.setSelectedAlbum(album);
         holder.getAlbumName().setText("Name: " + album.getM_AlbumName());
-        holder.getCreatorName().setText("Publisher: " + album.getM_AlbumName());
-        holder.getCreationDate().setText("Creation date: " + album.getM_CreationDate());
+        holder.getCreatorName().setText("Publisher: " + album.getAlbumCreatorName());
+        holder.getCreationDate().setText("Creation date: " + album.getAlbumCreationDateStr());
         holder.getAlbumCardView().setBackgroundColor(Color.WHITE);
         holder.setOnLongClickListener(mOnLongClickListener);
 

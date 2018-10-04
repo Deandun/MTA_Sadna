@@ -52,7 +52,7 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private void setUI() {
         this.metCreatorName.setText(LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName());
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         this.metCreateDate.setText(dateFormat.format(date));
     }

@@ -67,7 +67,7 @@ public class CreateAlbumActivity extends Activity {
 
     private void setUI() {
         this.mAlbumCreator.setText(LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName());
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         this.mAlbumCreatoionDate.setText(dateFormat.format(date));
     }
@@ -77,8 +77,9 @@ public class CreateAlbumActivity extends Activity {
 
         String albumName = metAlbumName.getText().toString();
         String albumDescription = metAlbumDescription.getText().toString();
+        String albumCreatorName = this.mAlbumCreator.getText().toString();
 
-        Album newAlbum = new Album(mNewAlbumID, albumName, new Date());
+        Album newAlbum = new Album(mNewAlbumID, albumName, new Date(), albumCreatorName);
         newAlbum.setM_Description(albumDescription);
         newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());
         newAlbum.setM_Pictures(mPictureAudioDataCollection);
