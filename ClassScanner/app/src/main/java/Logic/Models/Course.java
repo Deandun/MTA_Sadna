@@ -36,7 +36,6 @@ public class Course implements Parcelable {
 
     protected Course(Parcel in) {
         m_Id = in.readString();
-        mCreatorName = in.readString();
         m_CreatorID = in.readString();
         long tempDateAsLong = in.readLong();
         m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
@@ -62,7 +61,6 @@ public class Course implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(m_Id);
-        dest.writeString(mCreatorName);
         dest.writeString(m_CreatorID);
         dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_CourseName);

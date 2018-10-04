@@ -64,7 +64,7 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private void bindUI(){
         this.metCourseName = findViewById(R.id.etCreateCourseName);
-        this.metCourseDescription = findViewById(R.id.etCreateCouresDescription);
+        this.metCourseDescription = findViewById(R.id.etCreateCourseDescription);
         this.metCreateDate = findViewById(R.id.etDate);
         this.metCreatorName = findViewById(R.id.etCreatorName);
     }
