@@ -12,6 +12,9 @@ public class LoggedInUserDetailsManager {
     private static final String UNKNOWN_USER_NAME = "Unknown";
     private static final String UNKNOWN_USER_MAIL = "";
 
+    private static final DBManager sfDBManager = new DBManager();
+
+
     private LoggedInUserDetailsManager() {
 
     }
@@ -30,15 +33,14 @@ public class LoggedInUserDetailsManager {
         return sLoggedInUser.getM_Id();
     }
 
-    public static void initUserDetails(String uid) {
-        DBManager dbManager = new DBManager();
-
-        dbManager.fetchUserDetails(uid, LoggedInUserDetailsManager::onFetchedUserSuccess, LoggedInUserDetailsManager::onFetchedUserFailure);
+    public static void initUserDetailsOnLogin(String uid) {
+        sfDBManager.fetchUserDetails(uid, LoggedInUserDetailsManager::onFetchedUserSuccess, LoggedInUserDetailsManager::onFetchedUserFailure);
     }
 
     private static void onFetchedUserSuccess(User userInfo) {
         Log.e(TAG, "Fetched user info for user: " + userInfo.getM_Id());
         setsLoggedInUser(userInfo);
+        sfDBManager.onUserLogin(userInfo.getM_Id(), userInfo.getM_CourseIds());
     }
 
     private static void onFetchedUserFailure() {

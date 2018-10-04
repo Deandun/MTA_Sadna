@@ -105,7 +105,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
     private void joinCourse(){
         LoggedInUserDetailsManager.addCourseIDToUser(this.mCourse.getID());
-        this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser());
+        this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser(), this.mCourse.getID());
         this.setActionButtonUI();
         Toast.makeText(this, "Successfully joined to " + this.mCourse.getCourseName() + " course!", Toast.LENGTH_SHORT).show();
     }

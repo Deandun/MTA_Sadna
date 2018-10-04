@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
 
@@ -69,6 +70,9 @@ public class CreateCourseActivity extends AppCompatActivity {
         Course newCourse = this.createNewCourse();
 
         this.mDBManager.addNewCourseDetailsToDBAndSetCourseID(newCourse);
+        LoggedInUserDetailsManager.addCourseIDToUser(newCourse.getID());
+        this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser(), newCourse.getID());
+
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);

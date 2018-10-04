@@ -39,8 +39,6 @@ public class ShowCoursesActivity extends Activity {
     private eShowCoursesOptions mShowCoursesOptions;
 
     private DBManager mDBManager = new DBManager();
-    private MyFunction<Course, Boolean> mCourseFilterFunction;
-    private MyConsumer<List<Course>> mOnFinishFetchingCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,28 +55,35 @@ public class ShowCoursesActivity extends Activity {
     }
 
     private void handleShowCoursesOption() {
-        this.mOnFinishFetchingCourses = (courseList) -> {
-            Log.e(TAG, "onFinishedFetchingCourses >>");
-            this.mFetchedCourses.addAll(courseList);
-            this.setUI();
-        };
-
+        MyFunction<Course, Boolean> courseFilterFunction;
         // Set the way the courses are filtered.
         switch (this.mShowCoursesOptions) {
             case ShowCoursesTheCurrentUserIsIn:
-                this.mCourseFilterFunction =
+                courseFilterFunction =
                         (course) -> {
                             boolean isCourseCreator = course.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             boolean isCourseMember = LoggedInUserDetailsManager.doesUserContainCourseID(course.getID());
                             // Return true if the user is the course creator or a member
                             return isCourseCreator || isCourseMember;
                         };
+                this.fetchFilteredCourses(courseFilterFunction);
                 break;
             case ShowSearchedCourses:
-                this.mCourseFilterFunction = (course) -> true; // Fetch all courses - filter nothing.
+                courseFilterFunction = (course) -> true; // Fetch all courses - filter nothing.
+                this.fetchFilteredCourses(courseFilterFunction);
+                break;
+            case ShowSuggestedCourses:
+                this.fetchSuggestedCourses();
+                break;
         }
 
-        this.fetchCourses();
+    }
+
+    private void onFinishedFetchingCouress(List<Course> courseList) {
+        Log.e(TAG, "onFinishedFetchingCourses >>");
+        this.mFetchedCourses.clear();
+        this.mFetchedCourses.addAll(courseList);
+        this.setUI();
     }
 
     // UI
@@ -117,8 +122,12 @@ public class ShowCoursesActivity extends Activity {
         this.mCoursesRecycleView.setAdapter(this.mCoursesAdapter);
     }
 
-    private void fetchCourses() {
-        mDBManager.fetchFilteredCourses(this.mCourseFilterFunction, this.mOnFinishFetchingCourses);
+    private void fetchFilteredCourses(MyFunction<Course, Boolean> courseFilterFunction) {
+        this.mDBManager.fetchFilteredCourses(courseFilterFunction, this::onFinishedFetchingCouress);
+    }
+
+    private void fetchSuggestedCourses() {
+        this.mDBManager.fetchSuggestedCourses(this::onFinishedFetchingCouress);
     }
 
     private void filterCourses(String searchedCourseName) {

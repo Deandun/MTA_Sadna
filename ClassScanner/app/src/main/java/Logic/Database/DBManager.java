@@ -2,8 +2,10 @@ package Logic.Database;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +16,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -21,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Logic.Database.DBModels.CourseActions.CourseActionData;
+import Logic.Database.DBModels.CourseActions.eCourseActionType;
+import Logic.Database.DBModels.UserActionData;
 import Logic.Models.Album;
 import Logic.Models.Course;
 import Logic.Interfaces.MyConsumer;
@@ -265,6 +271,48 @@ public class DBManager {
         });
     }
 
+    public void fetchSuggestedCourses(MyConsumer<List<Course>> onFinishFetchingCourses) {
+        Log.e(TAG, "Fetching suggested courses");
+        DatabaseReference suggestedCoursesReference = FirebaseDBReferenceGenerator.getSuggestedCoursesReference();
+
+        suggestedCoursesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e(TAG, "Fetched courses from DB");
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                List<String> courseIDsList = (ArrayList<String>)dataSnapshot.child(userID).getValue();
+                fetchCoursesForIDs(courseIDsList, onFinishFetchingCourses);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Failed fetching suggested courses");
+            }
+        });
+    }
+
+    private void fetchCoursesForIDs(List<String> courseIDsList, MyConsumer<List<Course>> onFinishFetchingCourses) {
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
+        List<Course> updatedSuggestedCoursesList = new ArrayList<>();
+
+        for(String courseID: courseIDsList) {
+            courseRef.child(courseID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Course course = dataSnapshot.getValue(Course.class);
+                    updatedSuggestedCoursesList.add(course);
+                    onFinishFetchingCourses.accept(updatedSuggestedCoursesList); // Send the courses we've gotten so far.
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
     public void addAlbumsToExistsCourse(Course courseToUpdate) {
         Log.e(TAG, "Adding Albums to course: " + courseToUpdate.getID() + " to DB");
 
@@ -288,6 +336,10 @@ public class DBManager {
                     Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID());
                     // Remove album IDs from private albums to shared albums.
                     this.moveAlbumIDsFromPrivateToShared(newCourse.getID(), newCourse.getCreatorID(), newCourse.getM_AlbumIds());
+                    CourseActionData courseActionData = new CourseActionData();
+                    courseActionData.setmCourseActionType(eCourseActionType.CourseCreated);
+                    courseActionData.setmCourseID(newCourse.getID());
+                    this.writeCourseAction(courseActionData);
                 }
         ).addOnFailureListener(
                 (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + newCourse.getID() + System.lineSeparator() +
@@ -363,8 +415,39 @@ public class DBManager {
         });
     }
 
-    public void userJoinsCourse(User user) {
+    // User actions
+
+    public void userJoinsCourse(User user, String joinedCourseID) {
         DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(user.getM_Id());
         userRef.child("m_CourseIds").setValue(user.getM_CourseIds());
+
+        CourseActionData courseActionData = new CourseActionData();
+        courseActionData.setmCourseActionType(eCourseActionType.JoinedCourse);
+        courseActionData.setmCourseID(joinedCourseID);
+        courseActionData.setmUserCoursesIDs(user.getM_CourseIds());
+
+        this.writeCourseAction(courseActionData);
+    }
+
+    public void onUserLogin(String userID, List<String> userCourseIDs) {
+        Log.e(TAG, "Writing user log in data for use with id: " + userID);
+
+        DatabaseReference userActionsReference = FirebaseDBReferenceGenerator.getUserActionsReference();
+
+        UserActionData userActionData = new UserActionData();
+        userActionData.setmUserID(userID);
+        userActionData.setmUserCourseIDs(userCourseIDs);
+
+        userActionsReference.child(userID).setValue(userActionData);
+    }
+
+    // Course actions
+
+    private void writeCourseAction(CourseActionData courseActionData) {
+        DatabaseReference courseActionRef = FirebaseDBReferenceGenerator.getCourseActionReference();
+
+        String courseActionKey = courseActionRef.push().getKey();
+
+        courseActionRef.child(courseActionKey).setValue(courseActionData);
     }
 }

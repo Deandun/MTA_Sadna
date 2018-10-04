@@ -108,4 +108,14 @@ public class HomeActivity extends Activity {
 
         Log.e(TAG, "onSearchCoursesClick <<");
     }
+
+    public void onSuggestedCoursesClick(View v) {
+        Log.e(TAG, "onSuggestedCoursesClick >>");
+
+        Intent intent = new Intent(HomeActivity.this, ShowCoursesActivity.class);
+        intent.putExtra(SHOW_COURSES_OPTIONS, eShowCoursesOptions.ShowSuggestedCourses);
+        startActivity(intent);
+
+        Log.e(TAG, "onSuggestedCoursesClick <<");
+    }
 }

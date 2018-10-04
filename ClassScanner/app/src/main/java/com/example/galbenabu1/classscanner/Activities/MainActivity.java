@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                    LoggedInUserDetailsManager.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
 //                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        LoggedInUserDetailsManager.initUserDetails(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                                         startActivity(intent);
                                         finish();
