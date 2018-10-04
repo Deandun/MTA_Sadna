@@ -36,7 +36,7 @@
                 card_view:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvPublisher"
+                android:id="@+id/tvCoursePublisher"
                 android:layout_width="200dp"
                 android:layout_height="28dp"
                 android:layout_marginTop="8dp"
@@ -58,7 +58,7 @@
                 android:textColor="@color/colorAccent"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/tvPublisher"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvCoursePublisher"
                 card_view:layout_constraintVertical_bias="0.2"
                 tools:layout_editor_absoluteX="92dp" />
 
@@ -72,7 +72,7 @@
                 android:src="@android:drawable/star_big_on"
                 app:srcCompat="@mipmap/ic_launcher_round"
                 card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toLeftOf="@id/tvPublisher"
+                card_view:layout_constraintRight_toLeftOf="@id/tvCoursePublisher"
                 card_view:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>

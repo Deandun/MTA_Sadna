@@ -3,6 +3,8 @@ package Logic.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +25,9 @@ public class Course implements Parcelable {
 
     public Course() {}
 
-    public Course(String courseID, String userID, String courseName, Date creationDate) {
+    public Course(String courseID, String creatorName, String userID, String courseName, Date creationDate) {
         this.m_Id = courseID;
+        this.mCreatorName = creatorName;
         this.m_CreatorID = userID;
         this.m_CourseName = courseName;
         this.m_CreationDate = creationDate;
@@ -113,7 +116,6 @@ public class Course implements Parcelable {
     public void setCreationDate(Date date) {
         this.m_CreationDate = date;
     }
-
 
     public String getDescription() {
         return m_Description;

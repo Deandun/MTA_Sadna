@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_marginTop="50dp"
-        android:onClick="onActionButtonClick"
+        android:onClick="onChooseAlbumsClick"
         android:text="Add Albums"
         app:layout_constraintRight_toLeftOf="@+id/btnFinishCreatingAlbum"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />
@@ -35,6 +35,7 @@
         android:layout_height="44dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
+        android:enabled="false"
         android:hint="Creator name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCreateNewCourseTitle" />
@@ -50,15 +51,15 @@
         app:layout_constraintTop_toBottomOf="@+id/etCreatorName" />
 
     <EditText
-        android:id="@+id/etCreateCouresDescription"
+        android:id="@+id/etCreateCourseDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="Enter course description (optional)"
         android:inputType="textMultiLine"
+        android:hint="Enter course description (optional)"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -71,9 +72,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="date"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCreateCouresDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/etCreateCourseDescription" />
 
     <TextView
         android:id="@+id/tvCreateNewCourseTitle"
@@ -87,6 +89,5 @@
         android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />/>
-
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
