@@ -2,6 +2,7 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import com.example.galbenabu1.classscanner.Adapters.PhotoGalleryAdapter;
 import com.example.galbenabu1.classscanner.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -45,14 +47,28 @@ public class AlbumInfoActivity extends Activity {
     }
 
     private void fetchPhotoListFromDB(){
-        //TODO: fetch Photos from db, not the actual images.
         long timeToDecrease = 10000;
 
-        for(int i = 0; i < 15; i++) {
+        /////TODO: choose where to delete the folder
+
+        String DirectoryPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        DirectoryPath += "/classScanner";
+//        File dir = new File(DirectoryPath);
+//        if (dir.isDirectory())
+//        {
+//            String[] children = dir.list();
+//            for (int i = 0; i < children.length; i++)
+//            {
+//                new File(dir, children[i]).delete();
+//            }
+//        }
+
+
+        for(int i = 0; i < mAlbum.getM_Pictures().size(); i++) {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
             timeToDecrease *= (i + 1);
-            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, "dummy photo " + i, "dummy path");
+            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, "dummy photo " + i, "Images/"+mAlbum.getM_Pictures().get(i).getM_Id());
             mAlbumPhotosList.add(photo);
         }
     }
