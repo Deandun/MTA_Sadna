@@ -1,6 +1,8 @@
 package com.example.galbenabu1.classscanner.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +11,10 @@ import android.view.ViewGroup;
 
 import com.example.galbenabu1.classscanner.ViewHolders.PhotoViewHolder;
 import com.example.galbenabu1.classscanner.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import Logic.PictureAudioData;
@@ -41,6 +46,9 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         holder.getTvTitle().setText(photo.getM_Description());
         //holder.getIvPhoto().setImageBitmap(fetchImageBitmapFromDB(photo.getImagePath()));
         // For now, get dummy image
+
+
+
         holder.getIvPhoto().setImageDrawable(mContext.getResources().getDrawable(R.drawable.lazershark, null));
 
         Log.e(TAG, "onBindViewHolder() >> " + photo);

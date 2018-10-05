@@ -335,4 +335,13 @@ public class DBManager {
             });
         }
     }
+
+    public DatabaseReference getPrivateAlbumPictures(String uid, String userId, String albumId)
+    {
+
+        DatabaseReference temp = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumId, userId);
+
+        return temp;
+
+    }
 }
