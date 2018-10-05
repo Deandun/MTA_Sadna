@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner.Activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,26 +17,28 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import com.fenchtose.nocropper.CropperView;
+
 
 /**
  * Created by galbenabu1 on 25/08/2018.
  */
 
 
-import com.fenchtose.nocropper.CropperView;
-
-
 public class CropImageActivity extends AppCompatActivity {
 
-    Button btnCrop, btnToggleGesture;
-    ImageView btnSnap, btnRotate;
-    CropperView cropperView;
-    Bitmap mBitmap;
-    boolean isSnappedtoCenter = false;
+    private Button btnCrop, btnToggleGesture, continueEditingBtn;
+    private ImageView btnSnap, btnRotate;
+    private CropperView cropperView;
+    private Bitmap mBitmap;
+    private boolean isSnappedtoCenter = false;
     private FirebaseStorage storage;
-    StorageReference ref;
+    private StorageReference ref;
+    private int angle=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class CropImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_image);
 
         initViews();
+
         storage = FirebaseStorage.getInstance();
         ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
 
@@ -73,7 +77,10 @@ public class CropImageActivity extends AppCompatActivity {
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cropperView.setImageBitmap(rotateBitmap(mBitmap, 90));
+                angle+=90;
+                if(angle==360)
+                    angle=0;
+                cropperView.setImageBitmap(rotateBitmap(mBitmap, angle));
             }
         });
     }
@@ -85,8 +92,8 @@ public class CropImageActivity extends AppCompatActivity {
             ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap my_image = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    cropperView.setImageBitmap(my_image);
+                    mBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    cropperView.setImageBitmap(mBitmap);
 
                     btnCrop.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -109,7 +116,7 @@ public class CropImageActivity extends AppCompatActivity {
 
     private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
+        matrix.postRotate(90);
         return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 
@@ -122,9 +129,21 @@ public class CropImageActivity extends AppCompatActivity {
     private void initViews() {
         btnCrop = (Button) findViewById(R.id.btnCrop);
         btnToggleGesture = (Button) findViewById(R.id.btnToggleGesture);
+        continueEditingBtn = (Button) findViewById(R.id.continueEditingBtn);
         btnSnap = (ImageView) findViewById(R.id.snap_button);
         btnRotate = (ImageView) findViewById(R.id.rotate_button);
         cropperView = (CropperView) findViewById(R.id.imageView1);
+    }
+
+    public void onContinueEditingBtnClicked(View v)
+    {
+        Intent intent = new Intent(CropImageActivity.this, ImageEditingActivity.class);
+//        intent.putExtra("IMAGE", mBitmap);
+//        startActivity(intent);
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+        intent.putExtra("IMAGE", bs.toByteArray());
+        startActivity(intent);
     }
 }
 
