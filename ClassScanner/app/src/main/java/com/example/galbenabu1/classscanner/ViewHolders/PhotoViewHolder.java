@@ -55,7 +55,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(view.getContext(), CropImageActivity.class);
                                 String strName = null;
-                                intent.putExtra("PATH", strName);
+                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                                 intent.putExtra("ALBUM",mAlbum);
                                 view.getContext().startActivity(intent);
                                 return true;
