@@ -215,25 +215,16 @@ public class ImageEditingActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-<<<<<<< HEAD
                 toastMessage("An error occurred while saving the image,\n" +
                         "please try again");
                 // Handle unsuccessful uploads
-=======
 
-                toastMessage("An error occurred while saving the image,\n" +
-                        "please try again");
-
->>>>>>> 98d1f9817fa814f8175c387b61d9168b3383d3f0
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-<<<<<<< HEAD
-=======
 
->>>>>>> 98d1f9817fa814f8175c387b61d9168b3383d3f0
                 toastMessage("Image saved successfully");
                 Intent intent = new Intent(ImageEditingActivity.this, AlbumInfoActivity.class);
                 intent.putExtra("album_data", album);
@@ -241,18 +232,8 @@ public class ImageEditingActivity extends AppCompatActivity {
             }
         });
     }
-<<<<<<< HEAD
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
-=======
 
-
-
-
-    private void toastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-}
->>>>>>> 98d1f9817fa814f8175c387b61d9168b3383d3f0
