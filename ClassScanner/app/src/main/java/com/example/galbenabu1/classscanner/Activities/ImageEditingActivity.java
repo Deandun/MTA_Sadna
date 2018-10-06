@@ -44,6 +44,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private Bitmap currImage, oldImage;
     private SeekBar sb_value;
+    private String path;
     private Album album;
     private boolean isSharpnessClicked = false;
     private FirebaseStorage storage;
@@ -54,8 +55,10 @@ public class ImageEditingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_editing);
 
+        getDataFromIntentExtra();
+
         storage = FirebaseStorage.getInstance();
-        ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
+        ref = storage.getReference().child(path);
 
         frameLayout=(FrameLayout)findViewById(R.id.top_frame);
         sb_value = (SeekBar) findViewById(R.id.sb_value);
@@ -72,10 +75,6 @@ public class ImageEditingActivity extends AppCompatActivity {
             currImage = oldImage;
         }
 
-        if (getIntent().hasExtra("ALBUM")) {
-            Bundle extras = getIntent().getExtras();
-            album = (Album)extras.getParcelable("ALBUM");
-        }
 
         sb_value.setProgress(100);
         sb_value.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -103,6 +102,19 @@ public class ImageEditingActivity extends AppCompatActivity {
                 onSharpnessImageViewClicked();
             }
         });
+    }
+
+    private void getDataFromIntentExtra() {
+
+        if (getIntent().hasExtra("ALBUM")) {
+            Bundle extras = getIntent().getExtras();
+            album = (Album)extras.getParcelable("ALBUM");
+        }
+
+        if (getIntent().hasExtra("PATH")) {
+            Bundle extras = getIntent().getExtras();
+            path = extras.getString("PATH");
+        }
     }
 
     private void fitImageToImageView() {

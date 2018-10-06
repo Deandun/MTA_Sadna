@@ -161,6 +161,7 @@ public class CropImageActivity extends AppCompatActivity {
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
         intent.putExtra("IMAGE", bs.toByteArray());
         intent.putExtra("ALBUM", album);
+        intent.putExtra("PATH", path);
         startActivity(intent);
     }
 }
