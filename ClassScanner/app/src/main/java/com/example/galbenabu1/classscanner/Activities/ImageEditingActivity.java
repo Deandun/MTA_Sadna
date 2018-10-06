@@ -207,11 +207,8 @@ public class ImageEditingActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-<<<<<<< HEAD
-=======
                 toastMessage("An error occurred while saving the image,\n" +
                         "please try again");
->>>>>>> 8f457250fc848e9569053bfef544396428c8d1df
                 // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -219,19 +216,11 @@ public class ImageEditingActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-<<<<<<< HEAD
-=======
                 toastMessage("Image saved successfully");
->>>>>>> 8f457250fc848e9569053bfef544396428c8d1df
             }
         });
     }
-
-<<<<<<< HEAD
-}
-=======
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
->>>>>>> 8f457250fc848e9569053bfef544396428c8d1df

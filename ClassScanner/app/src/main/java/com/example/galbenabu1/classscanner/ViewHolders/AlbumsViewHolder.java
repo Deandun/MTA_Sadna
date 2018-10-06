@@ -68,23 +68,19 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                     mIsAlbumSelected = true;
                     mAlbumCardView.setCardBackgroundColor(Color.BLUE);
                     mOnLongClickListener.accept(mSelectedAlbum); // Send selected album using a callback.
-                    //changeImageChceked();
+
+                    if (this.isAlbumChecked){
+                        mCheckedSign.setBackgroundResource(R.drawable.unchecked);
+                    }else{
+                        mCheckedSign.setBackgroundResource(R.drawable.checked);
+                    }
+                    this.isAlbumChecked = !this.isAlbumChecked;
+
                     return true; // Return true to signal that we have done what we need to do for the long press.
                 }
         );
     }
 
-    @SuppressLint("ResourceType")
-    private void changeImageChceked(){
-        this.mCheckedSign.setVisibility(View.INVISIBLE);
-        if (isAlbumChecked){
-            this.mCheckedSign.setImageResource(R.id.ivCheckedSign);
-        }else{
-          //  this.mCheckedSign.setImageResource(R.id.ivUnCheckedSign);
-        }
-        this.mCheckedSign.setVisibility(View.VISIBLE);
-        isAlbumChecked = !isAlbumChecked;
-    }
 
     public Album getSelectedAlbum() {
         return mSelectedAlbum;
