@@ -12,7 +12,9 @@
     <color name="input_register">#222222</color>
     <color name="input_login_hint">#999999</color>
     <color name="input_register_hint">#999999</color>
-    <color name="btn_login_register">#2196F3</color>
+    <color name="btn_login_register">#f984c4</color>
+    <color name="btn_email">#f984c4</color>
+    <color name="btn_pass">#f984c4</color>
     <color name="btn_register">#0D47A1</color>
     <color name="btn_logut">#ff6861</color>
 

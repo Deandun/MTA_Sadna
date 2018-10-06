@@ -19,8 +19,8 @@ public class HomeActivity extends Activity {
     private static final String TAG = "HomeActivity";
     // Decides which courses will be displayed in the ShowCoursesActivity
     private static final String SHOW_COURSES_OPTIONS = "show_courses_options";
-
     private TextView mtvGreeting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,10 +28,9 @@ public class HomeActivity extends Activity {
         Log.e(TAG, "onCreate >>");
         mtvGreeting = findViewById(R.id.tvGreeting);
         setContentView(R.layout.activity_home);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-        {
-            //String userName = LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName();
-           // mtvGreeting.setText("Hello " + userName);
+        if (LoggedInUserDetailsManager.getsLoggedInUser() != null) { //TODO: DEAN
+            String userName = LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName();
+            mtvGreeting.setText("Hello " + userName);
         }
 
         // Get root view
