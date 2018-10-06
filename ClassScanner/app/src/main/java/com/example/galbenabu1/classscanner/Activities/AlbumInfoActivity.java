@@ -11,7 +11,6 @@ import android.view.View;
 import com.example.galbenabu1.classscanner.Adapters.PhotoGalleryAdapter;
 import com.example.galbenabu1.classscanner.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
