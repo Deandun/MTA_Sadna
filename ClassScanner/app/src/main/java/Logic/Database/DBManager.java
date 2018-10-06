@@ -478,4 +478,8 @@ public class DBManager {
 
         return audioData;
     }
+
+    public void fetchImages(Album album, List<PictureAudioData> pictureDataList, boolean isPrivateAlbum, int indexToFetchFrom, int numOfPicturesToFetch, MyConsumer<List<byte[]>> onFetchedImagesSuccess) {
+//TODO
+    }
 }

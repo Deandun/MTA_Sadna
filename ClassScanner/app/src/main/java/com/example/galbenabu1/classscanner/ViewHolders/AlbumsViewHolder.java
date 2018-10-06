@@ -31,7 +31,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private MyConsumer<Album> mOnLongClickListener;
     private ImageView mCheckedSign;
 
-    public AlbumsViewHolder(Context context, View itemView) {
+    public AlbumsViewHolder(View itemView) {
         super(itemView);
 
         this.mAlbumCardView = itemView.findViewById(R.id.cvAlbum);

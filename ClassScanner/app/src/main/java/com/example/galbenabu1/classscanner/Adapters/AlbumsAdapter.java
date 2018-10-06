@@ -37,7 +37,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
                 .inflate(R.layout.album_item, parent, false);
 
         Log.e(TAG, "onCreateViewHolder() <<");
-        return new AlbumsViewHolder(parent.getContext(), itemView);
+        return new AlbumsViewHolder(itemView);
     }
 
     @Override

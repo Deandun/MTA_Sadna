@@ -22,7 +22,7 @@ public class Album implements Parcelable {
     private String m_Description;
     private int m_NumOfPictures;
     private List <PictureAudioData> m_Pictures;
-    private List <PictureAudioData> m_Audio;
+    private PictureAudioData m_Audio;
 
     public Album() {}
 
@@ -116,11 +116,11 @@ public class Album implements Parcelable {
         this.m_Pictures = m_Pictures;
     }
 
-    public List<PictureAudioData> getM_Audio() {
+    public PictureAudioData getM_Audio() {
         return m_Audio;
     }
 
-    public void setM_Audio(List<PictureAudioData> m_Audio) {
+    public void setM_Audio(PictureAudioData m_Audio) {
         this.m_Audio = m_Audio;
     }
 
