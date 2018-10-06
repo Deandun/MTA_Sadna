@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner.Activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -33,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.NoSuchElementException;
 
 import Logic.ConvolutionMatrix;
+import Logic.Models.Album;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private Bitmap currImage, oldImage;
     private SeekBar sb_value;
+    private Album album;
     private boolean isSharpnessClicked = false;
     private FirebaseStorage storage;
     private StorageReference ref;
@@ -67,6 +70,11 @@ public class ImageEditingActivity extends AppCompatActivity {
             //fitImageToImageView();
             oldImage = ((BitmapDrawable) imageToEdit.getDrawable()).getBitmap();
             currImage = oldImage;
+        }
+
+        if (getIntent().hasExtra("ALBUM")) {
+            Bundle extras = getIntent().getExtras();
+            album = (Album)extras.getParcelable("ALBUM");
         }
 
         sb_value.setProgress(100);
@@ -209,13 +217,16 @@ public class ImageEditingActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 toastMessage("An error occurred while saving the image,\n" +
                         "please try again");
+                // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 toastMessage("Image saved successfully");
+                Intent intent = new Intent(ImageEditingActivity.this, AlbumInfoActivity.class);
+                intent.putExtra("album_data", album);
+                startActivity(intent);
             }
         });
     }
@@ -224,3 +235,4 @@ public class ImageEditingActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
+

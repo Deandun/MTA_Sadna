@@ -3,6 +3,7 @@ package com.example.galbenabu1.classscanner.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,11 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+
 import com.fenchtose.nocropper.CropperView;
+
+import Logic.Models.Album;
 
 
 /**
@@ -38,10 +43,11 @@ public class CropImageActivity extends AppCompatActivity {
     private ImageView btnRotate;
     private CropperView cropperView;
     private Bitmap mBitmap;
+    private String path;
+    private Album album;
     private boolean isSnappedtoCenter = false;
     private FirebaseStorage storage;
     private StorageReference ref;
-    private int angle=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,7 @@ public class CropImageActivity extends AppCompatActivity {
         initViews();
 
         storage = FirebaseStorage.getInstance();
-        ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
+        ref = storage.getReference().child(path);
 
         getImageByPathAndBitmap();
 
@@ -134,6 +140,16 @@ public class CropImageActivity extends AppCompatActivity {
         btnSnap = (ImageView) findViewById(R.id.snap_button);
         btnRotate = (ImageView) findViewById(R.id.rotate_button);
         cropperView = (CropperView) findViewById(R.id.imageView1);
+
+        if (getIntent().hasExtra("PATH")) {
+            Bundle extras = getIntent().getExtras();
+            path = extras.getString("PATH");
+        }
+
+        if (getIntent().hasExtra("ALBUM")) {
+            Bundle extras = getIntent().getExtras();
+            album = (Album)extras.getParcelable("ALBUM");
+        }
     }
 
     public void onContinueEditingBtnClicked(View v)
@@ -144,6 +160,7 @@ public class CropImageActivity extends AppCompatActivity {
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
         intent.putExtra("IMAGE", bs.toByteArray());
+        intent.putExtra("ALBUM", album);
         startActivity(intent);
     }
 }
