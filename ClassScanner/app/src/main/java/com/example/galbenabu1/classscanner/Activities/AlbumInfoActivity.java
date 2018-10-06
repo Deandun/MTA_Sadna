@@ -41,7 +41,7 @@ public class AlbumInfoActivity extends Activity {
         recyclerView.setLayoutManager(layoutManager);
 
         fetchPhotoListFromDB();
-        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext());
+        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext(), this.mAlbum);
         recyclerView.setAdapter(adapter);
         Log.e(TAG, "onCreate <<");
     }

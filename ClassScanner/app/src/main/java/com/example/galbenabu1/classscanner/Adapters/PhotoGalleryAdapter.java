@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
 
+import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
 //TODO: add logs
@@ -33,16 +34,18 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private static final String TAG = "PhotoGalleryAdapter";
     private ArrayList<PictureAudioData> mPhotoList;
     private Context mContext;
+    private Album mAlbum;
 
-    public PhotoGalleryAdapter(ArrayList<PictureAudioData> photoList, Context context) {
+    public PhotoGalleryAdapter(ArrayList<PictureAudioData> photoList, Context context, Album album) {
         mPhotoList = photoList;
         mContext = context;
+        this.mAlbum = album;
     }
 
     @Override
     public PhotoViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.photo_item, viewGroup, false);
-        return new PhotoViewHolder(view);
+        return new PhotoViewHolder(view, this.mAlbum);
     }
 
     @Override
