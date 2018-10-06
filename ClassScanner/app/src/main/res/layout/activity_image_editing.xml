@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    tools:context="com.example.galbenabu1.classscanner.Activities.CropImageActivity">
+    tools:context="com.example.galbenabu1.classscanner.Activities.ImageEditingActivity">
 
     <FrameLayout
         android:id="@+id/top_frame"
@@ -19,83 +19,79 @@
         tools:ignore="MissingConstraints">
 
 
-        <com.fenchtose.nocropper.CropperView
-            android:id="@+id/imageView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ff282828"
-            app:grid_color="@color/colorAccent"
-            app:grid_opacity="0.8"
-            app:grid_thickness="0.8dp"
-            app:padding_color="@color/colorAccent" />
+
 
         <ImageView
-            android:id="@+id/snap_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/im_brightness"
+            android:layout_width="370dp"
+            android:layout_height="351dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#A0A0A0"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/sharpnessImageView"
+            android:layout_width="49dp"
+            android:layout_height="46dp"
             android:layout_gravity="left|bottom"
             android:layout_margin="16dp"
             android:background="@drawable/black_tranp_circle_ripple"
             android:padding="8dp"
-            android:src="@drawable/ic_crop_free_white_24dp" />
-
-
-        <ImageView
-            android:id="@+id/rotate_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="right|bottom"
-            android:layout_margin="16dp"
-            android:background="@drawable/black_tranp_circle_ripple"
-            android:padding="8dp"
-            android:src="@drawable/ic_rotate_right_white_24dp" />
+            app:srcCompat="@drawable/sharp" />
     </FrameLayout>
 
-
-    <Button
-        android:id="@+id/btnCrop"
-        android:layout_width="172dp"
-        android:layout_height="wrap_content"
+    <SeekBar
+        android:id="@+id/sb_value"
+        android:layout_width="306dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:text="CROP"
+        android:max="255"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.959"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.892" />
+        app:layout_constraintVertical_bias="0.868" />
 
-    <Button
-        android:id="@+id/btnToggleGesture"
-        android:layout_width="174dp"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/brightnessImageView"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:text="TOGGLE GESTURE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.025"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.892" />
+        app:layout_constraintVertical_bias="0.85"
+        app:srcCompat="@drawable/brightness" />
 
     <Button
-        android:id="@+id/continueEditingBtn"
+        android:id="@+id/finishEditingBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="onContinueEditingBtnClicked"
-        android:text="Continue editing "
+        android:text="Done!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

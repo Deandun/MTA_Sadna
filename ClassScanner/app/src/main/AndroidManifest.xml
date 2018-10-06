@@ -11,7 +11,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/iconapp"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -45,7 +45,9 @@
         <activity android:name=".Activities.ForgetPasswordActivity" />
         <activity android:name=".Activities.CreateAlbumActivity" />
         <activity android:name=".Activities.CreateCourseActivity"/>
-        <activity android:name=".Activities.CropImageActivity"></activity>
+        <activity android:name=".Activities.CropImageActivity"/>
+        <activity android:name=".Activities.CropTest"/>
+        <activity android:name=".Activities.ImageEditingActivity"></activity>
     </application>
 
 </manifest>
