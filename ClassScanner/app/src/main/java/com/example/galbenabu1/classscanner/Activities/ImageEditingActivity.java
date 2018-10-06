@@ -215,14 +215,16 @@ public class ImageEditingActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+
                 toastMessage("An error occurred while saving the image,\n" +
                         "please try again");
-                // Handle unsuccessful uploads
+
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
                 toastMessage("Image saved successfully");
                 Intent intent = new Intent(ImageEditingActivity.this, AlbumInfoActivity.class);
                 intent.putExtra("album_data", album);
@@ -230,6 +232,9 @@ public class ImageEditingActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
