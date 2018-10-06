@@ -2,7 +2,6 @@ package Logic.Database;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,10 +15,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,7 @@ import java.util.Map;
 import Logic.Database.DBModels.CourseActions.CourseActionData;
 import Logic.Database.DBModels.CourseActions.eCourseActionType;
 import Logic.Database.DBModels.UserActionData;
+import Logic.Enums.eDataType;
 import Logic.Models.Album;
 import Logic.Models.Course;
 import Logic.Interfaces.MyConsumer;
@@ -64,8 +65,9 @@ public class DBManager {
     }
     public void uploadImageToPrivateAlbum(Bitmap imageBitmap, String userId, String albumID, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         Log.e(TAG, "Writing picture data to DB...");
-        PictureAudioData pictureData = writeImageDataToPrivateAlbumsAndGetKey(userId, albumID);
+        PictureAudioData pictureData = writePictureAudioDataToPrivateAlbumsAndGetKey(userId, albumID);
 
+        pictureData.setM_DataType(eDataType.Picture);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
@@ -90,7 +92,7 @@ public class DBManager {
         });
     }
 
-    private PictureAudioData writeImageDataToPrivateAlbumsAndGetKey(String userId, String albumID) {
+    private PictureAudioData writePictureAudioDataToPrivateAlbumsAndGetKey(String userId, String albumID) {
         PictureAudioData pictureData = new PictureAudioData();
         DatabaseReference privateAlbumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(albumID, userId);
         String pictureKey = privateAlbumRef.push().getKey();
@@ -449,5 +451,31 @@ public class DBManager {
         String courseActionKey = courseActionRef.push().getKey();
 
         courseActionRef.child(courseActionKey).setValue(courseActionData);
+    }
+
+    public void uploadAudioFile(String fileName, PictureAudioData audioData) {
+        this.uploadAudioToStorage(fileName, audioData);
+    }
+
+    private void uploadAudioToStorage(String fileName, PictureAudioData audioData) {
+        StorageReference audioRef = this.mStorageRef.child("Audio").child(audioData.getM_Id());
+        Uri fileUri = Uri.fromFile(new File(fileName));
+
+        audioRef.putFile(fileUri).addOnFailureListener(exception -> {
+            Log.e(TAG, "Failed writting audio file to storage.");
+        }).addOnSuccessListener(taskSnapshot -> {
+            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            Log.e(TAG, "Successfully wrote " + downloadUrl.toString() + " from storage!");
+            audioData.setM_Path(downloadUrl.getPath());
+        });
+    }
+
+    public PictureAudioData addRecordingToPrivateAlbum(String userID, String albumID, Date creationDate) {
+        PictureAudioData audioData = this.writePictureAudioDataToPrivateAlbumsAndGetKey(userID, albumID);
+
+        audioData.setM_DataType(eDataType.Audio);
+        audioData.setM_CreationDate(creationDate);
+
+        return audioData;
     }
 }
