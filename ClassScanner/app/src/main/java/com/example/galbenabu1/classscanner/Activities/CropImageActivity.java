@@ -80,10 +80,8 @@ public class CropImageActivity extends AppCompatActivity {
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                angle+=90;
-                if(angle==360)
-                    angle=0;
-                cropperView.setImageBitmap(rotateBitmap(mBitmap, angle));
+                mBitmap=cropperView.getCroppedBitmap();
+                cropperView.setImageBitmap(rotateBitmap(mBitmap, 0));
             }
         });
     }
