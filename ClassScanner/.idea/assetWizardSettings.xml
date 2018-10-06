@@ -13,6 +13,31 @@
                       <PersistentState>
                         <option name="children">
                           <map>
+<<<<<<< HEAD
+                            <entry key="actionbar">
+                              <value>
+                                <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_photo_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="outputName" value="ic_gallery" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="ffffff" />
+=======
                             <entry key="launcherLegacy">
                               <value>
                                 <PersistentState>
@@ -20,6 +45,7 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="imageAsset" value="C:\Users\aansn\AndroidStudioProjects\Github\MTA_Sadna\ClassScanner\app\src\main\res\drawable\iconapp.png" />
+>>>>>>> db41f790addc3091daa3554510c54d7d3614f443
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -29,7 +55,11 @@
                         </option>
                         <option name="values">
                           <map>
+<<<<<<< HEAD
+                            <entry key="outputIconType" value="ACTIONBAR" />
+=======
                             <entry key="outputIconType" value="LAUNCHER_LEGACY" />
+>>>>>>> db41f790addc3091daa3554510c54d7d3614f443
                           </map>
                         </option>
                       </PersistentState>
