@@ -11,6 +11,8 @@ import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import Logic.Managers.LoggedInUserDetailsManager;
+
 public class HomeActivity extends Activity {
 
     private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
@@ -28,8 +30,8 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
         if (FirebaseAuth.getInstance().getCurrentUser() != null)
         {
-            String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-            //mtvGreeting.setText("Hello " + userName);
+            //String userName = LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName();
+           // mtvGreeting.setText("Hello " + userName);
         }
 
         // Get root view

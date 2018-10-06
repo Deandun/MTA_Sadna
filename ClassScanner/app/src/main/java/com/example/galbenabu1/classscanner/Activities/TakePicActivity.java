@@ -206,6 +206,7 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mBtnFinishTakingPictures = findViewById(R.id.btnFinishTakingPictures);
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
+        mIVSavedPicture.setVisibility(View.INVISIBLE);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/recordAudio.wav";
@@ -435,6 +436,7 @@ public class TakePicActivity extends AppCompatActivity {
     }
 
     private void uploadAudio() {
+
         this.mDBManager.uploadAudioFile(this.mFileName, this.mAudioData);
     }
 
