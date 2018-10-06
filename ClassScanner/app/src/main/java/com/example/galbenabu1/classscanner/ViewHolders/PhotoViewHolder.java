@@ -1,27 +1,79 @@
 package com.example.galbenabu1.classscanner.ViewHolders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
+import com.example.galbenabu1.classscanner.Activities.CropImageActivity;
+import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
 import com.example.galbenabu1.classscanner.R;
 
+import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
-public class PhotoViewHolder extends RecyclerView.ViewHolder {
+
+public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "PhotoViewHolder";
     private TextView mtvTitle;
     private ImageView mivPhoto;
     private PictureAudioData mSelectedPhoto;
+    private Album mAlbum;
 
-    public PhotoViewHolder(View view) {
+    public PhotoViewHolder(View view, Album album) {
         super(view);
+
+        this.mAlbum = album;
+
+
+        view.setOnClickListener(this);
+       // if (withContextMenu) {
+            view.setOnCreateContextMenuListener(this);
+      //  }
 
         mtvTitle = view.findViewById(R.id.tv_photo_title);
         mivPhoto = view.findViewById(R.id.iv_photo);
+
+        mivPhoto.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+                popup.getMenuInflater().inflate(R.menu.picture_options_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.option_1:
+                                //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(view.getContext(), CropImageActivity.class);
+                                String strName = null;
+                                intent.putExtra("PATH", strName);
+                                intent.putExtra("ALBUM",mAlbum);
+                                view.getContext().startActivity(intent);
+                                return true;
+                            case R.id.option_2:
+                                //Toast.makeText(view, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                                return true;
+                            default:
+                               // return super.onContextItemSelected(item);
+                        }
+                        return false;
+                    }
+                });
+                popup.show();
+                return true;
+            }
+        });
+
+
         mivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,6 +87,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
 
     public TextView getTvTitle() {
         return mtvTitle;
@@ -58,6 +111,24 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder {
 
     public void setSelectedPhoto(PictureAudioData selectedPhoto) {
         this.mSelectedPhoto = selectedPhoto;
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        popup.getMenuInflater().inflate(R.menu.picture_options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return false;
     }
 }
 

@@ -209,7 +209,6 @@ public class ImageEditingActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 toastMessage("An error occurred while saving the image,\n" +
                         "please try again");
-                // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
