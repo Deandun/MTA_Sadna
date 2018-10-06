@@ -3,21 +3,34 @@ package com.example.galbenabu1.classscanner.Activities;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
 import com.fenchtose.nocropper.CropperView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.NoSuchElementException;
 
 import Logic.ConvolutionMatrix;
 
@@ -26,6 +39,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private static final String TAG = "ImageEditingActivity";
     private Button finishEditingBtn;
     private ImageView sharpnessImageView, imageToEdit;
+    private FrameLayout frameLayout;
     private Bitmap currImage, oldImage;
     private SeekBar sb_value;
     private boolean isSharpnessClicked = false;
@@ -37,7 +51,10 @@ public class ImageEditingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_editing);
 
+        storage = FirebaseStorage.getInstance();
+        ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
 
+        frameLayout=(FrameLayout)findViewById(R.id.top_frame);
         sb_value = (SeekBar) findViewById(R.id.sb_value);
         imageToEdit = (ImageView) findViewById(R.id.im_brightness);
         sharpnessImageView = (ImageView) findViewById(R.id.sharpnessImageView);
@@ -47,6 +64,7 @@ public class ImageEditingActivity extends AppCompatActivity {
             Bitmap b = BitmapFactory.decodeByteArray(
                     getIntent().getByteArrayExtra("IMAGE"), 0, getIntent().getByteArrayExtra("IMAGE").length);
             imageToEdit.setImageBitmap(b);
+            //fitImageToImageView();
             oldImage = ((BitmapDrawable) imageToEdit.getDrawable()).getBitmap();
             currImage = oldImage;
         }
@@ -79,6 +97,67 @@ public class ImageEditingActivity extends AppCompatActivity {
         });
     }
 
+    private void fitImageToImageView() {
+        // Get bitmap from the the ImageView.
+        Bitmap bitmap = null;
+
+        try {
+            Drawable drawing = imageToEdit.getDrawable();
+            bitmap = ((BitmapDrawable) drawing).getBitmap();
+        } catch (NullPointerException e) {
+            throw new NoSuchElementException("No drawable on given view");
+        }
+
+        // Get current dimensions AND the desired bounding box
+        int width = 0;
+
+        try {
+            width = bitmap.getWidth();
+        } catch (NullPointerException e) {
+            throw new NoSuchElementException("Can't find bitmap on given view/drawable");
+        }
+
+        int height = bitmap.getHeight();
+        int bounding = dpToPx(370);
+        Log.i("Test", "original width = " + Integer.toString(width));
+        Log.i("Test", "original height = " + Integer.toString(height));
+        Log.i("Test", "bounding = " + Integer.toString(bounding));
+
+        float xScale = ((float) bounding) / width;
+        float yScale = ((float) bounding) / height;
+        float scale = (xScale <= yScale) ? xScale : yScale;
+        Log.i("Test", "xScale = " + Float.toString(xScale));
+        Log.i("Test", "yScale = " + Float.toString(yScale));
+        Log.i("Test", "scale = " + Float.toString(scale));
+
+        // Create a matrix for the scaling and add the scaling data
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+
+        // Create a new bitmap and convert it to a format understood by the ImageView
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        width = scaledBitmap.getWidth(); // re-use
+        height = scaledBitmap.getHeight(); // re-use
+        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+        Log.i("Test", "scaled width = " + Integer.toString(width));
+        Log.i("Test", "scaled height = " + Integer.toString(height));
+
+        // Apply the scaled bitmap
+        imageToEdit.setImageDrawable(result);
+
+        // Now change ImageView's dimensions to match the scaled image
+//        imageToEdit.setWi = width;
+//        params.height = height;
+//        imageToEdit.setLayoutParams(params);
+
+        Log.i("Test", "done");
+    }
+
+    private int dpToPx(int dp) {
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
+    }
+
     public static PorterDuffColorFilter setBrightness(int progress) {
         if (progress >= 100) {
             return new PorterDuffColorFilter(Color.argb(progress, 255, 255, 255), PorterDuff.Mode.SRC_OVER);
@@ -87,7 +166,6 @@ public class ImageEditingActivity extends AppCompatActivity {
             return new PorterDuffColorFilter(Color.argb(value, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
         }
     }
-
 
     public void onSharpnessImageViewClicked() {
         if (!isSharpnessClicked) {
@@ -101,8 +179,6 @@ public class ImageEditingActivity extends AppCompatActivity {
     }
 
     public Bitmap sharpenImage(Bitmap src, double weight) {
-
-
         // set sharpness configuration
         double[][] SharpConfig = new double[][]{
                 {0, -2, 0},
@@ -118,4 +194,44 @@ public class ImageEditingActivity extends AppCompatActivity {
         return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
     }
 
+    public void onDoneBtnClick(View v)
+    {
+        imageToEdit.setDrawingCacheEnabled(true);
+        imageToEdit.buildDrawingCache();
+        Bitmap bitmap = imageToEdit.getDrawingCache();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = ref.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+<<<<<<< HEAD
+=======
+                toastMessage("An error occurred while saving the image,\n" +
+                        "please try again");
+>>>>>>> 8f457250fc848e9569053bfef544396428c8d1df
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+<<<<<<< HEAD
+=======
+                toastMessage("Image saved successfully");
+>>>>>>> 8f457250fc848e9569053bfef544396428c8d1df
+            }
+        });
+    }
+
+<<<<<<< HEAD
 }
+=======
+    private void toastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+}
+>>>>>>> 8f457250fc848e9569053bfef544396428c8d1df

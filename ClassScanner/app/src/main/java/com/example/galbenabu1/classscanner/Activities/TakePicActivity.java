@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.os.HandlerThread;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,8 +45,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import Logic.Database.DBManager;
@@ -78,6 +81,7 @@ public class TakePicActivity extends AppCompatActivity {
 
     //FireBase
     private StorageReference mStorageRef;
+    private PictureAudioData mAudioData;
 
     // An enum that represents the state of this activity.
     private enum eTakePicActivityState {
@@ -171,7 +175,9 @@ public class TakePicActivity extends AppCompatActivity {
         super.onResume();
         this.startBackgroundThread();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mRecorder.resume();
+            if(this.mRecorder != null) {
+                mRecorder.resume();
+            }
         }
         if (mTextureView.isAvailable()) {
             this.setupCamera(mTextureView.getWidth(), mTextureView.getHeight());
@@ -200,6 +206,7 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mBtnFinishTakingPictures = findViewById(R.id.btnFinishTakingPictures);
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
+        mIVSavedPicture.setVisibility(View.INVISIBLE);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/recordAudio.wav";
@@ -209,11 +216,12 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnTakePicture.setOnClickListener(this::onStartTakingPictures);
     }
 
+    //@RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onPause() {
         this.closeCamera();
 
-        mRecorder.pause();
+     //   mRecorder.pause();
 
         super.onPause();
     }
@@ -340,7 +348,7 @@ public class TakePicActivity extends AppCompatActivity {
             case InActive:
                 // Button clicked when state was inactive.
                 // Start repetative action to take a picture, every 15 seconds
-                startRecording(); //TODO: figure out why stopped working.
+                startRecording();
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
@@ -348,14 +356,12 @@ public class TakePicActivity extends AppCompatActivity {
             case InProgress:
                 // Button clicked when state was InProgress.
                 // Pause taking pictures.
-                // stopRecording(); TODO: can we Pause the recording?
                 mActivityState = eTakePicActivityState.Paused;
                 mBtnTakePicture.setText("Continue");
                 break;
             case Paused:
                 // Button clicked when state was Paused.
                 // Continue taking pictures.
-                // TODO: Can we Continue recording?
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
@@ -412,6 +418,12 @@ public class TakePicActivity extends AppCompatActivity {
             //Log.e(LOG_TAG, "prepare() failed");
         }
 
+        Date creationDate = Calendar.getInstance().getTime();
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        this.mAudioData = mDBManager.addRecordingToPrivateAlbum(userID, this.mAlbumID, creationDate);
+        this.mPictureList.add(this.mAudioData);
+
         mRecorder.start();
     }
 
@@ -424,12 +436,8 @@ public class TakePicActivity extends AppCompatActivity {
     }
 
     private void uploadAudio() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        StorageReference audioRef = FirebaseStorage.getInstance().getReference("audioFiles/").child("audioFileNew.wav");
-        Uri uri = Uri.fromFile(new File(mFileName));
-
-        audioRef.putFile(uri);
+        this.mDBManager.uploadAudioFile(this.mFileName, this.mAudioData);
     }
 
     //Thread
@@ -483,7 +491,6 @@ public class TakePicActivity extends AppCompatActivity {
         Bitmap bitmap = mIVSavedPicture.getDrawingCache();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // TODO: run using a task.
         mDBManager.uploadImageToPrivateAlbum(bitmap, userId, mAlbumID,
                 (MyConsumer<PictureAudioData>) this::uploadImageSuccess, // on Success
                 this::uploadImageFailure); // On failure

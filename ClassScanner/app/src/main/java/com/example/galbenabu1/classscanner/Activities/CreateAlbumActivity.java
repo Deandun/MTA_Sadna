@@ -80,10 +80,10 @@ public class CreateAlbumActivity extends Activity {
         String albumCreatorName = this.mAlbumCreator.getText().toString();
 
         Album newAlbum = new Album(mNewAlbumID, albumName, new Date(), albumCreatorName);
+
         newAlbum.setM_Description(albumDescription);
         newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());
         newAlbum.setM_Pictures(mPictureAudioDataCollection);
-        //TODO: set audio
 
         mDBManager.addAlbumDetailsToDB(newAlbum, FirebaseAuth.getInstance().getCurrentUser().getUid());
 

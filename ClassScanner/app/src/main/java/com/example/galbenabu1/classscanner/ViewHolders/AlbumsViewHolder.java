@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner.ViewHolders;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,10 +31,12 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private boolean mIsAlbumSelected;
     private MyConsumer<Album> mOnLongClickListener;
     private ImageView mCheckedSign;
+    private boolean isAlbumChecked;
 
     public AlbumsViewHolder(Context context, View itemView) {
         super(itemView);
 
+        this.isAlbumChecked = false;
         this.mAlbumCardView = itemView.findViewById(R.id.cvAlbum);
         this.mCreatorName = itemView.findViewById(R.id.tvAlbumPublisher);
         this.mAlbumName = itemView.findViewById(R.id.tvAlbumName);
@@ -41,7 +44,6 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         this.mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);
         this.mIsAlbumSelected = false;
         this.mCheckedSign = itemView.findViewById(R.id.ivCheckedSign);
-        hideCheckedSign();
 
         this.mAlbumCardView.setOnClickListener(view -> {
             Log.e(TAG, "CardView.onClick() >> Album: " + mSelectedAlbum.toString());
@@ -66,10 +68,22 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                     mIsAlbumSelected = true;
                     mAlbumCardView.setCardBackgroundColor(Color.BLUE);
                     mOnLongClickListener.accept(mSelectedAlbum); // Send selected album using a callback.
-                    displayCheckedSign();
+                    //changeImageChceked();
                     return true; // Return true to signal that we have done what we need to do for the long press.
                 }
         );
+    }
+
+    @SuppressLint("ResourceType")
+    private void changeImageChceked(){
+        this.mCheckedSign.setVisibility(View.INVISIBLE);
+        if (isAlbumChecked){
+            this.mCheckedSign.setImageResource(R.id.ivCheckedSign);
+        }else{
+          //  this.mCheckedSign.setImageResource(R.id.ivUnCheckedSign);
+        }
+        this.mCheckedSign.setVisibility(View.VISIBLE);
+        isAlbumChecked = !isAlbumChecked;
     }
 
     public Album getSelectedAlbum() {
@@ -120,10 +134,4 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         mOnLongClickListener = onLongClickListener;
     }
 
-    public void displayCheckedSign(){
-        this.mCheckedSign.setVisibility(View.VISIBLE);
-    }
-    public void hideCheckedSign(){
-        this.mCheckedSign.setVisibility(View.INVISIBLE);
-    }
 }
