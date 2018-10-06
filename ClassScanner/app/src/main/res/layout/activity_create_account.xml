@@ -111,7 +111,8 @@
 
     <Button
         android:id="@+id/register_btn"
-        android:layout_width="wrap_content"
+        style="@android:style/Widget.Holo.Button.Small"
+        android:layout_width="88dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/college"
         android:layout_centerHorizontal="true"

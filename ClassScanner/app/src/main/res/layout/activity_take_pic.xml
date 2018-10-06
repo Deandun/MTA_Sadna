@@ -16,6 +16,7 @@
 
     <Button
         android:id="@+id/btnClearPicturesTaken"
+        style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -28,18 +29,20 @@
 
     <Button
         android:id="@+id/btnTakeAPic"
+        style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:text="Start"
         app:layout_constraintBottom_toBottomOf="@+id/bestTextureView"
-        app:layout_constraintRight_toLeftOf="@+id/btnFinishTakingPictures"
-        app:layout_constraintLeft_toRightOf="@+id/btnClearPicturesTaken" />
+        app:layout_constraintLeft_toRightOf="@+id/btnClearPicturesTaken"
+        app:layout_constraintRight_toLeftOf="@+id/btnFinishTakingPictures" />
 
     <Button
         android:id="@+id/btnFinishTakingPictures"
+        style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"

@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/btnFinishCreatingAlbum"
+        style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="160dp"
@@ -84,16 +85,16 @@
 
     <TextView
         android:id="@+id/tvCreateNewAlbumTitle"
-        android:layout_width="180dp"
-        android:layout_height="28dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="292dp"
+        android:layout_height="51dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="24dp"
-        android:text="Create New Course"
-        android:textAppearance="@android:style/TextAppearance"
+        android:text="Create New Album"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:visibility="visible"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -94,7 +94,7 @@ public class CourseInfoActivity extends AppCompatActivity {
         Log.e(TAG, "onShowCoursesClick <<");
     }
 
-    public void onBackButtonClick(View v){
+    public void onCreateInfoBackButtonClick(View v){
         //TODO: implement
     }
 
