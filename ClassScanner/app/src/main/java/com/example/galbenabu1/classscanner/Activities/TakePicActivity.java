@@ -428,12 +428,8 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadAudio() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-<<<<<<< HEAD
-        //TODO: move to dbManager
-        StorageReference audioRef = mStorageRef.child("Albums/").child("privateAlbums").child(userId).child(mAlbumID).child("audioFile.3gp");
-=======
+
         StorageReference audioRef = FirebaseStorage.getInstance().getReference("audioFiles/").child("audioFileNew.wav");
->>>>>>> c550efbff0e7a857f1796c14df40ffefcdcdeef5
         Uri uri = Uri.fromFile(new File(mFileName));
 
         audioRef.putFile(uri);

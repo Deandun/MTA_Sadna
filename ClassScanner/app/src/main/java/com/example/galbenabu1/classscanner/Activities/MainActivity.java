@@ -123,11 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     } else {
                                         LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
-<<<<<<< HEAD
-                                        Intent intent = new Intent(MainActivity.this, CropTest.class);
-=======
                                         Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
->>>>>>> 452e565bad842532704c7650d7f5ee313f9f9964
                                         startActivity(intent);
                                         finish();
                                     }
