@@ -8,7 +8,9 @@ public enum eFirebaseDBEntityTypes {
     SharedAlbums("SharedAlbums"),
     PrivateAlbums("PrivateAlbums"),
     UserNotifications("UserNotifications"),
-    SuggestedCourses("SuggestedCourses");
+    SuggestedCourses("SuggestedCourses"),
+    CourseActions("CourseActions"),
+    UserActions("UserActions");
 
     private String mReferenceName;
 

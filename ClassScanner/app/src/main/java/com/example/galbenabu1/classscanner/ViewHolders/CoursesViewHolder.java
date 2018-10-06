@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.galbenabu1.classscanner.Activities.CourseInfoActivity;
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.Course;
+import Logic.Models.Course;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder{
     private static final String TAG = "CourseViewHolder";
@@ -29,7 +29,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
 
         mCourseCardView = itemView.findViewById(R.id.cvCourse);
-        mCreatorName = itemView.findViewById(R.id.tvPublisher);
+        mCreatorName = itemView.findViewById(R.id.tvCoursePublisher);
         mCourseName = itemView.findViewById(R.id.tvCourseName);
         mCreationDate = itemView.findViewById(R.id.tvCreationDate);
         mCourseImg = itemView.findViewById(R.id.ivCourseImage);
@@ -41,6 +41,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
                 Log.e(TAG, "CardView.onClick() >> Course: " + mSelectedCourse.toString());
 
                 Context context = view.getContext();
+                mSelectedCourse.toString();
                 Intent intent = new Intent(context, CourseInfoActivity.class);
                 intent.putExtra(COURSE_DATA, mSelectedCourse);
                 context.startActivity(intent);

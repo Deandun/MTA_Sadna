@@ -9,12 +9,15 @@ import android.widget.EditText;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import Logic.Album;
-import Logic.Course;
+import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Models.Course;
 import Logic.Database.DBManager;
 
 public class CreateCourseActivity extends AppCompatActivity {
@@ -48,23 +51,23 @@ public class CreateCourseActivity extends AppCompatActivity {
     }
 
     private void setUI() {
-        this.metCreatorName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        this.metCreatorName.setText(LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        this.metCreateDate.setText(dateFormat.format(date));
     }
 
     private void getAlbumAndCourseID() {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-
-        //this.mAlbumsCollection = (List<Album>) extras.get(NEW_ALBUM_DATA);
     }
 
     private void bindUI(){
         this.metCourseName = findViewById(R.id.etCreateCourseName);
-        this.metCourseDescription = findViewById(R.id.etCreateCouresDescription);
+        this.metCourseDescription = findViewById(R.id.etCreateCourseDescription);
         this.metCreateDate = findViewById(R.id.etDate);
         this.metCreatorName = findViewById(R.id.etCreatorName);
     }
-
 
     public void onFinishCreatingCourseClick(View v) {
         Log.e(TAG, "onFinishCreatingCourse >>");
@@ -72,6 +75,9 @@ public class CreateCourseActivity extends AppCompatActivity {
         Course newCourse = this.createNewCourse();
 
         this.mDBManager.addNewCourseDetailsToDBAndSetCourseID(newCourse);
+        LoggedInUserDetailsManager.addCourseIDToUser(newCourse.getID());
+        this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser(), newCourse.getID());
+
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
@@ -81,7 +87,7 @@ public class CreateCourseActivity extends AppCompatActivity {
     }
 
     public void onChooseAlbumsClick(View v) {
-        Log.e(TAG, "onChooseAlbumsClick >>");
+        Log.e(TAG, "onActionButtonClick >>");
 
         if(this.mAlbumIDCollection != null) {
             this.mAlbumIDCollection.clear(); // Reset previous albums collection before selecting new albums.
@@ -92,7 +98,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         chooseAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
         startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
 
-        Log.e(TAG, "onChooseAlbumsClick <<");
+        Log.e(TAG, "onActionButtonClick <<");
     }
 
     @Override
@@ -114,13 +120,12 @@ public class CreateCourseActivity extends AppCompatActivity {
         String courseName = this.metCourseName.getText().toString();
         String courserDescription = this.metCourseDescription.getText().toString();
         String creatorID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //TODO: get user name from Current User.
-        String courseCreator = this.metCreatorName.getText().toString();
+        String courseCreatorName = this.metCreatorName.getText().toString();
 
-        newCourse.setCreationDate(Calendar.getInstance().getTime());
+        newCourse.setCreationDate(new Date());
         newCourse.setDescription(courserDescription);
         newCourse.setCourseName(courseName);
-        newCourse.setCreatorName(courseCreator);
+        newCourse.setCreatorName(courseCreatorName);
         newCourse.setCreatorID(creatorID);
         newCourse.setM_AlbumIds(this.mAlbumIDCollection != null ? this.mAlbumIDCollection : new ArrayList<>());
 

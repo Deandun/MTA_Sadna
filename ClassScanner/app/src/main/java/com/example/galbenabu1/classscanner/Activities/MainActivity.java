@@ -18,6 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import Logic.Managers.LoggedInUserDetailsManager;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -66,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intent);
                     Intent intent = new Intent(MainActivity.this, CropTest.class);
                     startActivity(intent);
+//                    LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    //startActivity(intent);
+//                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
+ //                   startActivity(intent);
                 } else {
                     // User is signed out
                     Log.e(TAG, "onAuthStateChanged:signed_out");
@@ -116,13 +123,14 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                        LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, CropTest.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                 }
                             });
-
                 } else {
                     toastMessage("You didn't fill in all the fields.");
                 }
@@ -178,5 +186,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ForgetPasswordActivity.class);
         startActivity(intent);
     }
+
 }
 

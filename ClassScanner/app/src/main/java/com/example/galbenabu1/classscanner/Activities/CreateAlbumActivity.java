@@ -7,16 +7,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import Logic.Album;
+import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Models.Album;
 import Logic.Database.DBManager;
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
 
 public class CreateAlbumActivity extends Activity {
 
@@ -29,6 +32,8 @@ public class CreateAlbumActivity extends Activity {
     private String mNewAlbumID;
 
     // UI.
+    private EditText mAlbumCreator;
+    private EditText mAlbumCreatoionDate;
     private EditText metAlbumName;
     private EditText metAlbumDescription;
 
@@ -42,6 +47,7 @@ public class CreateAlbumActivity extends Activity {
         setContentView(R.layout.activity_create_album);
         this.getNewPictureAudioDataAndAlbumID();
         this.bindUI();
+        this.setUI();
     }
 
     private void getNewPictureAudioDataAndAlbumID() {
@@ -55,6 +61,15 @@ public class CreateAlbumActivity extends Activity {
     private void bindUI() {
         this.metAlbumName = findViewById(R.id.etCreateAlbumName);
         this.metAlbumDescription = findViewById(R.id.etCreateAlbumDescription);
+        this.mAlbumCreatoionDate = findViewById(R.id.etAlbumDate);
+        this.mAlbumCreator = findViewById(R.id.etAlbumCreatorName);
+    }
+
+    private void setUI() {
+        this.mAlbumCreator.setText(LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        this.mAlbumCreatoionDate.setText(dateFormat.format(date));
     }
 
     public void onFinishCreatingAlbumClick(View v) {
@@ -62,8 +77,9 @@ public class CreateAlbumActivity extends Activity {
 
         String albumName = metAlbumName.getText().toString();
         String albumDescription = metAlbumDescription.getText().toString();
+        String albumCreatorName = this.mAlbumCreator.getText().toString();
 
-        Album newAlbum = new Album(mNewAlbumID, albumName, Calendar.getInstance().getTime());
+        Album newAlbum = new Album(mNewAlbumID, albumName, new Date(), albumCreatorName);
         newAlbum.setM_Description(albumDescription);
         newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());
         newAlbum.setM_Pictures(mPictureAudioDataCollection);

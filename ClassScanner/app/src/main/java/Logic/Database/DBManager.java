@@ -2,8 +2,10 @@ package Logic.Database;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,19 +16,25 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import Logic.Album;
-import Logic.Course;
+import Logic.Database.DBModels.CourseActions.CourseActionData;
+import Logic.Database.DBModels.CourseActions.eCourseActionType;
+import Logic.Database.DBModels.UserActionData;
+import Logic.Models.Album;
+import Logic.Models.Course;
 import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
+import Logic.Models.User;
+
+import static Logic.Database.KeysForDBModels.*;
 
 /**
  * Created by galbenabu1 on 08/05/2018.
@@ -46,8 +54,7 @@ public class DBManager {
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
-    public void updatingUserDetails(Map<String, Object> userDetails)
-    {
+    public void updatingUserDetails(Map<String, Object> userDetails) {
         String key = mDatabase.child("Users").push().getKey();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, userDetails);
@@ -55,25 +62,6 @@ public class DBManager {
 
         mDatabase.updateChildren(childUpdates);
     }
-
-    public List<Album> getAlbumsList(){//Parcel in) { //noy - TEMP
-
-        List<Album> albums = new ArrayList<>();
-        //DatabaseReference DB = mDatabase.getDatabase().getReference("/Albums");
-        mStorageRef = FirebaseStorage.getInstance().getReference("/Albums");
-        Log.e(TAG, "Got albums " + mStorageRef.getName());
-        Log.e(TAG, "Got dummyalbum = " + mStorageRef.child("DummyAlbum"));
-
-        mStorageRef.getName();
-        List a = new ArrayList();
-        a.add(mStorageRef);
-        Log.e(TAG, "******************DEBUG: size = " + a.size());
-       // Album album = new Album(in);
-       // albums.add(Album.CREATOR.createFromParcel(in));
-
-        return albums;
-    }
-
     public void uploadImageToPrivateAlbum(Bitmap imageBitmap, String userId, String albumID, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         Log.e(TAG, "Writing picture data to DB...");
         PictureAudioData pictureData = writeImageDataToPrivateAlbumsAndGetKey(userId, albumID);
@@ -82,19 +70,23 @@ public class DBManager {
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
+        this.uploadImage(data, pictureData, uploadImageSuccess, uploadImageFailure);
+    }
+
+    private void uploadImage(byte[] imageData, PictureAudioData imageMetaData, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         // Upload image
         Log.e(TAG, "Uploading image to DB...");
-        StorageReference imageRef = mStorageRef.child("Albums").child("privateAlbums").child(userId).child(albumID).child(pictureData.getM_Id());
+        StorageReference imageRef = mStorageRef.child("Images").child(imageMetaData.getM_Id());
 
-        UploadTask uploadTask = imageRef.putBytes(data);
+        UploadTask uploadTask = imageRef.putBytes(imageData);
         uploadTask.addOnFailureListener(exception -> {
             Log.e(TAG, "Failed reading from storage.");
             uploadImageFailure.run();
         }).addOnSuccessListener(taskSnapshot -> {
             Uri downloadUrl = taskSnapshot.getDownloadUrl();
             Log.e(TAG, "Successfully read " + downloadUrl.toString() + " from storage!");
-            pictureData.setM_Path(downloadUrl.getPath());
-            uploadImageSuccess.accept(pictureData);
+            imageMetaData.setM_Path(downloadUrl.getPath());
+            uploadImageSuccess.accept(imageMetaData);
         });
     }
 
@@ -121,7 +113,7 @@ public class DBManager {
 
         DatabaseReference albumRef;
 
-        if(isPrivateAlbum) {
+        if (isPrivateAlbum) {
             albumRef = FirebaseDBReferenceGenerator.getPrivateAlbumReference(albumID, userID);
         } else {
             albumRef = FirebaseDBReferenceGenerator.getSharedAlbumReference(albumID, userID);
@@ -129,12 +121,11 @@ public class DBManager {
 
         this.removeAlbumFromStorage(albumID, userID, isPrivateAlbum, pictureDataCollection);
 
-
         albumRef.removeValue(
                 (error, dbRef) -> {
-                    String errorMsg = error == null ? "" :" received code: " + error.getCode() +
-                    ". and message: " + error.getMessage();
-                    Log.e(TAG, "Removing album with ID: " + albumID +  errorMsg);
+                    String errorMsg = error == null ? "" : " received code: " + error.getCode() +
+                            ". and message: " + error.getMessage();
+                    Log.e(TAG, "Removing album with ID: " + albumID + errorMsg);
                 }
         );
     }
@@ -146,7 +137,7 @@ public class DBManager {
         String albumTypeString = isPrivateAlbum ? "privateAlbums" : "sharedAlbums";
         StorageReference albumRef = mStorageRef.child("Albums/").child(albumTypeString).child(userID).child(albumID);
 
-        for(PictureAudioData pictureData: pictureDataCollection) {
+        for (PictureAudioData pictureData : pictureDataCollection) {
             StorageReference pictureRef = albumRef.child(pictureData.getM_Id());
             pictureRef.delete().addOnSuccessListener(
                     (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id())
@@ -162,7 +153,7 @@ public class DBManager {
 
         DatabaseReference picturesRef;
 
-        if(isPrivateAlbum) {
+        if (isPrivateAlbum) {
             picturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
         } else {
             picturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
@@ -172,7 +163,7 @@ public class DBManager {
 
         Map<String, Object> deletionMap = new HashMap<>();
 
-        for(PictureAudioData pictureData : pictureCollections) {
+        for (PictureAudioData pictureData : pictureCollections) {
             deletionMap.put(pictureData.getM_Id(), null);
         }
 
@@ -188,7 +179,7 @@ public class DBManager {
         String albumTypeString = isPrivateAlbum ? "privateAlbums" : "sharedAlbums";
         StorageReference albumRef = mStorageRef.child("Albums/").child(albumTypeString).child(userID).child(albumID);
 
-        for(PictureAudioData pictureData: pictureCollection) {
+        for (PictureAudioData pictureData : pictureCollection) {
             albumRef.child(pictureData.getM_Id()).delete().addOnSuccessListener(
                     (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id() + " from storage.")
             ).addOnFailureListener(
@@ -237,7 +228,7 @@ public class DBManager {
                 List<Album> albumList = new ArrayList<>();
                 Album album;
 
-                for(DataSnapshot albumSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot albumSnapshot : dataSnapshot.getChildren()) {
                     album = albumSnapshot.getValue(Album.class);
                     albumList.add(album);
                 }
@@ -263,9 +254,9 @@ public class DBManager {
                 List<Course> courseList = new ArrayList<>();
                 Course course;
 
-                for(DataSnapshot courseSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
                     course = courseSnapshot.getValue(Course.class);
-                    if(filterFunction.apply(course)) {
+                    if (filterFunction.apply(course)) {
                         courseList.add(course);
                     }
                 }
@@ -280,8 +271,60 @@ public class DBManager {
         });
     }
 
+    public void fetchSuggestedCourses(MyConsumer<List<Course>> onFinishFetchingCourses) {
+        Log.e(TAG, "Fetching suggested courses");
+        DatabaseReference suggestedCoursesReference = FirebaseDBReferenceGenerator.getSuggestedCoursesReference();
+
+        suggestedCoursesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e(TAG, "Fetched courses from DB");
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                List<String> courseIDsList = (ArrayList<String>)dataSnapshot.child(userID).getValue();
+                fetchCoursesForIDs(courseIDsList, onFinishFetchingCourses);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Failed fetching suggested courses");
+            }
+        });
+    }
+
+    private void fetchCoursesForIDs(List<String> courseIDsList, MyConsumer<List<Course>> onFinishFetchingCourses) {
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
+        List<Course> updatedSuggestedCoursesList = new ArrayList<>();
+
+        for(String courseID: courseIDsList) {
+            courseRef.child(courseID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Course course = dataSnapshot.getValue(Course.class);
+                    updatedSuggestedCoursesList.add(course);
+                    onFinishFetchingCourses.accept(updatedSuggestedCoursesList); // Send the courses we've gotten so far.
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void addAlbumsToExistsCourse(Course courseToUpdate) {
+        Log.e(TAG, "Adding Albums to course: " + courseToUpdate.getID() + " to DB");
+
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getCourseReference(courseToUpdate.getID());
+        courseRef.child(ALBUMS_ID).setValue(courseToUpdate.getM_AlbumIds());
+
+        Log.e(TAG, "Added to DB albums to course: " + courseToUpdate.getID());
+    }
+
     public void addNewCourseDetailsToDBAndSetCourseID(Course newCourse) {
         Log.e(TAG, "Adding new course details with ID: " + newCourse.getID() + " to DB");
+
         // Set new course ID.
         DatabaseReference privateCourseRef = FirebaseDBReferenceGenerator.getAllCoursesReference().push();
         String courseID = privateCourseRef.getKey();
@@ -293,6 +336,10 @@ public class DBManager {
                     Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID());
                     // Remove album IDs from private albums to shared albums.
                     this.moveAlbumIDsFromPrivateToShared(newCourse.getID(), newCourse.getCreatorID(), newCourse.getM_AlbumIds());
+                    CourseActionData courseActionData = new CourseActionData();
+                    courseActionData.setmCourseActionType(eCourseActionType.CourseCreated);
+                    courseActionData.setmCourseID(newCourse.getID());
+                    this.writeCourseAction(courseActionData);
                 }
         ).addOnFailureListener(
                 (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + newCourse.getID() + System.lineSeparator() +
@@ -305,15 +352,16 @@ public class DBManager {
         DatabaseReference userPrivateAlbumsRef = FirebaseDBReferenceGenerator.getAllUserPrivateAlbumsReference(albumCreatorUserID);
         DatabaseReference courseSharedAlbumsRef = FirebaseDBReferenceGenerator.getAllCourseSharedAlbumsReference(courseID);
 
-        for(String albumID: albumIDs) {
+        for (String albumID : albumIDs) {
             userPrivateAlbumsRef.child(albumID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Album currentAlbum = dataSnapshot.getValue(Album.class);
-                    if(currentAlbum == null) {
+                    if (currentAlbum == null) {
                         // Album does not exist in DB. Might be because this function is called again after removing the album the first time.
                         return;
                     }
+
                     Log.e(TAG, "Finished fetching album with ID: " + currentAlbum.getM_Id());
 
                     // Remove album from private albums
@@ -334,5 +382,72 @@ public class DBManager {
                 }
             });
         }
+
+    }
+
+    public void moveAlbumIDsFromPrivateToSharedHelper(String courseID, String albumCreatorUserID, List<String> albumIDs) {
+        moveAlbumIDsFromPrivateToShared(courseID, albumCreatorUserID, albumIDs);
+    }
+
+    public void addUserInfoToDataBase(User loggedInUser) {
+        DatabaseReference userReference = FirebaseDBReferenceGenerator.getAllUsersReference();
+
+        userReference.child(loggedInUser.getM_Id()).setValue(loggedInUser);
+    }
+
+    public void fetchUserDetails(String userID, MyConsumer<User> onFetchedUserSuccess, Runnable onFetchedUserFailure) {
+        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(userID);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User userInfo = dataSnapshot.getValue(User.class);
+
+                Log.e(TAG, "Finished fetching user info with ID: " + userInfo.getM_Id());
+
+                onFetchedUserSuccess.accept(userInfo);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                onFetchedUserFailure.run();
+            }
+        });
+    }
+
+    // User actions
+
+    public void userJoinsCourse(User user, String joinedCourseID) {
+        DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(user.getM_Id());
+        userRef.child("m_CourseIds").setValue(user.getM_CourseIds());
+
+        CourseActionData courseActionData = new CourseActionData();
+        courseActionData.setmCourseActionType(eCourseActionType.JoinedCourse);
+        courseActionData.setmCourseID(joinedCourseID);
+        courseActionData.setmUserCoursesIDs(user.getM_CourseIds());
+
+        this.writeCourseAction(courseActionData);
+    }
+
+    public void onUserLogin(String userID, List<String> userCourseIDs) {
+        Log.e(TAG, "Writing user log in data for use with id: " + userID);
+
+        DatabaseReference userActionsReference = FirebaseDBReferenceGenerator.getUserActionsReference();
+
+        UserActionData userActionData = new UserActionData();
+        userActionData.setmUserID(userID);
+        userActionData.setmUserCourseIDs(userCourseIDs);
+
+        userActionsReference.child(userID).setValue(userActionData);
+    }
+
+    // Course actions
+
+    private void writeCourseAction(CourseActionData courseActionData) {
+        DatabaseReference courseActionRef = FirebaseDBReferenceGenerator.getCourseActionReference();
+
+        String courseActionKey = courseActionRef.push().getKey();
+
+        courseActionRef.child(courseActionKey).setValue(courseActionData);
     }
 }

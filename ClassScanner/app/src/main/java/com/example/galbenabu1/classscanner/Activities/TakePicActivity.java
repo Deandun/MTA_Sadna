@@ -50,7 +50,7 @@ import java.util.List;
 
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
-import Logic.PictureAudioData;
+import Logic.Models.PictureAudioData;
 
 public class TakePicActivity extends AppCompatActivity {
 
@@ -89,7 +89,6 @@ public class TakePicActivity extends AppCompatActivity {
 
     //Take pictures in a loop
     private final Handler mHandler = new Handler();
-    private int mPictureNumber = 0;
 
     private final Runnable mTakePictureRunnable = new Runnable() {
         public void run() {
@@ -118,7 +117,7 @@ public class TakePicActivity extends AppCompatActivity {
         public void onDisconnected(@NonNull CameraDevice cameraDevice) {
             mCameraDevice.close();
             mCameraDevice = null;
-            Toast.makeText(getApplicationContext(), "Camera Disconnected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Camera Disconnected. Please restart activity.", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -353,6 +352,7 @@ public class TakePicActivity extends AppCompatActivity {
                 // Continue taking pictures.
                 // TODO: Can we Continue recording?
                 mActivityState = eTakePicActivityState.InProgress;
+                mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
                 break;
         }

@@ -7,55 +7,55 @@ import com.google.firebase.database.FirebaseDatabase;
 class FirebaseDBReferenceGenerator {
     private static final DatabaseReference sfDatabaseRoot = FirebaseDatabase.getInstance().getReference();
 
-    static DatabaseReference getAllCoursesReference() {
+    public static DatabaseReference getAllCoursesReference() {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.Courses.getReferenceName());
     }
 
-    static DatabaseReference getCourseReference(String courseID) {
+    public static DatabaseReference getCourseReference(String courseID) {
         return getAllCoursesReference().child(courseID);
     }
 
-    static DatabaseReference getAllUsersReference() {
+    public static DatabaseReference getAllUsersReference() {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.Users.getReferenceName());
     }
 
-    static DatabaseReference getUserReference(String userID) {
+    public static DatabaseReference getUserReference(String userID) {
         return getAllUsersReference().child(userID);
     }
 
-    static DatabaseReference getAllUserNotificationsReference() {
+    public static DatabaseReference getAllUserNotificationsReference() {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.UserNotifications.getReferenceName());
     }
 
-    static DatabaseReference getUserNotificationsReference(String userID) {
+    public static DatabaseReference getUserNotificationsReference(String userID) {
         return getAllUserNotificationsReference().child(userID);
     }
 
-    static DatabaseReference getSuggestedCoursesReference() {
+    public static DatabaseReference getSuggestedCoursesReference() {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.SuggestedCourses.getReferenceName());
     }
 
-    static DatabaseReference getAllSharedAlbumsReference() {
+    public static DatabaseReference getAllSharedAlbumsReference() {
         return getAlbumsReference().child(eFirebaseDBEntityTypes.SharedAlbums.getReferenceName());
     }
 
-    static DatabaseReference getAllCourseSharedAlbumsReference(String courseID) {
+    public static DatabaseReference getAllCourseSharedAlbumsReference(String courseID) {
         return getAllSharedAlbumsReference().child(courseID);
     }
 
-    static DatabaseReference getSharedAlbumReference(String albumID, String courseID) {
+    public static DatabaseReference getSharedAlbumReference(String albumID, String courseID) {
         return getAllCourseSharedAlbumsReference(courseID).child(albumID);
     }
 
-    static DatabaseReference getAllPrivateAlbumsReference() {
+    public static DatabaseReference getAllPrivateAlbumsReference() {
         return getAlbumsReference().child(eFirebaseDBEntityTypes.PrivateAlbums.getReferenceName());
     }
 
-    static DatabaseReference getAllUserPrivateAlbumsReference(String userID) {
+    public static DatabaseReference getAllUserPrivateAlbumsReference(String userID) {
         return getAllPrivateAlbumsReference().child(userID);
     }
 
-    static DatabaseReference getPrivateAlbumReference(String albumID, String userID) {
+    public static DatabaseReference getPrivateAlbumReference(String albumID, String userID) {
         return getAllUserPrivateAlbumsReference(userID).child(albumID);
     }
 
@@ -63,11 +63,19 @@ class FirebaseDBReferenceGenerator {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.Albums.getReferenceName());
     }
 
-    static DatabaseReference getPrivateAlbumPictureReference(String albumID, String userID) {
+    public static DatabaseReference getPrivateAlbumPictureReference(String albumID, String userID) {
         return getPrivateAlbumReference(albumID, userID).child(eFirebaseDBEntityTypes.Pictures.getReferenceName());
     }
 
-    static DatabaseReference getSharedAlbumPictureReference(String albumID, String courseID) {
+    public static DatabaseReference getSharedAlbumPictureReference(String albumID, String courseID) {
         return getSharedAlbumReference(albumID, courseID).child(eFirebaseDBEntityTypes.Pictures.getReferenceName());
+    }
+
+    public static DatabaseReference getUserActionsReference() {
+        return sfDatabaseRoot.child(eFirebaseDBEntityTypes.UserActions.getReferenceName());
+    }
+
+    public static DatabaseReference getCourseActionReference() {
+        return sfDatabaseRoot.child(eFirebaseDBEntityTypes.CourseActions.getReferenceName());
     }
 }

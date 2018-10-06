@@ -1,8 +1,11 @@
-package Logic;
+package Logic.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,24 +21,17 @@ public class Course implements Parcelable {
     private Date m_CreationDate;
     private String m_Description;
     private List<String> m_UsersId;
-
-    public List<String> getM_AlbumIds() {
-        return m_AlbumIds;
-    }
-
-    public void setM_AlbumIds(List<String> m_AlbumIds) {
-        this.m_AlbumIds = m_AlbumIds;
-    }
-
     private List<String> m_AlbumIds;
 
     public Course() {}
 
-    public Course(String courseID, String userID, String courseName, Date creationDate) {
+    public Course(String courseID, String creatorName, String userID, String courseName, Date creationDate) {
         this.m_Id = courseID;
+        this.mCreatorName = creatorName;
         this.m_CreatorID = userID;
         this.m_CourseName = courseName;
         this.m_CreationDate = creationDate;
+        this.m_AlbumIds = new ArrayList<>();
     }
 
     protected Course(Parcel in) {
@@ -48,6 +44,18 @@ public class Course implements Parcelable {
         m_Description = in.readString();
         m_UsersId = in.createStringArrayList();
         m_AlbumIds = in.createStringArrayList();
+
+        if (this.m_AlbumIds == null){
+            this.m_AlbumIds = new ArrayList<>();
+        }
+    }
+
+    public List<String> getM_AlbumIds() {
+        return m_AlbumIds;
+    }
+
+    public void setM_AlbumIds(List<String> m_AlbumIds) {
+        this.m_AlbumIds = m_AlbumIds;
     }
 
     @Override
@@ -109,7 +117,6 @@ public class Course implements Parcelable {
         this.m_CreationDate = date;
     }
 
-
     public String getDescription() {
         return m_Description;
     }
@@ -139,5 +146,19 @@ public class Course implements Parcelable {
 
     public String getCreatorID() {
         return this.m_CreatorID;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "m_Id='" + m_Id + '\'' +
+                ", m_CourseName='" + m_CourseName + '\'' +
+                ", m_CreatorID='" + m_CreatorID + '\'' +
+                ", mCreatorName='" + mCreatorName + '\'' +
+                ", m_CreationDate=" + m_CreationDate +
+                ", m_Description='" + m_Description + '\'' +
+                ", m_UsersId=" + m_UsersId +
+                ", m_AlbumIds=" + m_AlbumIds +
+                '}';
     }
 }

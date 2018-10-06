@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.Adapters.AlbumsAdapter;
 import com.example.galbenabu1.classscanner.R;
@@ -19,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import Logic.Album;
+import Logic.Models.Album;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
 
@@ -36,7 +37,7 @@ public class ShowAlbumsActivity extends Activity {
     private List<Album> mAlbumsList = new ArrayList<>();
     private Set<String> mSelectedAlbumIDsSet = new HashSet<>();
     private RecyclerView mAlbumsRecycleView;
-    private AlbumsAdapter mAlbumssAdapter;
+    private AlbumsAdapter mAlbumsAdapter;
     private boolean mShouldShowPrivateAlbums;
     private boolean mIsUserSelectingPrivateAlbums;
 
@@ -85,15 +86,15 @@ public class ShowAlbumsActivity extends Activity {
 
     private void setUI() {
         // Album Recycler view
-        mAlbumsRecycleView.getAdapter().notifyDataSetChanged();
+        this.mAlbumsRecycleView.getAdapter().notifyDataSetChanged();
     }
 
     // Data
 
     private void getAlbumsFromDB() {
         mAlbumsList.clear();
-        mAlbumssAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick);
-        mAlbumsRecycleView.setAdapter(mAlbumssAdapter);
+        mAlbumsAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick);
+        mAlbumsRecycleView.setAdapter(mAlbumsAdapter);
         fetchAlbumsFromDB();
     }
 
@@ -121,6 +122,7 @@ public class ShowAlbumsActivity extends Activity {
 
         resultIntent.putStringArrayListExtra(SELECTED_ALBUMS_DATA, albumIDsList);
         setResult(RESULT_OK, resultIntent);
+        Toast.makeText(getApplicationContext(), "Successfully added albums to course", Toast.LENGTH_SHORT).show();
         finish();
     }
 

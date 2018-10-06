@@ -10,12 +10,12 @@
         android:id="@+id/btnFinishCreatingAlbum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginTop="60dp"
         android:onClick="onFinishCreatingAlbumClick"
         android:text="Finish"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCreateAlbumDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/etAlbumDate" />
 
     <Button
         android:id="@+id/btnAbortAlbumCreation"
@@ -24,12 +24,25 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/holo_red_light"
         android:onClick="onAbortAlbumCreationClick"
         android:text="Abort"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFinishCreatingAlbum" />
+
+    <EditText
+        android:id="@+id/etAlbumCreatorName"
+        android:layout_width="182dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:enabled="false"
+        android:hint="Creator name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCreateNewAlbumTitle" />
 
     <EditText
         android:id="@+id/etCreateAlbumName"
@@ -38,21 +51,49 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="Enter album name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etAlbumCreatorName" />
 
     <EditText
         android:id="@+id/etCreateAlbumDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="Enter album description (optional)"
         android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Enter album description (optional)"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etCreateAlbumName" />
+
+    <EditText
+        android:id="@+id/etAlbumDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etCreateAlbumDescription" />
+
+
+    <TextView
+        android:id="@+id/tvCreateNewAlbumTitle"
+        android:layout_width="180dp"
+        android:layout_height="28dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Create New Course"
+        android:textAppearance="@android:style/TextAppearance"
+        android:visibility="visible"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

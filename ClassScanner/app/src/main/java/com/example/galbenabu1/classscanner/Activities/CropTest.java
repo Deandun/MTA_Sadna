@@ -82,7 +82,7 @@ public class CropTest extends AppCompatActivity {
                 if (angle > 360)
                     angle = 0;
                 mBitmap=cropperView.getCroppedBitmap();
-                cropperView.setImageBitmap(rotateBitmap(mBitmap, angle));
+                cropperView.setImageBitmap(rotateBitmap(mBitmap, 0));
             }
         });
     }
@@ -90,7 +90,7 @@ public class CropTest extends AppCompatActivity {
 
     private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
+        matrix.postRotate(90);
 
         return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
