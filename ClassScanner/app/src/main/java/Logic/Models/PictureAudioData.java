@@ -48,7 +48,15 @@ import Logic.Enums.eDataType;
         dest.writeLong(m_CreationDate != null ? m_CreationDate.getTime() : -1);
         dest.writeString(m_Description);
         dest.writeString(m_Path);
-        dest.writeString(m_DataType.name());
+
+        if(m_DataType!=null)
+        {
+            dest.writeString(m_DataType.name());
+        }
+        else
+        {
+            dest.writeString(eDataType.Picture.name());
+        }
     }
 
     @Override
