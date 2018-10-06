@@ -44,8 +44,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import Logic.Database.DBManager;
@@ -78,6 +80,7 @@ public class TakePicActivity extends AppCompatActivity {
 
     //FireBase
     private StorageReference mStorageRef;
+    private Date mRecordingStartTime;
 
     // An enum that represents the state of this activity.
     private enum eTakePicActivityState {
@@ -335,7 +338,7 @@ public class TakePicActivity extends AppCompatActivity {
             case InActive:
                 // Button clicked when state was inactive.
                 // Start repetative action to take a picture, every 15 seconds
-                startRecording(); //TODO: figure out why stopped working.
+                startRecording();
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
@@ -343,14 +346,12 @@ public class TakePicActivity extends AppCompatActivity {
             case InProgress:
                 // Button clicked when state was InProgress.
                 // Pause taking pictures.
-                // stopRecording(); TODO: can we Pause the recording?
                 mActivityState = eTakePicActivityState.Paused;
                 mBtnTakePicture.setText("Continue");
                 break;
             case Paused:
                 // Button clicked when state was Paused.
                 // Continue taking pictures.
-                // TODO: Can we Continue recording?
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
                 mBtnTakePicture.setText("Pause");
@@ -400,6 +401,7 @@ public class TakePicActivity extends AppCompatActivity {
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mRecorder.setOutputFile(mFileName);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        this.mRecordingStartTime = Calendar.getInstance().getTime();
 
         try {
             mRecorder.prepare();
@@ -421,6 +423,7 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadAudio() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        //TODO: move to dbManager
         StorageReference audioRef = mStorageRef.child("Albums/").child("privateAlbums").child(userId).child(mAlbumID).child("audioFile.3gp");
         Uri uri = Uri.fromFile(new File(mFileName));
 
