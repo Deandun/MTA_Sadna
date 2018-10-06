@@ -8,7 +8,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +23,13 @@ import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
 import com.fenchtose.nocropper.CropperView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.NoSuchElementException;
 
 import Logic.ConvolutionMatrix;
@@ -44,6 +50,10 @@ public class ImageEditingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_editing);
+
+        storage = FirebaseStorage.getInstance();
+        ref = storage.getReference().child("Albums/DummyAlbum/finger-frame-15923929.jpg");
+
         frameLayout=(FrameLayout)findViewById(R.id.top_frame);
         sb_value = (SeekBar) findViewById(R.id.sb_value);
         imageToEdit = (ImageView) findViewById(R.id.im_brightness);
@@ -182,6 +192,30 @@ public class ImageEditingActivity extends AppCompatActivity {
         //set weight according to factor
         convMatrix.Factor = weight - 8;
         return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
+    }
+
+    public void onDoneBtnClick(View v)
+    {
+        imageToEdit.setDrawingCacheEnabled(true);
+        imageToEdit.buildDrawingCache();
+        Bitmap bitmap = imageToEdit.getDrawingCache();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = ref.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            }
+        });
     }
 
 }
