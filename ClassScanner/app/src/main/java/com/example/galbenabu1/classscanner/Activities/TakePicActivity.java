@@ -173,6 +173,9 @@ public class TakePicActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         this.startBackgroundThread();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mRecorder.resume();
+        }
         if (mTextureView.isAvailable()) {
             this.setupCamera(mTextureView.getWidth(), mTextureView.getHeight());
             connectCamera();
@@ -202,7 +205,7 @@ public class TakePicActivity extends AppCompatActivity {
         mIVSavedPicture = findViewById(R.id.ivSavedPic);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/recordAudio.3gp";
+        mFileName += "/recordAudio.wav";
         mDBManager = new DBManager();
         mPictureList = new ArrayList<>();
         mAlbumID = mDBManager.getNewAlbumID(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -212,7 +215,9 @@ public class TakePicActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         this.closeCamera();
-        this.stopBackgroundThread();
+
+        mRecorder.pause();
+
         super.onPause();
     }
 
@@ -423,8 +428,12 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadAudio() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+<<<<<<< HEAD
         //TODO: move to dbManager
         StorageReference audioRef = mStorageRef.child("Albums/").child("privateAlbums").child(userId).child(mAlbumID).child("audioFile.3gp");
+=======
+        StorageReference audioRef = FirebaseStorage.getInstance().getReference("audioFiles/").child("audioFileNew.wav");
+>>>>>>> c550efbff0e7a857f1796c14df40ffefcdcdeef5
         Uri uri = Uri.fromFile(new File(mFileName));
 
         audioRef.putFile(uri);
