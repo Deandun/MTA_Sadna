@@ -5,12 +5,27 @@
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> db41f790addc3091daa3554510c54d7d3614f443
+>>>>>>> origin
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 5c4dac09738c4ce9b349f2a3e55d3b17ee03f23c
+>>>>>>> db41f790addc3091daa3554510c54d7d3614f443
+>>>>>>> origin
         <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
