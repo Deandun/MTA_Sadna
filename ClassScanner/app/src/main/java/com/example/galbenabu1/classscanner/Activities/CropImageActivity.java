@@ -31,8 +31,10 @@ import com.fenchtose.nocropper.CropperView;
 
 public class CropImageActivity extends AppCompatActivity {
 
-    private Button btnCrop, btnToggleGesture, continueEditingBtn;
-    private ImageView btnSnap, btnRotate;
+    private Button btnCrop;
+    private Button btnToggleGesture;
+    private ImageView btnSnap;
+    private ImageView btnRotate;
     private CropperView cropperView;
     private Bitmap mBitmap;
     private boolean isSnappedtoCenter = false;

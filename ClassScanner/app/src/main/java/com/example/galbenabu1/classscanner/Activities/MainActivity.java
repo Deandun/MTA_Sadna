@@ -64,9 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-//                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-//                    startActivity(intent);
-                    Intent intent = new Intent(MainActivity.this, CropTest.class);
+                    LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
 //                    LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
 //                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
@@ -124,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     } else {
                                         LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                        Intent intent = new Intent(MainActivity.this, CropTest.class);
+                                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
