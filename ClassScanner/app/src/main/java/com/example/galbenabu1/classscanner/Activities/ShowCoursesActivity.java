@@ -139,7 +139,7 @@ public class ShowCoursesActivity extends Activity {
         }
     }
 
-    public void onSearchClick(View v) {
+    public void onSearchBtnClick(View v) {
         Log.e(TAG, "onSearchClick >>");
 
         this.setUI();
