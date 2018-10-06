@@ -12,10 +12,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Enums.eDataType;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Album;
 import Logic.Database.DBManager;
@@ -83,13 +84,29 @@ public class CreateAlbumActivity extends Activity {
 
         newAlbum.setM_Description(albumDescription);
         newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());
-        newAlbum.setM_Pictures(mPictureAudioDataCollection);
+        this.setPicturesAndAudioForNewAlbum(newAlbum);
 
         mDBManager.addAlbumDetailsToDB(newAlbum, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         // Return to home screen
         Intent homeIntent = new Intent(CreateAlbumActivity.this, HomeActivity.class);
         startActivity(homeIntent);
+    }
+
+    private void setPicturesAndAudioForNewAlbum(Album newAlbum) {
+        PictureAudioData audioData = null;
+        List<PictureAudioData> pictureDataList = new ArrayList<>();
+
+        for(PictureAudioData data: mPictureAudioDataCollection) {
+            if(data.getM_DataType().equals(eDataType.Picture)) {
+                pictureDataList.add(data);
+            } else {
+                audioData = data;
+            }
+        }
+
+        newAlbum.setM_Audio(audioData);
+        newAlbum.setM_Pictures(pictureDataList);
     }
 
     public void onAbortAlbumCreationClick(View v) {

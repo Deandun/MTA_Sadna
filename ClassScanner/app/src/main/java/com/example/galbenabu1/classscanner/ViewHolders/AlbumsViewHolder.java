@@ -21,6 +21,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
 
     private static final String TAG = "AlbumViewHolder";
     private static final String ALBUM_DATA = "album_data";
+    private static final String IS_PRIVATE_ALBUM = "is_private_album";
 
     private CardView mAlbumCardView;
     private TextView mCreatorName;
@@ -33,7 +34,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private ImageView mCheckedSign;
     private boolean isAlbumChecked;
 
-    public AlbumsViewHolder(Context context, View itemView) {
+    public AlbumsViewHolder(View itemView, boolean isPrivateAlbum) {
         super(itemView);
 
         this.isAlbumChecked = false;
@@ -57,6 +58,7 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                 Context context1 = view.getContext();
                 Intent intent = new Intent(context1, AlbumInfoActivity.class);
                 intent.putExtra(ALBUM_DATA, mSelectedAlbum);
+                intent.putExtra(IS_PRIVATE_ALBUM, isPrivateAlbum);
                 context1.startActivity(intent);
             }
         });
@@ -68,23 +70,19 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                     mIsAlbumSelected = true;
                     mAlbumCardView.setCardBackgroundColor(Color.BLUE);
                     mOnLongClickListener.accept(mSelectedAlbum); // Send selected album using a callback.
-                    //changeImageChceked();
+
+                    if (this.isAlbumChecked){
+                        mCheckedSign.setBackgroundResource(R.drawable.unchecked);
+                    }else{
+                        mCheckedSign.setBackgroundResource(R.drawable.checked);
+                    }
+                    this.isAlbumChecked = !this.isAlbumChecked;
+
                     return true; // Return true to signal that we have done what we need to do for the long press.
                 }
         );
     }
 
-    @SuppressLint("ResourceType")
-    private void changeImageChceked(){
-        this.mCheckedSign.setVisibility(View.INVISIBLE);
-        if (isAlbumChecked){
-            this.mCheckedSign.setImageResource(R.id.ivCheckedSign);
-        }else{
-          //  this.mCheckedSign.setImageResource(R.id.ivUnCheckedSign);
-        }
-        this.mCheckedSign.setVisibility(View.VISIBLE);
-        isAlbumChecked = !isAlbumChecked;
-    }
 
     public Album getSelectedAlbum() {
         return mSelectedAlbum;
