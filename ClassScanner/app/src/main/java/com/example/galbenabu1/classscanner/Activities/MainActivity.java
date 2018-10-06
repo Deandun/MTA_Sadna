@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
+//                    LoggedInUserDetailsManager.initUserDetailsOnLogin(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    //startActivity(intent);
 //                    Intent intent = new Intent(MainActivity.this, CropImageActivity.class);
  //                   startActivity(intent);
                 } else {
