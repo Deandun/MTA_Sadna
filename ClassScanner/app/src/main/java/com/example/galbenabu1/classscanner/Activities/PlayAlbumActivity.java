@@ -19,7 +19,9 @@ import Logic.Models.PictureAudioData;
 
 public class PlayAlbumActivity extends Activity {
 
-    //TODO: get album and is private album from previous activity.
+    private static final String ALBUM_DATA = "album_data";
+    private static final String IS_PRIVATE_ALBUM = "is_private_album";
+
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
 
@@ -34,6 +36,9 @@ public class PlayAlbumActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_album);
+
+        this.mIsPrivateAlbum = getIntent().getExtras().getBoolean(IS_PRIVATE_ALBUM);
+        this.mAlbum = getIntent().getExtras().getParcelable(ALBUM_DATA);
 
         this.bindUI();
         this.init();

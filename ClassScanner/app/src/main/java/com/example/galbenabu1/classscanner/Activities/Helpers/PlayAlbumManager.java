@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner.Activities.Helpers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +39,7 @@ public class PlayAlbumManager {
         this.mAudio = this.mAlbum.getM_Audio();
         this.mPictureList = this.mAlbum.getM_Pictures();
         this.mDBManager = new DBManager();
+        this.mCachedImageByteArrayList = new ArrayList<>();
         this.init();
     }
 

@@ -93,7 +93,7 @@ public class ShowAlbumsActivity extends Activity {
 
     private void getAlbumsFromDB() {
         mAlbumsList.clear();
-        mAlbumsAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick);
+        mAlbumsAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick, mShouldShowPrivateAlbums);
         mAlbumsRecycleView.setAdapter(mAlbumsAdapter);
         fetchAlbumsFromDB();
     }

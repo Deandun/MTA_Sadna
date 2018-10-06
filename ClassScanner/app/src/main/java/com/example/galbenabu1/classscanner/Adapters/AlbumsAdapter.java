@@ -22,10 +22,12 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
 
     private List<Album> mAlbumsList;
     private MyConsumer<Album> mOnLongClickListener;
+    private boolean mIsPrivateAlbum;
 
-    public AlbumsAdapter(List<Album> albumsList, MyConsumer<Album> onLongClickListener) {
+    public AlbumsAdapter(List<Album> albumsList, MyConsumer<Album> onLongClickListener, boolean isPrivateAlbum) {
         mAlbumsList = albumsList;
         mOnLongClickListener = onLongClickListener;
+        this.mIsPrivateAlbum = isPrivateAlbum;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
                 .inflate(R.layout.album_item, parent, false);
 
         Log.e(TAG, "onCreateViewHolder() <<");
-        return new AlbumsViewHolder(itemView);
+        return new AlbumsViewHolder(itemView, this.mIsPrivateAlbum);
     }
 
     @Override
