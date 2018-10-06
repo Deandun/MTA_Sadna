@@ -144,4 +144,8 @@ public class ShowCoursesActivity extends Activity {
 
         this.setUI();
     }
+
+    public void onShowCoursesBackButtonClick(View v){
+        finish();
+    }
 }

@@ -86,6 +86,6 @@ public class AlbumInfoActivity extends Activity {
     }
 
     public void onAlbumInfoBackBtnClick(View v){
-        //TODO: implement
+        finish();
     }
 }

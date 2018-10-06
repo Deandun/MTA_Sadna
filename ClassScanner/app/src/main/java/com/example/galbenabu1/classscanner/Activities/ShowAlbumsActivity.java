@@ -134,4 +134,8 @@ public class ShowAlbumsActivity extends Activity {
             this.mSelectedAlbumIDsSet.add(selectedAlbum.getM_Id());
         }
     }
+
+    public void onShowAlbumsBackButtonClick(View v){
+        finish();
+    }
 }

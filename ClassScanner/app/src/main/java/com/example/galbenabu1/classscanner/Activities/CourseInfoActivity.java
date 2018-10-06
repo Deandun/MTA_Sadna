@@ -95,7 +95,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
 
     public void onCreateInfoBackButtonClick(View v){
-        //TODO: implement
+        finish();
     }
 
     public void onActionButtonClick(View v) {
