@@ -33,6 +33,7 @@ public class CropImageActivity extends AppCompatActivity {
 
     private Button btnCrop;
     private Button btnToggleGesture;
+    private Button continueEditingBtn;
     private ImageView btnSnap;
     private ImageView btnRotate;
     private CropperView cropperView;
