@@ -1,21 +1,31 @@
 package Logic.Database;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Picture;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -479,7 +489,43 @@ public class DBManager {
         return audioData;
     }
 
-    public void fetchImages(Album album, List<PictureAudioData> pictureDataList, boolean isPrivateAlbum, int indexToFetchFrom, int numOfPicturesToFetch, MyConsumer<List<byte[]>> onFetchedImagesSuccess) {
-//TODO
+    public void fetchImages(List<PictureAudioData> pictureDataList, MyConsumer<List<Bitmap>> onFinishedFetchingImages) {
+        List<Bitmap> imagesBitmapList = new ArrayList<>();
+        final int numberOfImagesToFetch = pictureDataList.size();
+
+        MyConsumer<Bitmap> onFinishedFetchingSingleImage =
+                (imageBitmap) -> {
+                  imagesBitmapList.add(imageBitmap);
+
+                  Log.e(TAG, "Fetched " + imagesBitmapList.size() + " images out of " + numberOfImagesToFetch);
+
+                  if(imagesBitmapList.size() == numberOfImagesToFetch) {
+                      onFinishedFetchingImages.accept(imagesBitmapList);
+                  }
+                };
+
+        for(PictureAudioData pictureData: pictureDataList) {
+            this.fetchImageFromStoragePath(pictureData.getM_Id(), onFinishedFetchingSingleImage);
+        }
+    }
+
+    public void fetchImageFromStoragePath(String path, MyConsumer<Bitmap> onFinishedFetchingImage) {
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("Images").child(path);
+
+        try {
+            final File localFile = File.createTempFile("Temp", "jpg");
+            imageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap imageBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    onFinishedFetchingImage.accept(imageBitmap);
+                }
+            }).addOnFailureListener((OnFailureListener) e ->  {
+                Log.e(TAG, "Failed fetching image from path " + path);
+                onFinishedFetchingImage.accept(null);
+            });
+        } catch(IOException e) {
+            Log.e(TAG, "Cannot open file to fetch image data to.");
+        }
     }
 }

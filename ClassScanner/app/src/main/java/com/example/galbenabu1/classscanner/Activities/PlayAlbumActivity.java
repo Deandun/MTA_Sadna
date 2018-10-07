@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,9 +22,11 @@ public class PlayAlbumActivity extends Activity {
 
     private static final String ALBUM_DATA = "album_data";
     private static final String IS_PRIVATE_ALBUM = "is_private_album";
+    private static final String TAG = "PlayAlbumActivity";
 
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
+    private int mShownImages = 0;
 
     private ImageView mivDisplayedImage;
     private ProgressBar mpbPlayAlbumProgress;
@@ -36,6 +39,8 @@ public class PlayAlbumActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_album);
+
+        Log.e(TAG, "onCreate >>");
 
         this.mIsPrivateAlbum = getIntent().getExtras().getBoolean(IS_PRIVATE_ALBUM);
         this.mAlbum = getIntent().getExtras().getParcelable(ALBUM_DATA);
@@ -52,15 +57,36 @@ public class PlayAlbumActivity extends Activity {
     }
 
     private void init() {
-        this.mPlayAlbumManager = new PlayAlbumManager(this.mAlbum, this.mIsPrivateAlbum);
+        this.mbtnPlayButton.setEnabled(false); // Set play button to false until the play album manager is ready.
+        this.mPlayAlbumManager = new PlayAlbumManager(this.mAlbum, this::onPlayAlbumManagerReady);
     }
 
     public void onStart(View v) {
+        Log.e(TAG, "onStart >>");
         this.mPlayAlbumManager.start(this::onUpdateNextImage);
     }
 
-    private void onUpdateNextImage(byte[] imageByteArray) {
-        Bitmap imageBitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-        this.mivDisplayedImage.setImageBitmap(imageBitmap);
+    private void onUpdateNextImage(Bitmap imageBitmap) {
+        this.mShownImages++;
+        if(imageBitmap != null) {
+            Log.e(TAG, "Showing next image");
+            this.mivDisplayedImage.setImageBitmap(imageBitmap);
+        } else {
+            Log.e(TAG, "Next image to present is null.");
+        }
+
+        int totalImages = this.mAlbum.getM_Pictures().size();
+        float ratio = ((float)this.mShownImages / (float)totalImages);
+        float progress =  ratio * 100;
+        Log.e(TAG, "Updating progress to: " + progress);
+        this.mpbPlayAlbumProgress.setProgress((int)progress);
+    }
+
+    private void onSetNewProgress(int newProgress) {
+
+    }
+
+    private void onPlayAlbumManagerReady() {
+        this.mbtnPlayButton.setEnabled(true);
     }
 }

@@ -135,7 +135,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Log.e(TAG, "onCreate >>");
+    }
 
+    @Override
+    public void onBackPressed() {
+        // Override and do nothing to cancel clicking back from this activity.
     }
 
     @Override

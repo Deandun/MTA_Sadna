@@ -28,42 +28,15 @@ public class HomeActivity extends Activity {
         Log.e(TAG, "onCreate >>");
         mtvGreeting = findViewById(R.id.tvGreeting);
         setContentView(R.layout.activity_home);
-        if (LoggedInUserDetailsManager.getsLoggedInUser() != null) { //TODO: DEAN
-            String userName = LoggedInUserDetailsManager.getsLoggedInUser().getM_UserName();
-            mtvGreeting.setText("Hello " + userName);
-        }
-
-        // Get root view
-//        ConstraintLayout constraintLayout = (ConstraintLayout) ((ViewGroup) this
-//                .findViewById(android.R.id.content)).getChildAt(0);
-//
-//        // Init dynamic menu for this view
-//        DynamicMenu.getInstance().setView(constraintLayout, this.getApplicationContext());
-//        DynamicMenu.MenuItem menuItem =
-//                DynamicMenu.getInstance()
-//                        .createMenuItem(this.getApplicationContext().getDrawable(R.drawable.common_google_signin_btn_icon_dark),
-//                this.getApplicationContext(),
-//                () -> Toast.makeText(this, "Woohoo dynamic menu is working!!", Toast.LENGTH_SHORT).show()
-//                        );
-//        DynamicMenu.getInstance().addMenuItem(menuItem, eMenuItemPosition.Bottom);
-
         Log.e(TAG, "onCreate <<");
     }
 
     public void onSignoutClick(View v) {
         Log.e(TAG, "onSignoutClick >>");
         FirebaseAuth.getInstance().signOut();
-        finish();
+        Intent mainViewIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(mainViewIntent);
         Log.e(TAG, "onSignoutClick <<");
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.e(TAG, "onBackPressed >>");
-        FirebaseAuth.getInstance().signOut();
-        finish();
-        Log.e(TAG, "onBackPressed <<");
     }
 
     public void onTmpTakePicClick(View v) {
