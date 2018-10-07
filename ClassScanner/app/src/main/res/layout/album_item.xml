@@ -35,8 +35,8 @@
                 android:text="Name:"
                 android:textColor="@color/colorAccent"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/ivAlbumImage"
                 card_view:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintVertical_bias="0.0" />
 
@@ -52,8 +52,8 @@
                 android:text="Publisher:"
                 android:textColor="@color/colorAccent"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/ivAlbumImage"
                 card_view:layout_constraintTop_toBottomOf="@+id/tvCreationDate"
                 card_view:layout_constraintVertical_bias="0.333" />
 
@@ -69,8 +69,8 @@
                 android:text="Created:"
                 android:textColor="@color/colorAccent"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/ivAlbumImage"
                 card_view:layout_constraintTop_toBottomOf="@+id/tvAlbumName"
                 card_view:layout_constraintVertical_bias="0.0" />
 
@@ -79,14 +79,12 @@
                 android:layout_width="62dp"
                 android:layout_height="69dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@android:drawable/star_big_on"
                 app:srcCompat="@mipmap/ic_launcher_round"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.0"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toLeftOf="@id/tvAlbumPublisher"
+                card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintVertical_bias="0.566" />
 
@@ -95,15 +93,15 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="52dp"
-                android:layout_marginLeft="312dp"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/unchecked"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:src="@drawable/unchecked"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_bias="0.978" />
+                card_view:layout_constraintHorizontal_bias="0.889"
+                card_view:layout_constraintVertical_bias="1.0" />
 
 
         </android.support.constraint.ConstraintLayout>

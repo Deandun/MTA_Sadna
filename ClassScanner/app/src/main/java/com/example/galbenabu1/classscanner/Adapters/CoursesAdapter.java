@@ -46,7 +46,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
         // bind Course data to it's view items
         holder.setSelectedCourse(course);
         holder.getCourseName().setText("Name: " + course.getCourseName());
-        holder.getCreatorName().setText("Publisher: " + course.getCourseName());
+        holder.getCreatorName().setText("Publisher: " + course.getCreatorName());
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String dateStr = dateFormat.format(course.getCreationDate());
