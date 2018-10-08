@@ -31,7 +31,7 @@ import Logic.Models.User;
 public class CreateAccountActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateAccountActivity";
-    private EditText mEmail, mPassword, mConfirmPassword, mUserName, mAcademic_institution;
+    private EditText mEmail, mPassword, mConfirmPassword, mUserName;
     private Button mBtnCreateAccount;
 
     //storage and auth
@@ -50,7 +50,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         mPassword = (EditText) findViewById(R.id.password);
         mConfirmPassword = (EditText) findViewById(R.id.confirmPassword);
         mUserName = (EditText) findViewById(R.id.userName);
-        mAcademic_institution = (EditText) findViewById(R.id.college);
 
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -82,10 +81,9 @@ public class CreateAccountActivity extends AppCompatActivity {
                 String pass = mPassword.getText().toString().trim();
                 String confirmPass = mConfirmPassword.getText().toString().trim();
                 String userName = mUserName.getText().toString().trim();
-                String academic = mAcademic_institution.getText().toString().trim();
 
                 //boolean isRegister=true;
-                boolean isValid = validateForm(email, pass, confirmPass, userName, academic);
+                boolean isValid = validateForm(email, pass, confirmPass, userName);
                 Log.e(TAG, "after validation: is valid- " + isValid );
 
                 if (isValid) {
@@ -134,7 +132,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // [END create_user_with_email]
     }
 
-    private boolean validateForm(String email, String pass, String confirmPass, String userName, String academic) {
+    private boolean validateForm(String email, String pass, String confirmPass, String userName) {
         boolean valid = true;
         if (TextUtils.isEmpty(email)) {
             mEmail.setError("Required.");
@@ -162,13 +160,6 @@ public class CreateAccountActivity extends AppCompatActivity {
             valid = false;
         } else {
             mUserName.setError(null);
-        }
-
-        if (TextUtils.isEmpty(academic)) {
-            mAcademic_institution.setError("Required.");
-            valid = false;
-        } else {
-            mAcademic_institution.setError(null);
         }
 
         if (!pass.equals(confirmPass)) {

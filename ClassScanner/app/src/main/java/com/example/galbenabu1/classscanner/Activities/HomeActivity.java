@@ -34,7 +34,7 @@ public class HomeActivity extends Activity {
     public void onSignoutClick(View v) {
         Log.e(TAG, "onSignoutClick >>");
         FirebaseAuth.getInstance().signOut();
-        Intent mainViewIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent mainViewIntent = new Intent(HomeActivity.this, MainActivity.class);
         startActivity(mainViewIntent);
         Log.e(TAG, "onSignoutClick <<");
     }
