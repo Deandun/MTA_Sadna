@@ -88,6 +88,7 @@ public class CropImageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mBitmap=cropperView.getCroppedBitmap();
                 cropperView.setImageBitmap(rotateBitmap(mBitmap, 0));
+                mBitmap=cropperView.getCroppedBitmap();
             }
         });
     }
@@ -155,8 +156,6 @@ public class CropImageActivity extends AppCompatActivity {
     public void onContinueEditingBtnClicked(View v)
     {
         Intent intent = new Intent(CropImageActivity.this, ImageEditingActivity.class);
-//        intent.putExtra("IMAGE", mBitmap);
-//        startActivity(intent);
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
         intent.putExtra("IMAGE", bs.toByteArray());
