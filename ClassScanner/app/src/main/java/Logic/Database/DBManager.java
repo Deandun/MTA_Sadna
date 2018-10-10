@@ -79,7 +79,7 @@ public class DBManager {
 
         pictureData.setM_DataType(eDataType.Picture);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
         this.uploadImage(data, pictureData, uploadImageSuccess, uploadImageFailure);
@@ -468,7 +468,7 @@ public class DBManager {
     }
 
     private void uploadAudioToStorage(String fileName, PictureAudioData audioData) {
-        StorageReference audioRef = this.mStorageRef.child("Audio").child(audioData.getM_Id());
+        StorageReference audioRef = this.mStorageRef.child("Audio").child(audioData.getM_Id()+".3gp");
         Uri fileUri = Uri.fromFile(new File(fileName));
 
         audioRef.putFile(fileUri).addOnFailureListener(exception -> {

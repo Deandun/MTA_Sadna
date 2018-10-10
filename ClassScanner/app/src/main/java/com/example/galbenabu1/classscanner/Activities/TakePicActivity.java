@@ -98,7 +98,7 @@ public class TakePicActivity extends AppCompatActivity {
         public void run() {
            if(mActivityState.equals(eTakePicActivityState.InProgress)) {
                 mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
-                uploadImage();
+                uploadImage(mTextureView.getBitmap());
                 Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(mTakePictureRunnable, 1000 * DELAY_BETWEEN_PICTURES);
            }
@@ -483,12 +483,12 @@ public class TakePicActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage() {
+    private void uploadImage(Bitmap imageBitmap) {
         //Prepare image to be uploaded
         Log.e(TAG, "Preparing image for upload");
         mIVSavedPicture.setDrawingCacheEnabled(true);
         mIVSavedPicture.buildDrawingCache();
-        Bitmap bitmap = mIVSavedPicture.getDrawingCache();
+        Bitmap bitmap = imageBitmap;
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mDBManager.uploadImageToPrivateAlbum(bitmap, userId, mAlbumID,
