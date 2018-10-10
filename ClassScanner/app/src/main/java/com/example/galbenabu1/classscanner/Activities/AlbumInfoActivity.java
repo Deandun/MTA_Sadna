@@ -53,22 +53,7 @@ public class AlbumInfoActivity extends Activity {
 
     private void fetchPhotoListFromDB(){
         long timeToDecrease = 10000;
-
-        /////TODO: choose where to delete the folder
-
-        String DirectoryPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        DirectoryPath += "/classScanner";
-//        File dir = new File(DirectoryPath);
-//        if (dir.isDirectory())
-//        {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++)
-//            {
-//                new File(dir, children[i]).delete();
-//            }
-//        }
-
-
+        
         for(int i = 0; i < mAlbum.getM_Pictures().size(); i++) {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
