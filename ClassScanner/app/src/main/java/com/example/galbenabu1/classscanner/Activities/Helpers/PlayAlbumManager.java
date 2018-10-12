@@ -1,9 +1,11 @@
 package com.example.galbenabu1.classscanner.Activities.Helpers;
 
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,9 +16,6 @@ import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
 public class PlayAlbumManager {
-    private static final int NUM_OF_PICTURES_TO_INITIALY_FETCH = 5;
-    private static final int NUM_OF_PICTURES_TO_FETCH = 2;
-    private static final int MINIMUM_NUMBER_OF_PICTURES_BEFORE_FETCH = 3;
     private static final String TAG = "PlayAlbumManagers";
 
     // Models
@@ -24,120 +23,144 @@ public class PlayAlbumManager {
     private PictureAudioData mAudio;
     private List<PictureAudioData> mPictureList;
     private int mCurrentDisplayedPictureDataIndex;
-    private List<Bitmap> mCachedImageBitmapList;
 
     // DB
     private DBManager mDBManager;
 
     // Timer
-    private MyConsumer<Bitmap> mOnUpdateNextPicture;
     private Timer mShowNextPictueTimer;
     private ShowNextPictureTask mShowNextPictureTask;
 
-    private Runnable mOnReady;
+    private MyConsumer<Bitmap> mOnUpdateNextImage;
+    private Bitmap mNextImageBitmap;
 
-    //todo: figure out how to hold actual audio data
+    // Audio
+    private MediaPlayer mMediaPlayer = new MediaPlayer();
+    private int mRecordingProgress;
 
-    public PlayAlbumManager(Album album, Runnable onReady) {
-        this.mOnReady = onReady;
+    private boolean mIsPresentationInProgress = false;
+
+    public PlayAlbumManager(Album album, MyConsumer<Bitmap> onUpdateNextImage) {
+        this.mOnUpdateNextImage = onUpdateNextImage;
         this.mAlbum = album;
         this.mAudio = this.mAlbum.getM_Audio();
         this.mPictureList = this.mAlbum.getM_Pictures();
         this.mDBManager = new DBManager();
-        this.mCachedImageBitmapList = new ArrayList<>();
-        this.init();
+
+        this.init(0, 0);
     }
 
-    public void init() {
-        //todo: reset audio recording to start.
-        this.mCurrentDisplayedPictureDataIndex = 0;
+    public void init(int indexOfImageToShow, int recordingProgress) {
+        this.mCurrentDisplayedPictureDataIndex = indexOfImageToShow;
+        this.fetchNextImage();
+        this.mRecordingProgress = recordingProgress;
+    }
+
+    public void start() {
         this.mShowNextPictueTimer = new Timer();
-        this.performPicturesFetchFromIndex(0, NUM_OF_PICTURES_TO_INITIALY_FETCH);
+        this.startPlayingRecording();
     }
 
-    public void start(MyConsumer<Bitmap> onNextPictureUpdate) {
-        this.init();
-        this.mOnUpdateNextPicture = onNextPictureUpdate;
-        this.startPlayingRecording();
-
-        Bitmap firstImageBitmap = this.getNextImageBitmap();
-        this.updateNextImage(firstImageBitmap);
+    public void jumpTo(int indexOfImageToShow, int recordingProgressValue) {
+        this.init(indexOfImageToShow, recordingProgressValue);
     }
 
     public void stop() {
-        //TODO: stop recording.
-        this.mCachedImageBitmapList.clear();
+        this.mIsPresentationInProgress = false;
+
+        if(this.mShowNextPictueTimer != null) {
+            this.mShowNextPictueTimer.cancel(); // Cancel timer to show next picture
+        }
+
+        if (mMediaPlayer.isPlaying()) {
+            Log.e(TAG, "Stop presentation >> Stop the media player");
+            //Stop the media player
+            mMediaPlayer.stop();
+            mMediaPlayer.reset();
+        }
+    }
+
+    public void reset() {
+        init(0, 0);
+        this.stop();
     }
 
     private void startPlayingRecording() {
-        //TODO:
+        this.mDBManager.fetchRecordingDataSource(this.mAudio.getM_Id(), this::onFetchedRecordingDataSource);
+    }
+
+    private void onFetchedRecordingDataSource(Uri dataSourceUri) {
+        Log.e(TAG, "onFetchedRecordingDataSource >> "+ dataSourceUri.toString());
+
+        try {
+            this.startRecording(dataSourceUri);
+        } catch (IOException e) {
+            Log.w(TAG, "Error playing recording >> error:" + e.getMessage());
+        }
+
+        this.updateNextImage(this.mNextImageBitmap);
+    }
+
+    private void startRecording(Uri dataSourceUri) throws IOException {
+        mMediaPlayer.reset();
+        mMediaPlayer.setDataSource(dataSourceUri.toString());
+        mMediaPlayer.prepare(); // might take long! (for buffering, etc)
+
+        if(this.mRecordingProgress != 0) {
+            int milisecondToJumpToInRecording = this.getMilisecondsForRecording();
+            this.mMediaPlayer.seekTo(milisecondToJumpToInRecording);
+        }
+
+        mMediaPlayer.start();
+    }
+
+    private int getMilisecondsForRecording() {
+        return (int)(((float)this.mRecordingProgress / 100.0) * this.mMediaPlayer.getDuration());
     }
 
     private void updateNextImage(Bitmap imageToShow) {
         // Show current image.
-        Log.e(TAG, "Showing next image.");
-        this.mOnUpdateNextPicture.accept(imageToShow);
+        Log.e(TAG, "Showing image at index " + (this.mCurrentDisplayedPictureDataIndex));
+        this.mOnUpdateNextImage.accept(imageToShow);
+        this.mCurrentDisplayedPictureDataIndex++; // inc index
 
         // Continue updating images only if there are more images to show.
-        if(this.mPictureList.size() > this.mCurrentDisplayedPictureDataIndex + 1) {
-            this.nextImageShown(); // Update indexes and counters.
-            this.fetchImagesIfNeeded();
-
+        if(this.mPictureList.size() > this.mCurrentDisplayedPictureDataIndex) {
             this.mShowNextPictureTask = new ShowNextPictureTask(this::updateNextImage);
 
             // Set next image to display.
-            Bitmap nextImageBitmap = this.getNextImageBitmap();
-            this.mShowNextPictureTask.setNextImageData(nextImageBitmap);
+            this.mShowNextPictureTask.setNextImageData(this.mNextImageBitmap);
 
             // Set timer.
             long updateNextImageDelay = this.getNextImageDelay();
             Log.e(TAG, "Setting timer with delay: " + updateNextImageDelay / 1000);
+
+            // Begin fetching next image.
+            this.fetchNextImage();
+
+            // Start timer until showing next image.
             this.mShowNextPictueTimer.schedule(this.mShowNextPictureTask, updateNextImageDelay);
         }
     }
 
-    private void nextImageShown() {
-        this.mCurrentDisplayedPictureDataIndex++;
-        Log.e(TAG, "Currently displayed picture index: " + this.mCurrentDisplayedPictureDataIndex);
+
+    private void fetchNextImage() {
+        Log.e(TAG, "Fetching at index " + this.mCurrentDisplayedPictureDataIndex);
+        this.mDBManager.fetchImage(this.mPictureList.get(this.mCurrentDisplayedPictureDataIndex), this::onFetchedImagesSuccess);
     }
 
-    private void fetchImagesIfNeeded() {
-        Log.e(TAG, "In fetch if needed.");
-        //Check if currently displayed picture index and cache size are less than the total pictures size.
-        boolean isThereMoreImagesToFetch = this.mCurrentDisplayedPictureDataIndex + this.mCachedImageBitmapList.size() < this.mPictureList.size();
-        if(this.mCachedImageBitmapList.size() == MINIMUM_NUMBER_OF_PICTURES_BEFORE_FETCH && isThereMoreImagesToFetch) {
-            int imagesToFetchStartIndex = this.mCachedImageBitmapList.size() + this.mCurrentDisplayedPictureDataIndex;
-            int imagesToFetchEndIndex = this.mCurrentDisplayedPictureDataIndex + this.mCachedImageBitmapList.size() + NUM_OF_PICTURES_TO_FETCH;
-            this.performPicturesFetchFromIndex(imagesToFetchStartIndex, imagesToFetchEndIndex);
-        }
-    }
+    private void onFetchedImagesSuccess(Bitmap imageBitmap) {
+        Log.e(TAG, "Finished fetching image bitmap.");
 
-    public void jumpToPositionInRecording(double progressValue) {
-        //TODO Optional
-    }
+        this.mNextImageBitmap = imageBitmap;
 
-    private void performPicturesFetchFromIndex(int startIndex, int endIndex) {
-        List<PictureAudioData> dataOfPicturesToFetch = this.mPictureList.subList(startIndex, Math.min(endIndex, this.mPictureList.size()));
-        Log.e(TAG, "Fetching from index " + startIndex + " to index: " + Math.min(endIndex, this.mPictureList.size()));
-        this.mDBManager.fetchImages(dataOfPicturesToFetch, this::onFetchedImagesSuccess);
-    }
+        if(!this.mIsPresentationInProgress) {
+            Log.e(TAG, "Manager is now ready.");
 
-    private void onFetchedImagesSuccess(List<Bitmap> picturesData) {
-        Log.e(TAG, "Finished fetching " + picturesData.size() + " image bitmaps.");
-        this.mCachedImageBitmapList.addAll(picturesData);
-
-        if(this.mOnReady != null) {
             // First fetch.
-            this.mOnReady.run();
-            this.mOnReady = null;
+            this.mOnUpdateNextImage.accept(imageBitmap);
+            this.mIsPresentationInProgress = true;
         }
-    }
-
-    private Bitmap getNextImageBitmap() {
-        Bitmap nextImageBitmap = this.mCachedImageBitmapList.get(0);
-        this.mCachedImageBitmapList.remove(0);
-
-        return nextImageBitmap;
     }
 
     // return the diff between the currently displayed image creation date and the next image's creation date.
@@ -146,10 +169,6 @@ public class PlayAlbumManager {
         long nextImageCreationDate = this.mPictureList.get(this.mCurrentDisplayedPictureDataIndex).getM_CreationDate().getTime();
 
         return nextImageCreationDate - currentImageCreationDate;
-    }
-
-    public int getNumberOfShownImages() {
-        return this.mPictureList.size();
     }
 
     private class ShowNextPictureTask extends TimerTask {
@@ -168,7 +187,5 @@ public class PlayAlbumManager {
         public void run() {
             this.mOnTimerFinished.accept(this.mImageData);
         }
-
-
     }
 }

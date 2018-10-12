@@ -3,8 +3,6 @@ package Logic.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +44,7 @@ public class Album implements Parcelable {
         if(m_Pictures == null) {
             m_Pictures = new ArrayList<>();
         }
+        m_Audio = (PictureAudioData) in.readSerializable();
     }
 
     @Override
@@ -57,6 +56,7 @@ public class Album implements Parcelable {
         dest.writeString(m_Description);
         dest.writeInt(m_NumOfPictures);
         dest.writeList(m_Pictures);
+        dest.writeSerializable(m_Audio);
     }
 
     @Override

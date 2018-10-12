@@ -23,7 +23,6 @@ public class AlbumInfoActivity extends Activity {
     private static final String ALBUM_DATA = "album_data";
     private static final String IS_PRIVATE_ALBUM = "is_private_album";
 
-
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
     private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<PictureAudioData>();
