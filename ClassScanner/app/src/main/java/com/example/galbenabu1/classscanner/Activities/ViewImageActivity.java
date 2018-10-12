@@ -71,17 +71,6 @@ public class ViewImageActivity extends AppCompatActivity {
             }
         });
 
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(imageView.getContext(), CropImageActivity.class);
-                String strName = null;
-                intent.putExtra("PATH", path);
-                intent.putExtra("ALBUM",album);
-                imageView.getContext().startActivity(intent);
-            }
-        });
-
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
