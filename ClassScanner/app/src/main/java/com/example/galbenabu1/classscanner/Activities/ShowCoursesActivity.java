@@ -18,10 +18,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
-import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
 
 public class ShowCoursesActivity extends Activity {
@@ -84,6 +85,29 @@ public class ShowCoursesActivity extends Activity {
         this.mFetchedCourses.clear();
         this.mFetchedCourses.addAll(courseList);
         this.setUI();
+        this.logViewCoursesEvent(courseList.size());
+    }
+
+    private void logViewCoursesEvent(int numberOfDisplayedCourses) {
+        CourseEventParams courseEventParams = new CourseEventParams();
+        courseEventParams.setmNumberOfCoursesDisplayed(numberOfDisplayedCourses);
+
+        AnalyticsManager.eCourseEventType courseEventType = null;
+
+        switch (this.mShowCoursesOptions) {
+
+            case ShowSearchedCourses:
+                courseEventType = AnalyticsManager.eCourseEventType.ViewAllCourses;
+                break;
+            case ShowCoursesTheCurrentUserIsIn:
+                courseEventType = AnalyticsManager.eCourseEventType.ViewMyCourses;
+                break;
+            case ShowSuggestedCourses:
+                courseEventType = AnalyticsManager.eCourseEventType.ViewSuggestedCourses;
+                break;
+        }
+
+        AnalyticsManager.getInstance().trackCourseEvent(courseEventType, courseEventParams);
     }
 
     // UI
@@ -105,6 +129,7 @@ public class ShowCoursesActivity extends Activity {
         this.mCoursesListToDisplay.clear();
 
         if (searchedCourseName.isEmpty()) {
+            this.logSearchEvent(this.mCoursesListToDisplay.size());
             // Nothing searched. Display all fetched courses.
             this.mCoursesListToDisplay.addAll(this.mFetchedCourses);
         } else {
@@ -141,11 +166,16 @@ public class ShowCoursesActivity extends Activity {
 
     public void onSearchBtnClick(View v) {
         Log.e(TAG, "onSearchClick >>");
-
         this.setUI();
     }
 
     public void onShowCoursesBackButtonClick(View v){
         finish();
+    }
+
+    private void logSearchEvent(int numberOfMatches) {
+        String searchedString = this.metSearchedCourseName.getText().toString();
+
+        AnalyticsManager.getInstance().trackSearchEvent(searchedString, numberOfMatches);
     }
 }

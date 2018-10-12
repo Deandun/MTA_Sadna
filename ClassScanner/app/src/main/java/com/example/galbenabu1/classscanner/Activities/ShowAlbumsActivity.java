@@ -126,6 +126,7 @@ public class ShowAlbumsActivity extends Activity {
         finish();
     }
 
+
     public void onItemLongClick(Album selectedAlbum) {
         Log.e(TAG, "onItemLongClick >> For album with ID: " + selectedAlbum.getM_Id() + " And name: " + selectedAlbum.getM_AlbumName());
         if (this.mSelectedAlbumIDsSet.contains(selectedAlbum.getM_Id())){

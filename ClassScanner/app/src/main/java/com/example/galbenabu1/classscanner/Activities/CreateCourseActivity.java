@@ -12,10 +12,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
@@ -78,12 +79,28 @@ public class CreateCourseActivity extends AppCompatActivity {
         LoggedInUserDetailsManager.addCourseIDToUser(newCourse.getID());
         this.mDBManager.userJoinsCourse(LoggedInUserDetailsManager.getsLoggedInUser(), newCourse.getID());
 
+        this.logCourseCreatedEvent(newCourse);
+        int numberOfAddedAlbums = this.mAlbumIDCollection == null ? 0 : this.mAlbumIDCollection.size();
+        this.logAddedAlbumsToCourseEvent(newCourse, numberOfAddedAlbums);
+
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
 
         Log.e(TAG, "onFinishCreatingCourse <<");
 
+    }
+
+    private void logCourseCreatedEvent(Course newCourse) {
+        CourseEventParams courseEventParams = new CourseEventParams();
+        courseEventParams.setmCourse(newCourse);
+        AnalyticsManager.getInstance().trackCourseEvent(AnalyticsManager.eCourseEventType.CourseCreated, courseEventParams);
+    }
+    private void logAddedAlbumsToCourseEvent(Course newCourse, int numberOfAddedAlbums) {
+        CourseEventParams courseEventParams = new CourseEventParams();
+        courseEventParams.setmCourse(newCourse);
+        courseEventParams.setmNumberOfAddedAlbums(numberOfAddedAlbums);
+        AnalyticsManager.getInstance().trackCourseEvent(AnalyticsManager.eCourseEventType.AddAlbumsToCourse, courseEventParams);
     }
 
     public void onChooseAlbumsClick(View v) {
@@ -113,6 +130,7 @@ public class CreateCourseActivity extends AppCompatActivity {
 
         Log.e(TAG, "onActivityResult <<");
     }
+
 
     private Course createNewCourse() {
         Course newCourse = new Course();

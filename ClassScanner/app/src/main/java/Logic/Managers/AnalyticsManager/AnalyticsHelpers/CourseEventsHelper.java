@@ -1,0 +1,72 @@
+package Logic.Managers.AnalyticsManager.AnalyticsHelpers;
+
+import android.os.Bundle;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Models.Course;
+
+public class CourseEventsHelper {
+
+    private String mUserID;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+    public void init(FirebaseAnalytics firebaseAnalytics, String userID) {
+        this.mUserID = userID;
+        this.mFirebaseAnalytics = firebaseAnalytics;
+    }
+
+    public void trackViewedSuggestedCourses(int numberOfCoursesDisplayed) {
+        Bundle params = new Bundle();
+
+        params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
+
+        this.logEvent(AnalyticsManager.eCourseEventType.ViewSuggestedCourses.name(), params);
+    }
+
+    public void trackViewMyCourses(int numberOfCoursesDisplayed) {
+        Bundle params = new Bundle();
+
+        params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
+
+        this.logEvent(AnalyticsManager.eCourseEventType.ViewMyCourses.name(), params);
+    }
+
+    public void trackViewAllCourses(int numberOfCoursesDisplayed) {
+        Bundle params = new Bundle();
+
+        params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
+
+        this.logEvent(AnalyticsManager.eCourseEventType.ViewAllCourses.name(), params);
+    }
+
+    public void trackCourseCreated(Course createdCourse) {
+        Bundle params = new Bundle();
+
+        params.putString(ParamNames.COURSE_NAME, createdCourse.getCourseName());
+
+        this.logEvent(AnalyticsManager.eCourseEventType.CourseCreated.name(), params);
+    }
+
+    public void trackAddAlbumsToCourse(Course course, int numberOfAddedAlbums) {
+        Bundle params = new Bundle();
+
+        params.putString(ParamNames.COURSE_NAME, course.getCourseName());
+        params.putInt(ParamNames.NUMBER_OF_ADDED_ALBUMS, numberOfAddedAlbums);
+
+        this.logEvent(AnalyticsManager.eCourseEventType.CourseCreated.name(), params);
+    }
+
+    private void logEvent(String eventTypeString, Bundle params) {
+        params.putString(ParamNames.USER_ID, this.mUserID);
+        this.mFirebaseAnalytics.logEvent(eventTypeString, params);
+    }
+
+    private static class ParamNames {
+        private static final String NUMBER_OF_DISPLAYED_COURSES = "numberOfDisplayedCourses";
+        private static final String USER_ID = "userID";
+        private static final String COURSE_NAME = "courseName";
+        private static final String NUMBER_OF_ADDED_ALBUMS = "numberOfAddedAlbums";
+    }
+}
