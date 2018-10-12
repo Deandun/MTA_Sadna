@@ -34,8 +34,8 @@ public class ShowAlbumsActivity extends Activity {
 
     private static final String TAG = "ShowAlbumsActivity";
 
-    private List<Album> mAlbumsList = new ArrayList<>();
     private Set<String> mSelectedAlbumIDsSet = new HashSet<>();
+    private List<Album> mAlbumsList = new ArrayList<>();
     private RecyclerView mAlbumsRecycleView;
     private AlbumsAdapter mAlbumsAdapter;
     private boolean mShouldShowPrivateAlbums;

@@ -107,14 +107,14 @@ public class PlayAlbumManager {
         mMediaPlayer.prepare(); // might take long! (for buffering, etc)
 
         if(this.mRecordingProgress != 0) {
-            int milisecondToJumpToInRecording = this.getMilisecondsForRecording();
+            int milisecondToJumpToInRecording = this.getProgressInMilisecondsForRecording();
             this.mMediaPlayer.seekTo(milisecondToJumpToInRecording);
         }
 
         mMediaPlayer.start();
     }
 
-    private int getMilisecondsForRecording() {
+    private int getProgressInMilisecondsForRecording() {
         return (int)(((float)this.mRecordingProgress / 100.0) * this.mMediaPlayer.getDuration());
     }
 

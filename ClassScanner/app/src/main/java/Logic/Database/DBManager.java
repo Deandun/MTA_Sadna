@@ -44,6 +44,7 @@ import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
 import Logic.Models.PictureAudioData;
 import Logic.Models.User;
+import Logic.Models.UserNotification;
 
 import static Logic.Database.KeysForDBModels.*;
 
@@ -252,6 +253,49 @@ public class DBManager {
                 Log.e(TAG, "Failed fetching courses");
             }
         });
+    }
+
+    public void fetchNumberOfNotifications(MyConsumer<Integer> onFinishedFetchingNumberOfNotifications) {
+        this.fetchUserNotifications(
+                (notificationsList) -> onFinishedFetchingNumberOfNotifications.accept(notificationsList.size())
+        );
+    }
+
+    public void fetchUserNotifications(MyConsumer<List<UserNotification>> onFinishedFetchingUserNotifications) {
+        final String USER_NOTIFICATIONS_KEY = "mUserNotifications";
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userNotificationsRef = FirebaseDBReferenceGenerator.getUserReference(userID).child(USER_NOTIFICATIONS_KEY);
+
+        userNotificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e(TAG, "Fetched user notifications.");
+                List<UserNotification> userNotificationsList = new ArrayList<>();
+                UserNotification userNotification;
+
+                for (DataSnapshot userNotificationsSnapshot: dataSnapshot.getChildren()) {
+                    userNotification = userNotificationsSnapshot.getValue(UserNotification.class);
+                    userNotificationsList.add(userNotification);
+                }
+
+                onFinishedFetchingUserNotifications.accept(userNotificationsList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Failed fetching user notifications. Error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    public void removeUserNotificationsFromDB() {
+        final String USER_NOTIFICATIONS_KEY = "mUserNotifications";
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userNotificationsRef = FirebaseDBReferenceGenerator.getUserReference(userID).child(USER_NOTIFICATIONS_KEY);
+
+        Log.e(TAG, "Removing user notifications from DB.");
+
+        userNotificationsRef.setValue(null);
     }
 
     public void fetchSuggestedCourses(MyConsumer<List<Course>> onFinishFetchingCourses) {

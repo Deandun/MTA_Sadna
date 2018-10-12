@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.galbenabu1.classscanner.Activities.Enums.eShowCoursesOptions;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
-import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Database.DBManager;
 
 public class HomeActivity extends Activity {
 
@@ -19,16 +20,34 @@ public class HomeActivity extends Activity {
     private static final String TAG = "HomeActivity";
     // Decides which courses will be displayed in the ShowCoursesActivity
     private static final String SHOW_COURSES_OPTIONS = "show_courses_options";
+
     private TextView mtvGreeting;
+    Button mbtnNotifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Log.e(TAG, "onCreate >>");
+
         mtvGreeting = findViewById(R.id.tvGreeting);
         setContentView(R.layout.activity_home);
+
+        this.mbtnNotifications = findViewById(R.id.btnNotifications);
+        mbtnNotifications.setText("Notifications");
+
+        DBManager dbManager = new DBManager();
+        dbManager.fetchNumberOfNotifications(this::onFinishedFetchingNumberOfNotifications);
+
         Log.e(TAG, "onCreate <<");
+    }
+
+    private void onFinishedFetchingNumberOfNotifications(int numberOfNotifications) {
+        Log.e(TAG, "onFinishedFetchingNumberOfNotifications >> number of notifications: " + numberOfNotifications);
+
+        if(numberOfNotifications > 0) {
+            mbtnNotifications.setText("Notifications (" + numberOfNotifications + ")");
+        }
     }
 
     public void onSignoutClick(View v) {
@@ -91,5 +110,14 @@ public class HomeActivity extends Activity {
         startActivity(intent);
 
         Log.e(TAG, "onSuggestedCoursesClick <<");
+    }
+
+    public void onNotificationsClick(View v) {
+        Log.e(TAG, "onNotificationsClick>>");
+
+        Intent intent = new Intent(HomeActivity.this, UserNotificationsActivity.class);
+        startActivity(intent);
+
+        Log.e(TAG, "onNotificationsClick <<");
     }
 }
