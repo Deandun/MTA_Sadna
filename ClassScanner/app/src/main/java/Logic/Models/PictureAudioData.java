@@ -3,6 +3,7 @@ package Logic.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import Logic.Enums.eDataType;
@@ -11,7 +12,7 @@ import Logic.Enums.eDataType;
  * Created by galbenabu1 on 08/05/2018.
  */
 
-    public class PictureAudioData implements Parcelable {
+    public class PictureAudioData implements Parcelable, Serializable {
     private String m_Id;
     private Date m_CreationDate;
     private String m_Description;
