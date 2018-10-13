@@ -4,7 +4,7 @@ public enum eFirebaseDBEntityTypes {
     Courses("Courses"),
     Users("Users"),
     Albums("Albums"),
-    Pictures("Pictures"),
+    Pictures("m_Pictures"),
     SharedAlbums("SharedAlbums"),
     PrivateAlbums("PrivateAlbums"),
     UserNotifications("UserNotifications"),

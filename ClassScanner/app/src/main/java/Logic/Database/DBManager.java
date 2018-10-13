@@ -134,6 +134,39 @@ public class DBManager {
         );
     }
 
+    public void removePictureFromDB(String albumID, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
+
+        List<PictureAudioData> pictureCollections = new ArrayList<>();
+        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/"+pictureId);
+        pictureCollections.add(pictureAudioData);
+//
+//        int indexOfPicture = 4;
+//        Album album;
+//        album.getM_Pictures().remove(indexOfPicture);
+//        picturesRef.setValue(null);
+
+
+//        DatabaseReference picturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID).child(pictureDbId);
+//        picturesRef.setValue(null);
+
+        removePicturesFromDB(albumID,userID,isPrivateAlbum,pictureCollections);
+
+
+//        DatabaseReference picturesRef;
+//
+//        if (isPrivateAlbum) {
+//            picturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
+//        } else {
+//            picturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
+//        }
+//
+//        picturesRef.updateChildren().addOnSuccessListener(
+//                (aVoid -> Log.e(TAG, "Pictures deleted successfully"))
+//        ).addOnFailureListener(
+//                (exception) -> Log.e(TAG, "Failed deleting pictures from DB with message: " + exception.getMessage())
+//        );
+    }
+
     public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections) {
         Log.e(TAG, "Removing pictures from DB");
 
@@ -161,10 +194,10 @@ public class DBManager {
     }
 
     private void removePicturesFromStorage(Collection<PictureAudioData> pictureCollection) {
-        StorageReference imagesRef = mStorageRef.child(StorageConstants.ImagesRefString);
+        StorageReference imagesRef = mStorageRef;
 
-        for (PictureAudioData pictureData: pictureCollection) {
-            imagesRef.child(pictureData.getM_Id()).delete().addOnSuccessListener(
+        for (PictureAudioData pictureData : pictureCollection) {
+            imagesRef.child(pictureData.getM_Path()).delete().addOnSuccessListener(
                     (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id() + " from storage.")
             ).addOnFailureListener(
                     (exception) -> Log.e(TAG, "Failed to delete picture with ID: " + pictureData.getM_Id() + " from storage." + System.lineSeparator() +

@@ -34,6 +34,7 @@ public class CreateAlbumActivity extends Activity {
     // New album data
     private List<PictureAudioData> mPictureAudioDataCollection;
     private String mNewAlbumID;
+    private String mAlbumCreatorId;
 
     // UI.
     private EditText mAlbumCreator;
@@ -49,6 +50,7 @@ public class CreateAlbumActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_album);
+        this.mAlbumCreatorId = FirebaseAuth.getInstance().getUid();
         this.getNewPictureAudioDataAndAlbumID();
         this.bindUI();
         this.setUI();
@@ -83,7 +85,7 @@ public class CreateAlbumActivity extends Activity {
         String albumDescription = metAlbumDescription.getText().toString();
         String albumCreatorName = this.mAlbumCreator.getText().toString();
 
-        Album newAlbum = new Album(mNewAlbumID, albumName, new Date(), albumCreatorName);
+        Album newAlbum = new Album(mNewAlbumID, albumName, new Date(), albumCreatorName, this.mAlbumCreatorId);
 
         newAlbum.setM_Description(albumDescription);
         newAlbum.setM_NumOfPictures(mPictureAudioDataCollection.size());

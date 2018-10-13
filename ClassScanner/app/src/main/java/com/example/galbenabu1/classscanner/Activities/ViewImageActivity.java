@@ -18,6 +18,8 @@ import com.example.galbenabu1.classscanner.R;
 import com.fenchtose.nocropper.CropperView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -25,6 +27,8 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import Logic.Database.DBManager;
 
 import Logic.Models.Album;
 
@@ -43,6 +47,7 @@ public class ViewImageActivity extends AppCompatActivity {
     private ImageView imageView;
     private Bitmap mBitmap;
     private String path;
+    private String dbId;
     private Album album;
 
     private FirebaseStorage storage;
@@ -71,21 +76,23 @@ public class ViewImageActivity extends AppCompatActivity {
             }
         });
 
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(imageView.getContext(), CropImageActivity.class);
-                String strName = null;
-                intent.putExtra("PATH", path);
-                intent.putExtra("ALBUM",album);
-                imageView.getContext().startActivity(intent);
-            }
-        });
-
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                DBManager dbmanager =new DBManager();
+                String albumId=album.getM_Id();
+                String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String pictureDbId=dbId;
+                String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+                //todo: check if private album
+                boolean isPrivateAlbum=true;
+                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
+
+                // toastMessage("Image saved successfully");
+                Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
+                newIntent.putExtra("album_data", album);
+                startActivity(newIntent);
+               // dbmanager.removePictureFromDB(albumId,userId,pictureId,isPrivateAlbum);
             }
         });
 
@@ -142,6 +149,11 @@ public class ViewImageActivity extends AppCompatActivity {
         if (getIntent().hasExtra("ALBUM")) {
             Bundle extras = getIntent().getExtras();
             album = (Album)extras.getParcelable("ALBUM");
+        }
+
+        if (getIntent().hasExtra("DB_ID")) {
+            Bundle extras = getIntent().getExtras();
+            dbId = extras.getString("DB_ID");
         }
     }
 
