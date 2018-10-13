@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
 
+import Logic.Database.DBManager;
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -54,11 +55,15 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
         PictureAudioData photo = mPhotoList.get(position);
 
-
         holder.setSelectedPhoto(photo);
         holder.getTvTitle().setText(photo.getM_Description());
-        holder.getIvPhoto().setImageBitmap(fetchImageBitmapFromDB(photo.getM_Path(), photo.getM_Id()));
 
+        //holder.getIvPhoto().setImageBitmap();
+
+        DBManager dbManager = new DBManager();
+        dbManager.fetchImageFromStoragePath(photo.getM_Path().substring(photo.getM_Path().lastIndexOf("Images/") + 7),
+                (bitmap) -> holder.getIvPhoto().setImageBitmap(bitmap)
+        );
         Log.e(TAG, "onBindViewHolder() >> " + photo);
     }
 
@@ -78,12 +83,10 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
     private Bitmap fetchImageBitmapFromDB(String storagePath, String pictureName) {
         final Bitmap my_image_res = null;
-
-
-            FirebaseStorage storage;
-            StorageReference ref;
-            storage = FirebaseStorage.getInstance();
-            ref = storage.getReference().child(storagePath);
+        FirebaseStorage storage;
+        StorageReference ref;
+        storage = FirebaseStorage.getInstance();
+        ref = storage.getReference().child(storagePath);
 
         String FileLocation = Environment.getExternalStorageDirectory().getAbsolutePath();
         String folderLocation= FileLocation + "/classScanner";
@@ -98,7 +101,7 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     System.out.println("FOUND PICTURE");
-
+                  //  getBitmap(FileLocation);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -107,7 +110,7 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
                 }
             });
 
-            return getBitmap(FileLocation);
+           return null;
         }
 
     @Override

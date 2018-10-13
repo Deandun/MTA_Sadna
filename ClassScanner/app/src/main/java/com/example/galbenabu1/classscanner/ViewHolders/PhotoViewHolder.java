@@ -72,33 +72,38 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         switch (menuItem.getItemId()) {
-                            case R.id.option_1:
+                            case R.id.Edit:
                                 //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(view.getContext(), CropImageActivity.class);
                                 String strName = null;
                                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+
+                                intent.putExtra("ALBUM", mAlbum);
+
                                 intent.putExtra("ALBUM",mAlbum);
 
                                 view.getContext().startActivity(intent);
                                 return true;
-                            case R.id.option_2:
-                                DBManager dbmanager =new DBManager();
-                                String albumId=album.getM_Id();
-                                String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                String pictureDbId=mSelectedPhoto.getM_Id();
-                                String pictureId=mSelectedPhoto.getM_Path().substring(mSelectedPhoto.getM_Path().lastIndexOf("Images/") + 7);
+                            case R.id.Delete:
+                                DBManager dbmanager = new DBManager();
+                                String albumId = album.getM_Id();
+                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String pictureDbId = mSelectedPhoto.getM_Id();
+                                String pictureId = mSelectedPhoto.getM_Path().substring(mSelectedPhoto.getM_Path().lastIndexOf("Images/") + 7);
                                 //todo: check if private album
-                                boolean isPrivateAlbum=true;
-                                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
+                                boolean isPrivateAlbum = true;
+                                dbmanager.removePictureFromDB(albumId, userId, pictureId, pictureDbId, isPrivateAlbum);
 
-                               // toastMessage("Image saved successfully");
+                                // toastMessage("Image saved successfully");
+                                album.getM_Pictures().remove(pictureDbId);
                                 Intent newIntent = new Intent(view.getContext(), AlbumInfoActivity.class);
                                 newIntent.putExtra("album_data", album);
                                 view.getContext().startActivity(newIntent);
                                 return true;
 
-
                                 default:
+
+
 //                            {
 //                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
 //                                String strName = null;
@@ -106,14 +111,14 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 //                                intent.putExtra("ALBUM",mAlbum);
 //                                view.getContext().startActivity(intent);
 //                            }
-                               // return super.onContextItemSelected(item);
 
+                                // return super.onContextItemSelected(item);
                         }
-                        return false;
-                    }
-                });
 
-                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mAlbum.getM_AlbumCreatorName())) {
+                        return false;
+                    }});
+
+                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mAlbum.getM_AlbumCreatorId())) { //only creator user can edit pictures
                     popup.show();
                 }
 

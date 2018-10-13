@@ -32,6 +32,8 @@ public class Course implements Parcelable {
         this.m_CourseName = courseName;
         this.m_CreationDate = creationDate;
         this.m_AlbumIds = new ArrayList<>();
+        this.m_UsersId = new ArrayList<>();
+        this.m_UsersId.add(this.m_CreatorID);
     }
 
     protected Course(Parcel in) {
@@ -44,6 +46,11 @@ public class Course implements Parcelable {
         m_Description = in.readString();
         m_UsersId = in.createStringArrayList();
         m_AlbumIds = in.createStringArrayList();
+
+        if (this.m_UsersId == null){
+            this.m_UsersId = new ArrayList<>();
+            this.m_UsersId.add(this.m_CreatorID);
+        }
 
         if (this.m_AlbumIds == null){
             this.m_AlbumIds = new ArrayList<>();
@@ -125,7 +132,7 @@ public class Course implements Parcelable {
         this.m_Description = description;
     }
 
-    public List<String> getUsersId() {
+    public List<String> getM_UsersId() {
         return m_UsersId;
     }
 
