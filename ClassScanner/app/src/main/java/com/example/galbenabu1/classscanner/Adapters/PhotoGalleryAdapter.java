@@ -54,7 +54,6 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
         PictureAudioData photo = mPhotoList.get(position);
 
-
         holder.setSelectedPhoto(photo);
         holder.getTvTitle().setText(photo.getM_Description());
         holder.getIvPhoto().setImageBitmap(fetchImageBitmapFromDB(photo.getM_Path(), photo.getM_Id()));
@@ -78,12 +77,10 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
     private Bitmap fetchImageBitmapFromDB(String storagePath, String pictureName) {
         final Bitmap my_image_res = null;
-
-
-            FirebaseStorage storage;
-            StorageReference ref;
-            storage = FirebaseStorage.getInstance();
-            ref = storage.getReference().child(storagePath);
+        FirebaseStorage storage;
+        StorageReference ref;
+        storage = FirebaseStorage.getInstance();
+        ref = storage.getReference().child(storagePath);
 
         String FileLocation = Environment.getExternalStorageDirectory().getAbsolutePath();
         String folderLocation= FileLocation + "/classScanner";

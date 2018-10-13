@@ -74,10 +74,8 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     private void setActionButtonUI() {
         // Add albums to course
-        if (this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){ //check if this is my course
+        if (isUserJoinedCourse()){ //check if this user joined course
             this.mbtnAddCourseAlbum.setText("Add Albums");
-        }else if (LoggedInUserDetailsManager.getsLoggedInUser().getM_CourseIds().contains(this.mCourse.getID())){ //not our course but already joined
-            this.mbtnAddCourseAlbum.setVisibility(View.INVISIBLE);
         }else{
             this.mbtnAddCourseAlbum.setText("Join Course");
         }
@@ -101,7 +99,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     public void onActionButtonClick(View v) {
         Log.e(TAG, "onActionButtonClick >>");
 
-        if (this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if (isUserJoinedCourse()){
             addAlbumsToExistCourse();
         }else{
             joinCourse();
@@ -145,5 +143,11 @@ public class CourseInfoActivity extends AppCompatActivity {
         }
 
         Log.e(TAG, "onActivityResult <<");
+    }
+
+
+    private boolean isUserJoinedCourse() {
+        return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ||
+                LoggedInUserDetailsManager.getsLoggedInUser().getM_CourseIds().contains(this.mCourse.getID());
     }
 }

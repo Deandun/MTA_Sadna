@@ -18,6 +18,7 @@ import com.example.galbenabu1.classscanner.R;
 import com.fenchtose.nocropper.CropperView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -84,15 +85,9 @@ public class ViewImageActivity extends AppCompatActivity {
                 //
             }
         });
-
-
-
-
-
     }
 
-    private void getImageByPathAndBitmap()
-    {
+    private void getImageByPathAndBitmap() {
         try {
             final File localFile = File.createTempFile("Images", "jpg");
             ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -100,8 +95,6 @@ public class ViewImageActivity extends AppCompatActivity {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     mBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                     imageView.setImageBitmap(mBitmap);
-
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -116,10 +109,7 @@ public class ViewImageActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
         btnDownload = (FloatingActionButton) findViewById(R.id.download_button);
-        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
-
         imageView = (ImageView) findViewById(R.id.picture_view);
         totalView = (ConstraintLayout) findViewById(R.id.total_view);
 
@@ -132,7 +122,21 @@ public class ViewImageActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             album = (Album)extras.getParcelable("ALBUM");
         }
+
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String creatorUserId = this.album.getM_AlbumCreatorId();
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(this.album.getM_AlbumCreatorId())) { //only creator user can edit/delete pictures
+            setUIForCreatorUser();
+        }
+
+
     }
+
+    private void setUIForCreatorUser() {
+        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
+        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
+   }
 
 }
 
