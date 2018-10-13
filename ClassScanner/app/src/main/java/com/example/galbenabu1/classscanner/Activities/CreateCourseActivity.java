@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -82,6 +84,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
 
+        Toast.makeText(this, "Created course successfully!", Toast.LENGTH_SHORT).show();
         Log.e(TAG, "onFinishCreatingCourse <<");
 
     }
