@@ -47,6 +47,7 @@ public class ViewImageActivity extends AppCompatActivity {
     private ImageView imageView;
     private Bitmap mBitmap;
     private String path;
+    private String dbId;
     private Album album;
 
     private FirebaseStorage storage;
@@ -78,13 +79,19 @@ public class ViewImageActivity extends AppCompatActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections)
                 DBManager dbmanager =new DBManager();
                 String albumId=album.getM_Id();
                 String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String pictureDbId=dbId;
                 String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
                 //todo: check if private album
                 boolean isPrivateAlbum=true;
+                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
+
+                // toastMessage("Image saved successfully");
+                Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
+                newIntent.putExtra("album_data", album);
+                startActivity(newIntent);
                // dbmanager.removePictureFromDB(albumId,userId,pictureId,isPrivateAlbum);
             }
         });
@@ -142,6 +149,11 @@ public class ViewImageActivity extends AppCompatActivity {
         if (getIntent().hasExtra("ALBUM")) {
             Bundle extras = getIntent().getExtras();
             album = (Album)extras.getParcelable("ALBUM");
+        }
+
+        if (getIntent().hasExtra("DB_ID")) {
+            Bundle extras = getIntent().getExtras();
+            dbId = extras.getString("DB_ID");
         }
     }
 

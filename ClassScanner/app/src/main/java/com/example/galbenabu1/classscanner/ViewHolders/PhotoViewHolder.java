@@ -83,6 +83,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 String strName = null;
                                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                                 intent.putExtra("ALBUM",mAlbum);
+
                                 view.getContext().startActivity(intent);
                                 return true;
                             case R.id.option_2:
@@ -133,7 +134,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                 intent.putExtra("ALBUM",mAlbum);
-
+                intent.putExtra("DB_ID",mSelectedPhoto.getM_Id());
                 view.getContext().startActivity(intent);
                 //Intent intent = new Intent(context, DareDetailsActivity.class);
                 //intent.putExtra("course", mSelectedCourse);
