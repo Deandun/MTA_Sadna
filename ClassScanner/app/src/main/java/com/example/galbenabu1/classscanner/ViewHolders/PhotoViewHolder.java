@@ -25,9 +25,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import Logic.Database.DBManager;
+<<<<<<< HEAD
 
 import Logic.Managers.LoggedInUserDetailsManager;
 
+=======
+import Logic.Managers.LoggedInUserDetailsManager;
+>>>>>>> origin
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -73,14 +77,22 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin
                         switch (menuItem.getItemId()) {
                             case R.id.Edit:
                                 //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(view.getContext(), CropImageActivity.class);
                                 String strName = null;
                                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+<<<<<<< HEAD
                                 intent.putExtra("ALBUM", mAlbum);
+=======
+
+                                intent.putExtra("ALBUM",mAlbum);
+>>>>>>> origin
 
                                 view.getContext().startActivity(intent);
                                 return true;
@@ -102,7 +114,12 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 return true;
 
 
+<<<<<<< HEAD
                             default:
+=======
+                                default:
+
+>>>>>>> origin
 //                            {
 //                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
 //                                String strName = null;
@@ -110,6 +127,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 //                                intent.putExtra("ALBUM",mAlbum);
 //                                view.getContext().startActivity(intent);
 //                            }
+<<<<<<< HEAD
                                 // return super.onContextItemSelected(item);
 
 
@@ -119,6 +137,18 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                         return false;
                     }});
                 popup.show();
+=======
+
+                               // return super.onContextItemSelected(item);
+                        }
+                    return false;
+
+            }});
+                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mAlbum.getM_AlbumCreatorId())) { //only creator user can edit pictures
+                    popup.show();
+                }
+
+>>>>>>> origin
                 return true;
             }
         });

@@ -47,7 +47,7 @@ public class CreateAlbumActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_album);
-        this.mAlbumCreatorId = FirebaseAuth.getInstance().getUid();
+        this.mAlbumCreatorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.getNewPictureAudioDataAndAlbumID();
         this.bindUI();
         this.setUI();

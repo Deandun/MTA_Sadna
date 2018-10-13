@@ -103,15 +103,9 @@ public class ViewImageActivity extends AppCompatActivity {
                 //
             }
         });
-
-
-
-
-
     }
 
-    private void getImageByPathAndBitmap()
-    {
+    private void getImageByPathAndBitmap() {
         try {
             final File localFile = File.createTempFile("Images", "jpg");
             ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -119,8 +113,6 @@ public class ViewImageActivity extends AppCompatActivity {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     mBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                     imageView.setImageBitmap(mBitmap);
-
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -135,10 +127,8 @@ public class ViewImageActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
-        btnDownload = (FloatingActionButton) findViewById(R.id.download_button);
-        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
 
+        btnDownload = (FloatingActionButton) findViewById(R.id.download_button);
         imageView = (ImageView) findViewById(R.id.picture_view);
         totalView = (ConstraintLayout) findViewById(R.id.total_view);
 
@@ -152,11 +142,22 @@ public class ViewImageActivity extends AppCompatActivity {
             album = (Album)extras.getParcelable("ALBUM");
         }
 
+
         if (getIntent().hasExtra("DB_ID")) {
             Bundle extras = getIntent().getExtras();
             dbId = extras.getString("DB_ID");
         }
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(this.album.getM_AlbumCreatorId())) { //only creator user can edit/delete pictures
+            setUIForCreatorUser();
+        }
+
     }
+
+    private void setUIForCreatorUser() {
+        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
+        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
+   }
 
 }
 
