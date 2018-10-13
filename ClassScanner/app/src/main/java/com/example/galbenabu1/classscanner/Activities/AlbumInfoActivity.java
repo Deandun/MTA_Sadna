@@ -23,7 +23,6 @@ public class AlbumInfoActivity extends Activity {
     private static final String ALBUM_DATA = "album_data";
     private static final String IS_PRIVATE_ALBUM = "is_private_album";
 
-
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
     private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<PictureAudioData>();
@@ -53,22 +52,7 @@ public class AlbumInfoActivity extends Activity {
 
     private void fetchPhotoListFromDB(){
         long timeToDecrease = 10000;
-
-        /////TODO: choose where to delete the folder
-
-        String DirectoryPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        DirectoryPath += "/classScanner";
-//        File dir = new File(DirectoryPath);
-//        if (dir.isDirectory())
-//        {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++)
-//            {
-//                new File(dir, children[i]).delete();
-//            }
-//        }
-
-
+        
         for(int i = 0; i < mAlbum.getM_Pictures().size(); i++) {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);

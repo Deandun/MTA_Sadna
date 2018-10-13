@@ -23,14 +23,6 @@ class FirebaseDBReferenceGenerator {
         return getAllUsersReference().child(userID);
     }
 
-    public static DatabaseReference getAllUserNotificationsReference() {
-        return sfDatabaseRoot.child(eFirebaseDBEntityTypes.UserNotifications.getReferenceName());
-    }
-
-    public static DatabaseReference getUserNotificationsReference(String userID) {
-        return getAllUserNotificationsReference().child(userID);
-    }
-
     public static DatabaseReference getSuggestedCoursesReference() {
         return sfDatabaseRoot.child(eFirebaseDBEntityTypes.SuggestedCourses.getReferenceName());
     }

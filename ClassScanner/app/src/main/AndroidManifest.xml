@@ -48,7 +48,9 @@
         <activity android:name=".Activities.CropImageActivity" />
         <activity android:name=".Activities.CropTest" />
         <activity android:name=".Activities.ImageEditingActivity" />
-        <activity android:name=".Activities.PlayAlbumActivity"></activity>
+        <activity android:name=".Activities.PlayAlbumActivity" />
+        <activity android:name=".Activities.ViewImageActivity" />
+        <activity android:name=".Activities.UserNotificationsActivity"></activity>
     </application>
 
 </manifest>

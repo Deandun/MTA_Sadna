@@ -2,36 +2,29 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import com.example.galbenabu1.classscanner.Activities.Helpers.PlayAlbumManager;
 import com.example.galbenabu1.classscanner.R;
-
-import java.util.List;
-
 import Logic.Models.Album;
-import Logic.Models.PictureAudioData;
 
 public class PlayAlbumActivity extends Activity {
 
     private static final String ALBUM_DATA = "album_data";
-    private static final String IS_PRIVATE_ALBUM = "is_private_album";
     private static final String TAG = "PlayAlbumActivity";
 
-    private boolean mIsPrivateAlbum;
     private Album mAlbum;
-    private int mShownImages = 0;
+    private int mNumberOfShownImages = 0;
+    private boolean mIsPresentationInProgress;
 
     private ImageView mivDisplayedImage;
-    private ProgressBar mpbPlayAlbumProgress;
+    private SeekBar mpbPlayAlbumProgress;
     private Button mbtnPlayButton;
-    private Button mbtnStopButton;
 
     private PlayAlbumManager mPlayAlbumManager;
 
@@ -42,7 +35,6 @@ public class PlayAlbumActivity extends Activity {
 
         Log.e(TAG, "onCreate >>");
 
-        this.mIsPrivateAlbum = getIntent().getExtras().getBoolean(IS_PRIVATE_ALBUM);
         this.mAlbum = getIntent().getExtras().getParcelable(ALBUM_DATA);
 
         this.bindUI();
@@ -53,21 +45,73 @@ public class PlayAlbumActivity extends Activity {
         this.mivDisplayedImage = findViewById(R.id.ivDisplayCurrentImage);
         this.mpbPlayAlbumProgress = findViewById(R.id.pbAlbumPresentation);
         this.mbtnPlayButton = findViewById(R.id.btnStartPlayingAlbum);
-        this.mbtnStopButton = findViewById(R.id.btnStopPlayingAlbum);
     }
 
     private void init() {
+        this.initSeekBar();
+        this.mIsPresentationInProgress = false;
         this.mbtnPlayButton.setEnabled(false); // Set play button to false until the play album manager is ready.
-        this.mPlayAlbumManager = new PlayAlbumManager(this.mAlbum, this::onPlayAlbumManagerReady);
+        this.mPlayAlbumManager = new PlayAlbumManager(this.mAlbum, this::onUpdateNextImage);
+    }
+
+    private void initSeekBar() {
+        this.mpbPlayAlbumProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean isChangeFromUser) {
+                Log.e(TAG, "onStart >> is presentation currently in progress. Value: " + progressValue + " Is change from user: " + isChangeFromUser);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.e(TAG, "onStartTrackingTouch >> current progress: " + seekBar.getProgress());
+                mPlayAlbumManager.stop();
+                mIsPresentationInProgress = false;
+                mbtnPlayButton.setText("Start");
+                mbtnPlayButton.setEnabled(false);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.e(TAG, "onStopTrackingTouch >> current progress: " + seekBar.getProgress());
+                handleProgressChange(seekBar.getProgress());
+
+            }
+        });
+    }
+
+    private void handleProgressChange(int newProgressValue) {
+        int indexOfShownImage = (int)(((float)newProgressValue / 100.0) * this.mAlbum.getM_Pictures().size()); // Calculate which image to show.
+
+        if(indexOfShownImage >= this.mAlbum.getM_Pictures().size()) {
+            indexOfShownImage = this.mAlbum.getM_Pictures().size() - 1; // get last picture
+        }
+
+        this.mNumberOfShownImages = indexOfShownImage;
+        this.mPlayAlbumManager.jumpTo(this.mNumberOfShownImages, newProgressValue);
     }
 
     public void onStart(View v) {
-        Log.e(TAG, "onStart >>");
-        this.mPlayAlbumManager.start(this::onUpdateNextImage);
+        Log.e(TAG, "onStart >> is presentation currently in progress: " + this.mIsPresentationInProgress);
+
+        if(this.mIsPresentationInProgress) {
+            // Presentation in progress, stop it.
+            this.mPlayAlbumManager.reset();
+            this.mbtnPlayButton.setText("Start");
+            this.mpbPlayAlbumProgress.setProgress(0);
+            this.mNumberOfShownImages = 0;
+            this.mbtnPlayButton.setEnabled(false);
+        } else {
+            // Presentation not in progress, start it.
+            this.mPlayAlbumManager.start();
+            this.mbtnPlayButton.setText("Stop");
+        }
+
+        this.mIsPresentationInProgress = !this.mIsPresentationInProgress; // Toggle boolean.
     }
 
     private void onUpdateNextImage(Bitmap imageBitmap) {
-        this.mShownImages++;
+        this.mbtnPlayButton.setEnabled(true);
+        this.mNumberOfShownImages++;
         if(imageBitmap != null) {
             Log.e(TAG, "Showing next image");
             this.mivDisplayedImage.setImageBitmap(imageBitmap);
@@ -76,17 +120,9 @@ public class PlayAlbumActivity extends Activity {
         }
 
         int totalImages = this.mAlbum.getM_Pictures().size();
-        float ratio = ((float)this.mShownImages / (float)totalImages);
+        float ratio = ((float)this.mNumberOfShownImages / (float)totalImages);
         float progress =  ratio * 100;
         Log.e(TAG, "Updating progress to: " + progress);
         this.mpbPlayAlbumProgress.setProgress((int)progress);
-    }
-
-    private void onSetNewProgress(int newProgress) {
-
-    }
-
-    private void onPlayAlbumManagerReady() {
-        this.mbtnPlayButton.setEnabled(true);
     }
 }

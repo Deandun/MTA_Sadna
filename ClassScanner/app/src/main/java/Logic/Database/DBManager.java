@@ -44,6 +44,7 @@ import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
 import Logic.Models.PictureAudioData;
 import Logic.Models.User;
+import Logic.Models.UserNotification;
 
 import static Logic.Database.KeysForDBModels.*;
 
@@ -56,7 +57,6 @@ public class DBManager {
 
     private DatabaseReference mDatabase;
     private StorageReference mStorageRef;
-    private List<Album> mAlbumNameList = new ArrayList<>();
 
     //private classScannetGlideModule mGlideModule;
 
@@ -65,21 +65,13 @@ public class DBManager {
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
-    public void updatingUserDetails(Map<String, Object> userDetails) {
-        String key = mDatabase.child("Users").push().getKey();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/" + key, userDetails);
-        childUpdates.put("/user-posts/" + userDetails.containsKey("id") + "/" + key, userDetails);
-
-        mDatabase.updateChildren(childUpdates);
-    }
     public void uploadImageToPrivateAlbum(Bitmap imageBitmap, String userId, String albumID, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         Log.e(TAG, "Writing picture data to DB...");
         PictureAudioData pictureData = writePictureAudioDataToPrivateAlbumsAndGetKey(userId, albumID);
 
         pictureData.setM_DataType(eDataType.Picture);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
         this.uploadImage(data, pictureData, uploadImageSuccess, uploadImageFailure);
@@ -88,7 +80,7 @@ public class DBManager {
     private void uploadImage(byte[] imageData, PictureAudioData imageMetaData, MyConsumer<PictureAudioData> uploadImageSuccess, Runnable uploadImageFailure) {
         // Upload image
         Log.e(TAG, "Uploading image to DB...");
-        StorageReference imageRef = mStorageRef.child("Images").child(imageMetaData.getM_Id());
+        StorageReference imageRef = mStorageRef.child(StorageConstants.ImagesRefString).child(imageMetaData.getM_Id());
 
         UploadTask uploadTask = imageRef.putBytes(imageData);
         uploadTask.addOnFailureListener(exception -> {
@@ -131,7 +123,7 @@ public class DBManager {
             albumRef = FirebaseDBReferenceGenerator.getSharedAlbumReference(albumID, userID);
         }
 
-        this.removeAlbumFromStorage(albumID, userID, isPrivateAlbum, pictureDataCollection);
+        this.removePicturesFromDB(albumID, userID, isPrivateAlbum, pictureDataCollection);
 
         albumRef.removeValue(
                 (error, dbRef) -> {
@@ -140,24 +132,6 @@ public class DBManager {
                     Log.e(TAG, "Removing album with ID: " + albumID + errorMsg);
                 }
         );
-    }
-
-    // Delete the album's pictures.
-    //Can't delete folder from storage - Have to delete pictures one by one.
-    private void removeAlbumFromStorage(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureDataCollection) {
-        Log.e(TAG, "Removing album with ID: " + albumID + " from storage");
-        String albumTypeString = isPrivateAlbum ? "privateAlbums" : "sharedAlbums";
-        StorageReference albumRef = mStorageRef.child("Albums/").child(albumTypeString).child(userID).child(albumID);
-
-        for (PictureAudioData pictureData : pictureDataCollection) {
-            StorageReference pictureRef = albumRef.child(pictureData.getM_Id());
-            pictureRef.delete().addOnSuccessListener(
-                    (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id())
-            ).addOnFailureListener(
-                    (exception) -> Log.e(TAG, "failed to delete picture with ID: " + pictureData.getM_Id() + System.lineSeparator() +
-                            "Error message: " + exception.getMessage())
-            );
-        }
     }
 
     public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections) {
@@ -171,7 +145,7 @@ public class DBManager {
             picturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
         }
 
-        this.removePicturesFromStorage(albumID, userID, isPrivateAlbum, pictureCollections);
+        this.removePicturesFromStorage(pictureCollections);
 
         Map<String, Object> deletionMap = new HashMap<>();
 
@@ -186,13 +160,11 @@ public class DBManager {
         );
     }
 
-    private void removePicturesFromStorage(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollection) {
-        Log.e(TAG, "Removing picture with ID: " + albumID + " from storage");
-        String albumTypeString = isPrivateAlbum ? "privateAlbums" : "sharedAlbums";
-        StorageReference albumRef = mStorageRef.child("Albums/").child(albumTypeString).child(userID).child(albumID);
+    private void removePicturesFromStorage(Collection<PictureAudioData> pictureCollection) {
+        StorageReference imagesRef = mStorageRef.child(StorageConstants.ImagesRefString);
 
         for (PictureAudioData pictureData : pictureCollection) {
-            albumRef.child(pictureData.getM_Id()).delete().addOnSuccessListener(
+            imagesRef.child(pictureData.getM_Id()).delete().addOnSuccessListener(
                     (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id() + " from storage.")
             ).addOnFailureListener(
                     (exception) -> Log.e(TAG, "Failed to delete picture with ID: " + pictureData.getM_Id() + " from storage." + System.lineSeparator() +
@@ -281,6 +253,49 @@ public class DBManager {
                 Log.e(TAG, "Failed fetching courses");
             }
         });
+    }
+
+    public void fetchNumberOfNotifications(MyConsumer<Integer> onFinishedFetchingNumberOfNotifications) {
+        this.fetchUserNotifications(
+                (notificationsList) -> onFinishedFetchingNumberOfNotifications.accept(notificationsList.size())
+        );
+    }
+
+    public void fetchUserNotifications(MyConsumer<List<UserNotification>> onFinishedFetchingUserNotifications) {
+        final String USER_NOTIFICATIONS_KEY = "mUserNotifications";
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userNotificationsRef = FirebaseDBReferenceGenerator.getUserReference(userID).child(USER_NOTIFICATIONS_KEY);
+
+        userNotificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e(TAG, "Fetched user notifications.");
+                List<UserNotification> userNotificationsList = new ArrayList<>();
+                UserNotification userNotification;
+
+                for (DataSnapshot userNotificationsSnapshot: dataSnapshot.getChildren()) {
+                    userNotification = userNotificationsSnapshot.getValue(UserNotification.class);
+                    userNotificationsList.add(userNotification);
+                }
+
+                onFinishedFetchingUserNotifications.accept(userNotificationsList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Failed fetching user notifications. Error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    public void removeUserNotificationsFromDB() {
+        final String USER_NOTIFICATIONS_KEY = "mUserNotifications";
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userNotificationsRef = FirebaseDBReferenceGenerator.getUserReference(userID).child(USER_NOTIFICATIONS_KEY);
+
+        Log.e(TAG, "Removing user notifications from DB.");
+
+        userNotificationsRef.setValue(null);
     }
 
     public void fetchSuggestedCourses(MyConsumer<List<Course>> onFinishFetchingCourses) {
@@ -431,7 +446,8 @@ public class DBManager {
 
     public void userJoinsCourse(User user, String joinedCourseID) {
         DatabaseReference userRef = FirebaseDBReferenceGenerator.getUserReference(user.getM_Id());
-        userRef.child("m_CourseIds").setValue(user.getM_CourseIds());
+        final String courseIDsDatabaseKey = "m_CourseIds";
+        userRef.child(courseIDsDatabaseKey).setValue(user.getM_CourseIds());
 
         CourseActionData courseActionData = new CourseActionData();
         courseActionData.setmCourseActionType(eCourseActionType.JoinedCourse);
@@ -468,7 +484,7 @@ public class DBManager {
     }
 
     private void uploadAudioToStorage(String fileName, PictureAudioData audioData) {
-        StorageReference audioRef = this.mStorageRef.child("Audio").child(audioData.getM_Id());
+        StorageReference audioRef = this.mStorageRef.child(StorageConstants.AudioRefString).child(audioData.getM_Id() + StorageConstants.AudioFileType);
         Uri fileUri = Uri.fromFile(new File(fileName));
 
         audioRef.putFile(fileUri).addOnFailureListener(exception -> {
@@ -489,31 +505,15 @@ public class DBManager {
         return audioData;
     }
 
-    public void fetchImages(List<PictureAudioData> pictureDataList, MyConsumer<List<Bitmap>> onFinishedFetchingImages) {
-        List<Bitmap> imagesBitmapList = new ArrayList<>();
-        final int numberOfImagesToFetch = pictureDataList.size();
-
-        MyConsumer<Bitmap> onFinishedFetchingSingleImage =
-                (imageBitmap) -> {
-                  imagesBitmapList.add(imageBitmap);
-
-                  Log.e(TAG, "Fetched " + imagesBitmapList.size() + " images out of " + numberOfImagesToFetch);
-
-                  if(imagesBitmapList.size() == numberOfImagesToFetch) {
-                      onFinishedFetchingImages.accept(imagesBitmapList);
-                  }
-                };
-
-        for(PictureAudioData pictureData: pictureDataList) {
-            this.fetchImageFromStoragePath(pictureData.getM_Id(), onFinishedFetchingSingleImage);
-        }
+    public void fetchImage(PictureAudioData pictureData, MyConsumer<Bitmap> onFinishedFetchingImages) {
+        this.fetchImageFromStoragePath(pictureData.getM_Id(), onFinishedFetchingImages);
     }
 
     public void fetchImageFromStoragePath(String path, MyConsumer<Bitmap> onFinishedFetchingImage) {
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("Images").child(path);
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(StorageConstants.ImagesRefString).child(path);
 
         try {
-            final File localFile = File.createTempFile("Temp", "jpg");
+            final File localFile = File.createTempFile(StorageConstants.TempFileName, StorageConstants.TempFileType);
             imageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -527,5 +527,21 @@ public class DBManager {
         } catch(IOException e) {
             Log.e(TAG, "Cannot open file to fetch image data to.");
         }
+    }
+
+    public void fetchRecordingDataSource(String audioFileID, MyConsumer<Uri> onFetchedRecordingDataSource) {
+        FirebaseStorage.getInstance()
+                .getReference(StorageConstants.AudioRefString)
+                .child(audioFileID + StorageConstants.AudioFileType)
+                .getDownloadUrl()
+                .addOnSuccessListener(onFetchedRecordingDataSource::accept);
+    }
+
+    private static class StorageConstants {
+        private final static String ImagesRefString = "Images";
+        private final static String AudioRefString = "Audio";
+        private final static String AudioFileType = ".3gp";
+        private final static String TempFileName = "Temp";
+        private final static String TempFileType = "jpg";
     }
 }

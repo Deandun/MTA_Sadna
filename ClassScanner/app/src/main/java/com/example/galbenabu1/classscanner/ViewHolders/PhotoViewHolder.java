@@ -1,11 +1,13 @@
 package com.example.galbenabu1.classscanner.ViewHolders;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -15,7 +17,11 @@ import android.widget.Toast;
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.Activities.CropImageActivity;
 import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
+import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
+import com.example.galbenabu1.classscanner.Activities.ViewImageActivity;
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
@@ -28,6 +34,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     private PictureAudioData mSelectedPhoto;
     private Album mAlbum;
 
+    @SuppressLint("ClickableViewAccessibility")
     public PhotoViewHolder(View view, Album album) {
         super(view);
 
@@ -41,6 +48,23 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
         mtvTitle = view.findViewById(R.id.tv_photo_title);
         mivPhoto = view.findViewById(R.id.iv_photo);
+
+
+//        mivPhoto.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
+//                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+//                intent.putExtra("ALBUM", mAlbum);
+//                view.getContext().startActivity(intent);
+//
+//                return true;
+//            }
+//        });
+
+
+
+
 
         mivPhoto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -61,9 +85,23 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 return true;
                             case R.id.option_2:
                                 //Toast.makeText(view, "Option 2 selected", Toast.LENGTH_SHORT).show();
-                                return true;
-                            default:
+                                StorageReference ref = FirebaseStorage.getInstance().getReference().child(mSelectedPhoto.getM_Path());
+                                ref.delete().addOnSuccessListener(
+                                        (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + mSelectedPhoto.getM_Id())
+                                ).addOnFailureListener(
+                                        (exception) -> Log.e(TAG, "failed to delete picture with ID: " + mSelectedPhoto.getM_Id() + System.lineSeparator() +
+                                                "Error message: " + exception.getMessage())
+                                );
+                                return true;                           default:
+//                            {
+//                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
+//                                String strName = null;
+//                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+//                                intent.putExtra("ALBUM",mAlbum);
+//                                view.getContext().startActivity(intent);
+//                            }
                                // return super.onContextItemSelected(item);
+
                         }
                         return false;
                     }
@@ -80,7 +118,12 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
                 Log.e(TAG, "CardView.onClick() >> Photo: " + mSelectedPhoto.toString());
 
-                Context context = view.getContext();
+               // Context context = view.getContext();
+
+                Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
+                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+                intent.putExtra("ALBUM",mAlbum);
+                view.getContext().startActivity(intent);
                 //Intent intent = new Intent(context, DareDetailsActivity.class);
                 //intent.putExtra("course", mSelectedCourse);
                 //context.startActivity(intent);

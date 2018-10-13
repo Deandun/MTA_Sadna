@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/total_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/input_login">
+
+
+    <ImageView
+        android:id="@+id/picture_view"
+        android:layout_width="385dp"
+        android:layout_height="505dp"
+        app:srcCompat="@color/input_login"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="3dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/download_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/stat_sys_download"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="327dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="327dp"
+        tools:layout_editor_absoluteY="114dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="327dp"
+        tools:layout_editor_absoluteY="66dp" />
+
+</android.support.constraint.ConstraintLayout>
