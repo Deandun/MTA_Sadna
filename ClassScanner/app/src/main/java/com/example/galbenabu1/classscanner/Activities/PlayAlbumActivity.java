@@ -11,6 +11,10 @@ import android.widget.SeekBar;
 
 import com.example.galbenabu1.classscanner.Activities.Helpers.PlayAlbumManager;
 import com.example.galbenabu1.classscanner.R;
+
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Models.Album;
 
 public class PlayAlbumActivity extends Activity {
@@ -101,12 +105,21 @@ public class PlayAlbumActivity extends Activity {
             this.mNumberOfShownImages = 0;
             this.mbtnPlayButton.setEnabled(false);
         } else {
+            this.logPlayAlbumEvent();
             // Presentation not in progress, start it.
             this.mPlayAlbumManager.start();
             this.mbtnPlayButton.setText("Stop");
         }
 
         this.mIsPresentationInProgress = !this.mIsPresentationInProgress; // Toggle boolean.
+    }
+
+    private void logPlayAlbumEvent() {
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmAlbum(this.mAlbum);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.ViewAlbumPresentation, albumEventParams);
     }
 
     private void onUpdateNextImage(Bitmap imageBitmap) {

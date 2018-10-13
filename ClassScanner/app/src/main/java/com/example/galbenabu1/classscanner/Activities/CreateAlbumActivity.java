@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.List;
 
 import Logic.Enums.eDataType;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Album;
 import Logic.Database.DBManager;
@@ -88,9 +91,18 @@ public class CreateAlbumActivity extends Activity {
 
         mDBManager.addAlbumDetailsToDB(newAlbum, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+        this.logCreateAlbumEvent(newAlbum);
         // Return to home screen
         Intent homeIntent = new Intent(CreateAlbumActivity.this, HomeActivity.class);
         startActivity(homeIntent);
+    }
+
+    private void logCreateAlbumEvent(Album newAlbum) {
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmAlbum(newAlbum);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.AlbumCreated, albumEventParams);
     }
 
     private void setPicturesAndAudioForNewAlbum(Album newAlbum) {

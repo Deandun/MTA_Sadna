@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
@@ -86,6 +89,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
+        Toast.makeText(this, "Course created Successfully!", Toast.LENGTH_SHORT).show();
 
         Log.e(TAG, "onFinishCreatingCourse <<");
 
@@ -94,13 +98,13 @@ public class CreateCourseActivity extends AppCompatActivity {
     private void logCourseCreatedEvent(Course newCourse) {
         CourseEventParams courseEventParams = new CourseEventParams();
         courseEventParams.setmCourse(newCourse);
-        AnalyticsManager.getInstance().trackCourseEvent(AnalyticsManager.eCourseEventType.CourseCreated, courseEventParams);
+        AnalyticsManager.getInstance().trackCourseEvent(CourseEventsHelper.eCourseEventType.CourseCreated, courseEventParams);
     }
     private void logAddedAlbumsToCourseEvent(Course newCourse, int numberOfAddedAlbums) {
         CourseEventParams courseEventParams = new CourseEventParams();
         courseEventParams.setmCourse(newCourse);
         courseEventParams.setmNumberOfAddedAlbums(numberOfAddedAlbums);
-        AnalyticsManager.getInstance().trackCourseEvent(AnalyticsManager.eCourseEventType.AddAlbumsToCourse, courseEventParams);
+        AnalyticsManager.getInstance().trackCourseEvent(CourseEventsHelper.eCourseEventType.AddAlbumsToCourse, courseEventParams);
     }
 
     public void onChooseAlbumsClick(View v) {

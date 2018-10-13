@@ -163,7 +163,7 @@ public class DBManager {
     private void removePicturesFromStorage(Collection<PictureAudioData> pictureCollection) {
         StorageReference imagesRef = mStorageRef.child(StorageConstants.ImagesRefString);
 
-        for (PictureAudioData pictureData : pictureCollection) {
+        for (PictureAudioData pictureData: pictureCollection) {
             imagesRef.child(pictureData.getM_Id()).delete().addOnSuccessListener(
                     (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + pictureData.getM_Id() + " from storage.")
             ).addOnFailureListener(

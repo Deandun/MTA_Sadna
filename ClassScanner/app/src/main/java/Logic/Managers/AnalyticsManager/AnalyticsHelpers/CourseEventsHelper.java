@@ -22,7 +22,7 @@ public class CourseEventsHelper {
 
         params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
 
-        this.logEvent(AnalyticsManager.eCourseEventType.ViewSuggestedCourses.name(), params);
+        this.logEvent(eCourseEventType.ViewSuggestedCourses.name(), params);
     }
 
     public void trackViewMyCourses(int numberOfCoursesDisplayed) {
@@ -30,7 +30,7 @@ public class CourseEventsHelper {
 
         params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
 
-        this.logEvent(AnalyticsManager.eCourseEventType.ViewMyCourses.name(), params);
+        this.logEvent(eCourseEventType.ViewMyCourses.name(), params);
     }
 
     public void trackViewAllCourses(int numberOfCoursesDisplayed) {
@@ -38,7 +38,7 @@ public class CourseEventsHelper {
 
         params.putInt(ParamNames.NUMBER_OF_DISPLAYED_COURSES, numberOfCoursesDisplayed);
 
-        this.logEvent(AnalyticsManager.eCourseEventType.ViewAllCourses.name(), params);
+        this.logEvent(eCourseEventType.ViewAllCourses.name(), params);
     }
 
     public void trackCourseCreated(Course createdCourse) {
@@ -46,7 +46,7 @@ public class CourseEventsHelper {
 
         params.putString(ParamNames.COURSE_NAME, createdCourse.getCourseName());
 
-        this.logEvent(AnalyticsManager.eCourseEventType.CourseCreated.name(), params);
+        this.logEvent(eCourseEventType.CourseCreated.name(), params);
     }
 
     public void trackAddAlbumsToCourse(Course course, int numberOfAddedAlbums) {
@@ -55,7 +55,7 @@ public class CourseEventsHelper {
         params.putString(ParamNames.COURSE_NAME, course.getCourseName());
         params.putInt(ParamNames.NUMBER_OF_ADDED_ALBUMS, numberOfAddedAlbums);
 
-        this.logEvent(AnalyticsManager.eCourseEventType.CourseCreated.name(), params);
+        this.logEvent(eCourseEventType.CourseCreated.name(), params);
     }
 
     private void logEvent(String eventTypeString, Bundle params) {
@@ -68,5 +68,13 @@ public class CourseEventsHelper {
         private static final String USER_ID = "userID";
         private static final String COURSE_NAME = "courseName";
         private static final String NUMBER_OF_ADDED_ALBUMS = "numberOfAddedAlbums";
+    }
+
+    public enum eCourseEventType {
+        ViewSuggestedCourses,
+        ViewMyCourses,
+        ViewAllCourses,
+        CourseCreated,
+        AddAlbumsToCourse,
     }
 }

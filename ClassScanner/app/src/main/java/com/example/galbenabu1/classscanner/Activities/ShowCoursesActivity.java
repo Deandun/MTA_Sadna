@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
@@ -92,18 +93,18 @@ public class ShowCoursesActivity extends Activity {
         CourseEventParams courseEventParams = new CourseEventParams();
         courseEventParams.setmNumberOfCoursesDisplayed(numberOfDisplayedCourses);
 
-        AnalyticsManager.eCourseEventType courseEventType = null;
+        CourseEventsHelper.eCourseEventType courseEventType = null;
 
         switch (this.mShowCoursesOptions) {
 
             case ShowSearchedCourses:
-                courseEventType = AnalyticsManager.eCourseEventType.ViewAllCourses;
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewAllCourses;
                 break;
             case ShowCoursesTheCurrentUserIsIn:
-                courseEventType = AnalyticsManager.eCourseEventType.ViewMyCourses;
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewMyCourses;
                 break;
             case ShowSuggestedCourses:
-                courseEventType = AnalyticsManager.eCourseEventType.ViewSuggestedCourses;
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewSuggestedCourses;
                 break;
         }
 
@@ -158,7 +159,8 @@ public class ShowCoursesActivity extends Activity {
     private void filterCourses(String searchedCourseName) {
 
         for (Course course : this.mFetchedCourses) {
-            if(course.getCourseName().contains(searchedCourseName)) {
+            if(course.getCourseName().contains(searchedCourseName.toLowerCase()) ||
+                    course.getCourseName().contains(searchedCourseName.toUpperCase())) {
                 this.mCoursesListToDisplay.add(course);
             }
         }

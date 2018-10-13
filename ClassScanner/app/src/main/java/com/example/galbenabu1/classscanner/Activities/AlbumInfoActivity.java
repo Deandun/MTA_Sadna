@@ -15,6 +15,9 @@ import com.example.galbenabu1.classscanner.R;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -43,11 +46,21 @@ public class AlbumInfoActivity extends Activity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
+        
+        this.logViewAlbumImagesEvent();
 
         fetchPhotoListFromDB();
         PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext(), this.mAlbum);
         recyclerView.setAdapter(adapter);
         Log.e(TAG, "onCreate <<");
+    }
+
+    private void logViewAlbumImagesEvent() {
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmAlbum(this.mAlbum);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.ViewAlbumImages, albumEventParams);
     }
 
     private void fetchPhotoListFromDB(){

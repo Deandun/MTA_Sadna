@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
@@ -156,6 +157,6 @@ public class CourseInfoActivity extends AppCompatActivity {
         CourseEventParams courseEventParams = new CourseEventParams();
         courseEventParams.setmCourse(this.mCourse);
         courseEventParams.setmNumberOfAddedAlbums(numberOfAddedAlbums);
-        AnalyticsManager.getInstance().trackCourseEvent(AnalyticsManager.eCourseEventType.AddAlbumsToCourse, courseEventParams);
+        AnalyticsManager.getInstance().trackCourseEvent(CourseEventsHelper.eCourseEventType.AddAlbumsToCourse, courseEventParams);
     }
 }

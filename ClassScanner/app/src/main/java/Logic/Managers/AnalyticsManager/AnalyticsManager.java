@@ -7,7 +7,10 @@ import android.util.Log;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.PictureEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.UserEventsHelper;
 import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.AnalyticsManager.EventParams.PictureEventParams;
@@ -20,6 +23,9 @@ public class AnalyticsManager {
 
     private static FirebaseAnalytics mFirebaseAnalytics;
     private static CourseEventsHelper mCourseEventsHelper;
+    private static AlbumEventsHelper mAlbumEventsHelper;
+    private static UserEventsHelper mUserEventsHelper;
+    private static PictureEventsHelper mPictureEventsHelper;
 
 
     public static AnalyticsManager getInstance() {
@@ -28,6 +34,9 @@ public class AnalyticsManager {
 
     private AnalyticsManager() {
         mCourseEventsHelper = new CourseEventsHelper();
+        mAlbumEventsHelper = new AlbumEventsHelper();
+        mUserEventsHelper = new UserEventsHelper();
+        mPictureEventsHelper = new PictureEventsHelper();
     }
 
     public void init(Context context) {
@@ -36,6 +45,8 @@ public class AnalyticsManager {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
         mCourseEventsHelper.init(mFirebaseAnalytics, userID);
+        mAlbumEventsHelper.init(mFirebaseAnalytics, userID);
+        mUserEventsHelper.init(mFirebaseAnalytics, userID);
     }
 
     public void trackSearchEvent(String searchedString, int numberOfMatches) {
@@ -49,7 +60,7 @@ public class AnalyticsManager {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
     }
 
-    public void trackCourseEvent(eCourseEventType eventType, CourseEventParams courseEventParams) {
+    public void trackCourseEvent(CourseEventsHelper.eCourseEventType eventType, CourseEventParams courseEventParams) {
         Log.e(TAG, "Tracking event " + eventType.name());
 
         switch (eventType) {
@@ -71,71 +82,51 @@ public class AnalyticsManager {
         }
     }
 
-    public void trackAlbumEvent(eAlbumEventType eventType, AlbumEventParams albumEventParams) {
+    public void trackAlbumEvent(AlbumEventsHelper.eAlbumEventType eventType, AlbumEventParams albumEventParams) {
         Log.e(TAG, "Tracking event " + eventType.name());
 
         switch (eventType) {
             case ViewCourseAlbums:
+                mAlbumEventsHelper.trackViewCourseAlbums(albumEventParams.getmCourseID(), albumEventParams.getmNumberOfAlbums());
                 break;
             case ViewPrivateAlbums:
+                mAlbumEventsHelper.trackViewPrivateAlbums(albumEventParams.getmNumberOfAlbums());
                 break;
             case ViewAlbumPresentation:
+                mAlbumEventsHelper.trackAlbumPresentationStarted(albumEventParams.getmAlbum());
                 break;
             case AlbumCreated:
+                mAlbumEventsHelper.trackAlbumCreated(albumEventParams.getmAlbum());
                 break;
             case ViewAlbumImages:
+                mAlbumEventsHelper.trackViewAlbumImages(albumEventParams.getmAlbum());
                 break;
         }
     }
 
-    public void trackUserEvent(eUserEventType eventType, UserEventParams userEventParams) {
+    public void trackUserEvent(UserEventsHelper.eUserEventType eventType, UserEventParams userEventParams) {
         Log.e(TAG, "Tracking event " + eventType.name());
 
         switch (eventType) {
             case ViewNotifications:
+                mUserEventsHelper.trackViewNotifications(userEventParams.getmNumberOfNotifications());
                 break;
             case ClearNotifications:
+                mUserEventsHelper.trackClearNotifications(userEventParams.getmNumberOfNotifications());
                 break;
         }
     }
 
-    public void trackPictureEvent(ePictureEventType eventType, PictureEventParams pictureEventParams) {
+    public void trackPictureEvent(PictureEventsHelper.ePictureEventType eventType, PictureEventParams pictureEventParams) {
         Log.e(TAG, "Tracking event " + eventType.name());
 
         switch (eventType) {
             case StartCropingImage:
+                mPictureEventsHelper.trackStartCroppingImage(pictureEventParams.getmPictureID());
                 break;
             case StartTakingPictures:
-                break;
-            case CropImage:
+                mPictureEventsHelper.trackStartTakingPictures();
                 break;
         }
-    }
-
-    public enum eCourseEventType {
-        ViewSuggestedCourses,
-        ViewMyCourses,
-        ViewAllCourses,
-        CourseCreated,
-        AddAlbumsToCourse,
-    }
-
-    public enum eAlbumEventType {
-        ViewCourseAlbums,
-        ViewPrivateAlbums,
-        ViewAlbumPresentation,
-        AlbumCreated,
-        ViewAlbumImages,
-    }
-
-    public enum eUserEventType {
-        ViewNotifications,
-        ClearNotifications,
-    }
-
-    public enum ePictureEventType {
-        StartCropingImage,
-        StartTakingPictures,
-        CropImage,
     }
 }
