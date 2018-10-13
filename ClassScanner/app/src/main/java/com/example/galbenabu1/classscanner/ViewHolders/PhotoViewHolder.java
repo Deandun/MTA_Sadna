@@ -20,9 +20,11 @@ import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
 import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
 import com.example.galbenabu1.classscanner.Activities.ViewImageActivity;
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import Logic.Database.DBManager;
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -84,15 +86,23 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 view.getContext().startActivity(intent);
                                 return true;
                             case R.id.option_2:
-                                //Toast.makeText(view, "Option 2 selected", Toast.LENGTH_SHORT).show();
-                                StorageReference ref = FirebaseStorage.getInstance().getReference().child(mSelectedPhoto.getM_Path());
-                                ref.delete().addOnSuccessListener(
-                                        (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + mSelectedPhoto.getM_Id())
-                                ).addOnFailureListener(
-                                        (exception) -> Log.e(TAG, "failed to delete picture with ID: " + mSelectedPhoto.getM_Id() + System.lineSeparator() +
-                                                "Error message: " + exception.getMessage())
-                                );
-                                return true;                           default:
+                                DBManager dbmanager =new DBManager();
+                                String albumId=album.getM_Id();
+                                String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String pictureDbId=mSelectedPhoto.getM_Id();
+                                String pictureId=mSelectedPhoto.getM_Path().substring(mSelectedPhoto.getM_Path().lastIndexOf("Images/") + 7);
+                                //todo: check if private album
+                                boolean isPrivateAlbum=true;
+                                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
+
+                               // toastMessage("Image saved successfully");
+                                Intent newIntent = new Intent(view.getContext(), AlbumInfoActivity.class);
+                                newIntent.putExtra("album_data", album);
+                                view.getContext().startActivity(newIntent);
+                                return true;
+
+
+                                default:
 //                            {
 //                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
 //                                String strName = null;
@@ -111,7 +121,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
             }
         });
 
-
         mivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,9 +129,11 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
                // Context context = view.getContext();
 
+
                 Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                 intent.putExtra("ALBUM",mAlbum);
+
                 view.getContext().startActivity(intent);
                 //Intent intent = new Intent(context, DareDetailsActivity.class);
                 //intent.putExtra("course", mSelectedCourse);

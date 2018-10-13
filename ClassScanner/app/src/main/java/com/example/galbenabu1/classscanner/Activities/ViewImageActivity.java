@@ -18,6 +18,8 @@ import com.example.galbenabu1.classscanner.R;
 import com.fenchtose.nocropper.CropperView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -25,6 +27,8 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import Logic.Database.DBManager;
 
 import Logic.Models.Album;
 
@@ -74,7 +78,14 @@ public class ViewImageActivity extends AppCompatActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                // public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections)
+                DBManager dbmanager =new DBManager();
+                String albumId=album.getM_Id();
+                String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+                //todo: check if private album
+                boolean isPrivateAlbum=true;
+               // dbmanager.removePictureFromDB(albumId,userId,pictureId,isPrivateAlbum);
             }
         });
 

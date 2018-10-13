@@ -3,7 +3,7 @@ package com.example.galbenabu1.classscanner.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
+
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -57,7 +57,7 @@ public class AlbumInfoActivity extends Activity {
             Date date = new Date();
             date.setTime(date.getTime() - timeToDecrease);
             timeToDecrease *= (i + 1);
-            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, "dummy photo " + i, "Images/"+mAlbum.getM_Pictures().get(i).getM_Id());
+            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, String.valueOf(i+1), "Images/"+mAlbum.getM_Pictures().get(i).getM_Id());
             mAlbumPhotosList.add(photo);
         }
     }
