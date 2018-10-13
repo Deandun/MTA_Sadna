@@ -20,9 +20,11 @@ import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
 import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
 import com.example.galbenabu1.classscanner.Activities.ViewImageActivity;
 import com.example.galbenabu1.classscanner.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -37,15 +39,12 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     @SuppressLint("ClickableViewAccessibility")
     public PhotoViewHolder(View view, Album album) {
         super(view);
-
         this.mAlbum = album;
-
 
         view.setOnClickListener(this);
        // if (withContextMenu) {
             view.setOnCreateContextMenuListener(this);
       //  }
-
         mtvTitle = view.findViewById(R.id.tv_photo_title);
         mivPhoto = view.findViewById(R.id.iv_photo);
 
@@ -63,9 +62,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 //        });
 
 
-
-
-
         mivPhoto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -74,34 +70,38 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.option_1:
-                                //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(view.getContext(), CropImageActivity.class);
-                                String strName = null;
-                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
-                                intent.putExtra("ALBUM",mAlbum);
-                                view.getContext().startActivity(intent);
-                                return true;
-                            case R.id.option_2:
-                                //Toast.makeText(view, "Option 2 selected", Toast.LENGTH_SHORT).show();
-                                StorageReference ref = FirebaseStorage.getInstance().getReference().child(mSelectedPhoto.getM_Path());
-                                ref.delete().addOnSuccessListener(
-                                        (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + mSelectedPhoto.getM_Id())
-                                ).addOnFailureListener(
-                                        (exception) -> Log.e(TAG, "failed to delete picture with ID: " + mSelectedPhoto.getM_Id() + System.lineSeparator() +
-                                                "Error message: " + exception.getMessage())
-                                );
-                                return true;                           default:
-//                            {
-//                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
-//                                String strName = null;
-//                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
-//                                intent.putExtra("ALBUM",mAlbum);
-//                                view.getContext().startActivity(intent);
-//                            }
-                               // return super.onContextItemSelected(item);
+                        //TODO: check
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mAlbum.getM_AlbumCreatorName())){
 
+                            switch (menuItem.getItemId()) {
+                                case R.id.option_1:
+                                    //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(view.getContext(), CropImageActivity.class);
+                                    String strName = null;
+                                    intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+                                    intent.putExtra("ALBUM",mAlbum);
+                                    view.getContext().startActivity(intent);
+                                    return true;
+                                case R.id.option_2:
+                                    //Toast.makeText(view, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                                    StorageReference ref = FirebaseStorage.getInstance().getReference().child(mSelectedPhoto.getM_Path());
+                                    ref.delete().addOnSuccessListener(
+                                            (aVoid) -> Log.e(TAG, "Successfully deleted picture with ID: " + mSelectedPhoto.getM_Id())
+                                    ).addOnFailureListener(
+                                            (exception) -> Log.e(TAG, "failed to delete picture with ID: " + mSelectedPhoto.getM_Id() + System.lineSeparator() +
+                                                    "Error message: " + exception.getMessage())
+                                    );
+                                    return true;                           default:
+    //                            {
+    //                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
+    //                                String strName = null;
+    //                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
+    //                                intent.putExtra("ALBUM",mAlbum);
+    //                                view.getContext().startActivity(intent);
+    //                            }
+                                   // return super.onContextItemSelected(item);
+
+                            }
                         }
                         return false;
                     }

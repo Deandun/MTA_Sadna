@@ -14,6 +14,7 @@ import java.util.List;
 //TODO: Add missing fields to parcelable implementation
 public class Album implements Parcelable {
     private String m_Id;
+    private String m_AlbumCreatorId;
     private String m_AlbumName;
     private String m_AlbumCreatorName;
     private Date m_CreationDate;
@@ -24,11 +25,12 @@ public class Album implements Parcelable {
 
     public Album() {}
 
-    public Album(String m_Id, String m_AlbumName, Date m_CreationDate, String m_AlbumCreatorName) {
+    public Album(String m_Id, String m_AlbumName, Date m_CreationDate, String m_AlbumCreatorName, String m_AlbumCreatorId) {
         this.m_Id = m_Id;
         this.m_AlbumName = m_AlbumName;
         this.m_CreationDate = m_CreationDate;
         this.m_AlbumCreatorName = m_AlbumCreatorName;
+        this.m_AlbumCreatorId = m_AlbumCreatorId;
     }
 
     protected Album(Parcel in) {
@@ -45,6 +47,7 @@ public class Album implements Parcelable {
             m_Pictures = new ArrayList<>();
         }
         m_Audio = (PictureAudioData) in.readSerializable();
+        m_AlbumCreatorId = in.readString();
     }
 
     @Override
@@ -57,6 +60,7 @@ public class Album implements Parcelable {
         dest.writeInt(m_NumOfPictures);
         dest.writeList(m_Pictures);
         dest.writeSerializable(m_Audio);
+        dest.writeString(m_AlbumCreatorId);
     }
 
     @Override
@@ -128,4 +132,7 @@ public class Album implements Parcelable {
         return m_Id;
     }
 
+    public String getM_AlbumCreatorId(){ return this.m_AlbumCreatorId;}
+
+    public void setM_AlbumCreatorId(String m_AlbumCreatorId) { this.m_AlbumCreatorId = m_AlbumCreatorId; }
 }
