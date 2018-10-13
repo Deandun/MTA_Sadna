@@ -19,6 +19,7 @@ import com.fenchtose.nocropper.CropperView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -26,6 +27,8 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import Logic.Database.DBManager;
 
 import Logic.Models.Album;
 
@@ -44,6 +47,7 @@ public class ViewImageActivity extends AppCompatActivity {
     private ImageView imageView;
     private Bitmap mBitmap;
     private String path;
+    private String dbId;
     private Album album;
 
     private FirebaseStorage storage;
@@ -75,7 +79,20 @@ public class ViewImageActivity extends AppCompatActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                DBManager dbmanager =new DBManager();
+                String albumId=album.getM_Id();
+                String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String pictureDbId=dbId;
+                String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+                //todo: check if private album
+                boolean isPrivateAlbum=true;
+                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
+
+                // toastMessage("Image saved successfully");
+                Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
+                newIntent.putExtra("album_data", album);
+                startActivity(newIntent);
+               // dbmanager.removePictureFromDB(albumId,userId,pictureId,isPrivateAlbum);
             }
         });
 
@@ -109,6 +126,7 @@ public class ViewImageActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+
         btnDownload = (FloatingActionButton) findViewById(R.id.download_button);
         imageView = (ImageView) findViewById(R.id.picture_view);
         totalView = (ConstraintLayout) findViewById(R.id.total_view);
@@ -123,13 +141,15 @@ public class ViewImageActivity extends AppCompatActivity {
             album = (Album)extras.getParcelable("ALBUM");
         }
 
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String creatorUserId = this.album.getM_AlbumCreatorId();
+
+        if (getIntent().hasExtra("DB_ID")) {
+            Bundle extras = getIntent().getExtras();
+            dbId = extras.getString("DB_ID");
+        }
 
         if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(this.album.getM_AlbumCreatorId())) { //only creator user can edit/delete pictures
             setUIForCreatorUser();
         }
-
 
     }
 
