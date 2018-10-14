@@ -26,6 +26,9 @@ import java.io.PrintStream;
 
 import com.fenchtose.nocropper.CropperView;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.PictureEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.PictureEventParams;
 import Logic.Models.Album;
 
 
@@ -55,6 +58,8 @@ public class CropImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_image);
 
         initViews();
+
+        this.logCropImageEvent();
 
         storage = FirebaseStorage.getInstance();
         ref = storage.getReference().child(path);
@@ -162,6 +167,11 @@ public class CropImageActivity extends AppCompatActivity {
         intent.putExtra("ALBUM", album);
         intent.putExtra("PATH", path);
         startActivity(intent);
+    }
+
+    private void logCropImageEvent() {
+        PictureEventParams pictureEventParams = new PictureEventParams(this.path);
+        AnalyticsManager.getInstance().trackPictureEvent(PictureEventsHelper.ePictureEventType.StartCropingImage, pictureEventParams);
     }
 }
 

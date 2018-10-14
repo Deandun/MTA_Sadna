@@ -13,6 +13,7 @@ import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import Logic.Database.DBManager;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
 
 public class HomeActivity extends Activity {
 
@@ -33,13 +34,20 @@ public class HomeActivity extends Activity {
         mtvGreeting = findViewById(R.id.tvGreeting);
         setContentView(R.layout.activity_home);
 
+        AnalyticsManager.getInstance().init(getApplicationContext()); // Init analytics
+
         this.mbtnNotifications = findViewById(R.id.btnNotifications);
-        mbtnNotifications.setText("Notifications");
+
+        Log.e(TAG, "onCreate <<");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume >>");
 
         DBManager dbManager = new DBManager();
         dbManager.fetchNumberOfNotifications(this::onFinishedFetchingNumberOfNotifications);
-
-        Log.e(TAG, "onCreate <<");
     }
 
     private void onFinishedFetchingNumberOfNotifications(int numberOfNotifications) {

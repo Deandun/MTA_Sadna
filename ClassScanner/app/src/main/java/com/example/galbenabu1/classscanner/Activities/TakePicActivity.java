@@ -53,6 +53,9 @@ import java.util.List;
 
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.PictureEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.PictureEventParams;
 import Logic.Models.PictureAudioData;
 
 public class TakePicActivity extends AppCompatActivity {
@@ -221,7 +224,7 @@ public class TakePicActivity extends AppCompatActivity {
     protected void onPause() {
         this.closeCamera();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (mRecorder != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mRecorder.pause();
         }
 
@@ -350,6 +353,7 @@ public class TakePicActivity extends AppCompatActivity {
             case InActive:
                 // Button clicked when state was inactive.
                 // Start repetative action to take a picture, every 15 seconds
+                this.logStartTakingPicturesEvent();
                 startRecording();
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
@@ -371,6 +375,11 @@ public class TakePicActivity extends AppCompatActivity {
         }
 
         handleUIForActivityStateChanged();
+    }
+
+    private void logStartTakingPicturesEvent() {
+        PictureEventParams pictureEventParams = new PictureEventParams();
+        AnalyticsManager.getInstance().trackPictureEvent(PictureEventsHelper.ePictureEventType.StartTakingPictures, pictureEventParams);
     }
 
     public void onFinishTakingPictures(View v) {

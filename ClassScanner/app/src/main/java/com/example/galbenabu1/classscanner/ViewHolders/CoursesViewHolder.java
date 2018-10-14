@@ -14,7 +14,7 @@ import com.example.galbenabu1.classscanner.R;
 
 import Logic.Models.Course;
 
-public class CoursesViewHolder extends RecyclerView.ViewHolder{
+public class CoursesViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "CourseViewHolder";
     private static final String COURSE_DATA = "course_data";
 
@@ -22,7 +22,6 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
     private TextView mCreatorName;
     private TextView mCourseName;
     private TextView mCreationDate;
-    private ImageView mCourseImg;
     private Course mSelectedCourse;
 
     public CoursesViewHolder(Context context, View itemView) {
@@ -32,7 +31,6 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
         mCreatorName = itemView.findViewById(R.id.tvCoursePublisher);
         mCourseName = itemView.findViewById(R.id.tvCourseName);
         mCreationDate = itemView.findViewById(R.id.tvCreationDate);
-        mCourseImg = itemView.findViewById(R.id.ivCourseImage);
 
         mCourseCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,11 +79,4 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder{
         this.mCreationDate = creationDate;
     }
 
-    public ImageView getCourseImg() {
-        return mCourseImg;
-    }
-
-    public void setCourseImg(ImageView courseImg) {
-        this.mCourseImg = courseImg;
-    }
 }

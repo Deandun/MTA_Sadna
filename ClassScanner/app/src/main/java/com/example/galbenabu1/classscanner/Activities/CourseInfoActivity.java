@@ -16,6 +16,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
@@ -135,16 +138,26 @@ public class CourseInfoActivity extends AppCompatActivity {
         String SELECTED_ALBUM_IDS_DATA = "selected_albums_data";
 
         if (requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
-            this.mCourse.getM_AlbumIds().addAll(data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA));
-            Log.e(TAG, "onActivityResult >> received album IDs: " + this.mCourse.getM_AlbumIds());
+            List<String> albumIDList = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
+            Log.e(TAG, "onActivityResult >> received album IDs: " + albumIDList);
+            Log.e(TAG, "onActivityResult >> Adding album IDs to existing course IDs: " + this.mCourse.getM_AlbumIds());
+            this.mCourse.getM_AlbumIds().addAll(albumIDList);
             this.mDBManager.addAlbumsToExistsCourse(this.mCourse);
             this.mDBManager.moveAlbumIDsFromPrivateToSharedHelper(this.mCourse.getID(), this.mCourse.getCreatorID(),
                     this.mCourse.getM_AlbumIds());
+
+            this.logAddedAlbumsToCourseEvent(albumIDList.size());
         }
 
         Log.e(TAG, "onActivityResult <<");
     }
 
+    private void logAddedAlbumsToCourseEvent(int numberOfAddedAlbums) {
+        CourseEventParams courseEventParams = new CourseEventParams();
+        courseEventParams.setmCourse(this.mCourse);
+        courseEventParams.setmNumberOfAddedAlbums(numberOfAddedAlbums);
+        AnalyticsManager.getInstance().trackCourseEvent(CourseEventsHelper.eCourseEventType.AddAlbumsToCourse, courseEventParams);
+    }
 
     private boolean isUserJoinedCourse() {
         return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ||

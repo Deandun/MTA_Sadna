@@ -18,10 +18,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
-import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
 
 public class ShowCoursesActivity extends Activity {
@@ -84,6 +86,29 @@ public class ShowCoursesActivity extends Activity {
         this.mFetchedCourses.clear();
         this.mFetchedCourses.addAll(courseList);
         this.setUI();
+        this.logViewCoursesEvent(courseList.size());
+    }
+
+    private void logViewCoursesEvent(int numberOfDisplayedCourses) {
+        CourseEventParams courseEventParams = new CourseEventParams();
+        courseEventParams.setmNumberOfCoursesDisplayed(numberOfDisplayedCourses);
+
+        CourseEventsHelper.eCourseEventType courseEventType = null;
+
+        switch (this.mShowCoursesOptions) {
+
+            case ShowSearchedCourses:
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewAllCourses;
+                break;
+            case ShowCoursesTheCurrentUserIsIn:
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewMyCourses;
+                break;
+            case ShowSuggestedCourses:
+                courseEventType = CourseEventsHelper.eCourseEventType.ViewSuggestedCourses;
+                break;
+        }
+
+        AnalyticsManager.getInstance().trackCourseEvent(courseEventType, courseEventParams);
     }
 
     // UI
@@ -105,6 +130,7 @@ public class ShowCoursesActivity extends Activity {
         this.mCoursesListToDisplay.clear();
 
         if (searchedCourseName.isEmpty()) {
+            this.logSearchEvent(this.mCoursesListToDisplay.size());
             // Nothing searched. Display all fetched courses.
             this.mCoursesListToDisplay.addAll(this.mFetchedCourses);
         } else {
@@ -133,7 +159,8 @@ public class ShowCoursesActivity extends Activity {
     private void filterCourses(String searchedCourseName) {
 
         for (Course course : this.mFetchedCourses) {
-            if(course.getCourseName().contains(searchedCourseName)) {
+            if(course.getCourseName().contains(searchedCourseName.toLowerCase()) ||
+                    course.getCourseName().contains(searchedCourseName.toUpperCase())) {
                 this.mCoursesListToDisplay.add(course);
             }
         }
@@ -141,11 +168,16 @@ public class ShowCoursesActivity extends Activity {
 
     public void onSearchBtnClick(View v) {
         Log.e(TAG, "onSearchClick >>");
-
         this.setUI();
     }
 
     public void onShowCoursesBackButtonClick(View v){
         finish();
+    }
+
+    private void logSearchEvent(int numberOfMatches) {
+        String searchedString = this.metSearchedCourseName.getText().toString();
+
+        AnalyticsManager.getInstance().trackSearchEvent(searchedString, numberOfMatches);
     }
 }

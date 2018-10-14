@@ -82,7 +82,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:enabled="false"
         android:onClick="onSuggestedCoursesClick"
         android:text="Show Suggested Courses"
         app:layout_constraintLeft_toLeftOf="parent"
