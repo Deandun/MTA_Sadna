@@ -551,6 +551,7 @@ public class DBManager {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap imageBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    Log.e(TAG, "onSuccess: image fetched from path: " + path);
                     onFinishedFetchingImage.accept(imageBitmap);
                 }
             }).addOnFailureListener((OnFailureListener) e ->  {

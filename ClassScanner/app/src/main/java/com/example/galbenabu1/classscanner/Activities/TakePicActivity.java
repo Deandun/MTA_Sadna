@@ -224,7 +224,7 @@ public class TakePicActivity extends AppCompatActivity {
     protected void onPause() {
         this.closeCamera();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (mRecorder != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mRecorder.pause();
         }
 

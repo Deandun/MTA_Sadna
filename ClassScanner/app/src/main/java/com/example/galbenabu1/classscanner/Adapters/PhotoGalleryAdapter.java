@@ -61,7 +61,7 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         //holder.getIvPhoto().setImageBitmap();
 
         DBManager dbManager = new DBManager();
-        dbManager.fetchImageFromStoragePath(photo.getM_Path().substring(photo.getM_Path().lastIndexOf("Images/") + 7),
+        dbManager.fetchImageFromStoragePath(photo.getM_Id(),
                 (bitmap) -> holder.getIvPhoto().setImageBitmap(bitmap)
         );
         Log.e(TAG, "onBindViewHolder() >> " + photo);

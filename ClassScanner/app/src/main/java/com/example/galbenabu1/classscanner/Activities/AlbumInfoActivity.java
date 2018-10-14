@@ -28,7 +28,7 @@ public class AlbumInfoActivity extends Activity {
 
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
-    private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<PictureAudioData>();
+    private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,9 @@ public class AlbumInfoActivity extends Activity {
         
         this.logViewAlbumImagesEvent();
 
-        fetchPhotoListFromDB();
         PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext(), this.mAlbum);
+        this.mAlbumPhotosList.addAll(this.mAlbum.getM_Pictures());
+
         recyclerView.setAdapter(adapter);
         Log.e(TAG, "onCreate <<");
     }
@@ -61,18 +62,6 @@ public class AlbumInfoActivity extends Activity {
         albumEventParams.setmAlbum(this.mAlbum);
 
         AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.ViewAlbumImages, albumEventParams);
-    }
-
-    private void fetchPhotoListFromDB(){
-        long timeToDecrease = 10000;
-        
-        for(int i = 0; i < mAlbum.getM_Pictures().size(); i++) {
-            Date date = new Date();
-            date.setTime(date.getTime() - timeToDecrease);
-            timeToDecrease *= (i + 1);
-            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, String.valueOf(i+1), "Images/"+mAlbum.getM_Pictures().get(i).getM_Id());
-            mAlbumPhotosList.add(photo);
-        }
     }
 
     public void onPresentAlbumClick(View v) {

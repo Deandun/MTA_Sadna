@@ -139,8 +139,9 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         if (requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
             List<String> albumIDList = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
+            Log.e(TAG, "onActivityResult >> received album IDs: " + albumIDList);
+            Log.e(TAG, "onActivityResult >> Adding album IDs to existing course IDs: " + this.mCourse.getM_AlbumIds());
             this.mCourse.getM_AlbumIds().addAll(albumIDList);
-            Log.e(TAG, "onActivityResult >> received album IDs: " + this.mCourse.getM_AlbumIds());
             this.mDBManager.addAlbumsToExistsCourse(this.mCourse);
             this.mDBManager.moveAlbumIDsFromPrivateToSharedHelper(this.mCourse.getID(), this.mCourse.getCreatorID(),
                     this.mCourse.getM_AlbumIds());

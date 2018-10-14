@@ -38,8 +38,6 @@ public class PlayAlbumManager {
     private MediaPlayer mMediaPlayer = new MediaPlayer();
     private int mRecordingProgress;
 
-    private boolean mIsPresentationInProgress = false;
-
     public PlayAlbumManager(Album album, MyConsumer<Bitmap> onUpdateNextImage) {
         this.mOnUpdateNextImage = onUpdateNextImage;
         this.mAlbum = album;
@@ -51,8 +49,9 @@ public class PlayAlbumManager {
     }
 
     public void init(int indexOfImageToShow, int recordingProgress) {
+        Log.e(TAG, "init: index of image to show: " + indexOfImageToShow + " recording progress: " + recordingProgress);
         this.mCurrentDisplayedPictureDataIndex = indexOfImageToShow;
-        this.fetchNextImage();
+        this.fetchFirstImage();
         this.mRecordingProgress = recordingProgress;
     }
 
@@ -62,11 +61,11 @@ public class PlayAlbumManager {
     }
 
     public void jumpTo(int indexOfImageToShow, int recordingProgressValue) {
+        Log.e(TAG, "jumpTo: indexOfImageToShow: " + indexOfImageToShow + " recordingProgressValue: " + recordingProgressValue);
         this.init(indexOfImageToShow, recordingProgressValue);
     }
 
     public void stop() {
-        this.mIsPresentationInProgress = false;
 
         if(this.mShowNextPictueTimer != null) {
             this.mShowNextPictueTimer.cancel(); // Cancel timer to show next picture
@@ -120,9 +119,11 @@ public class PlayAlbumManager {
 
     private void updateNextImage(Bitmap imageToShow) {
         // Show current image.
-        Log.e(TAG, "Showing image at index " + (this.mCurrentDisplayedPictureDataIndex));
+        String isImageNullString = imageToShow == null ? "yes" : "no";
+        Log.e(TAG, "Showing image at index " + (this.mCurrentDisplayedPictureDataIndex) + ". Is image null: " + isImageNullString);
         this.mOnUpdateNextImage.accept(imageToShow);
         this.mCurrentDisplayedPictureDataIndex++; // inc index
+        Log.e(TAG, "Image index incremented to " + (this.mCurrentDisplayedPictureDataIndex));
 
         // Continue updating images only if there are more images to show.
         if(this.mPictureList.size() > this.mCurrentDisplayedPictureDataIndex) {
@@ -133,7 +134,6 @@ public class PlayAlbumManager {
 
             // Set timer.
             long updateNextImageDelay = this.getNextImageDelay();
-            Log.e(TAG, "Setting timer with delay: " + updateNextImageDelay / 1000);
 
             // Begin fetching next image.
             this.fetchNextImage();
@@ -143,24 +143,24 @@ public class PlayAlbumManager {
         }
     }
 
+    private void fetchFirstImage() {
+        Log.e(TAG, "Fetching first image at index " + this.mCurrentDisplayedPictureDataIndex);
+        this.mDBManager.fetchImageFromStoragePath(this.mPictureList.get(this.mCurrentDisplayedPictureDataIndex).getM_Id(), this::onFetchedFirstImageSuccess);
+    }
+
+    private void onFetchedFirstImageSuccess(Bitmap firstImageBitmap) {
+        Log.e(TAG, "Finished fetching first image bitmap. Manager is now ready.");
+        this.mOnUpdateNextImage.accept(firstImageBitmap);
+    }
 
     private void fetchNextImage() {
-        Log.e(TAG, "Fetching at index " + this.mCurrentDisplayedPictureDataIndex);
-        this.mDBManager.fetchImage(this.mPictureList.get(this.mCurrentDisplayedPictureDataIndex), this::onFetchedImagesSuccess);
+        Log.e(TAG, "Fetching image at index " + this.mCurrentDisplayedPictureDataIndex);
+        this.mDBManager.fetchImageFromStoragePath(this.mPictureList.get(this.mCurrentDisplayedPictureDataIndex).getM_Id(), this::onFetchedImagesSuccess);
     }
 
     private void onFetchedImagesSuccess(Bitmap imageBitmap) {
-        Log.e(TAG, "Finished fetching image bitmap.");
-
+        Log.e(TAG, "Finished fetching image bitmap. " + imageBitmap == null ? "Bitmap is null" : "");
         this.mNextImageBitmap = imageBitmap;
-
-        if(!this.mIsPresentationInProgress) {
-            Log.e(TAG, "Manager is now ready.");
-
-            // First fetch.
-            this.mOnUpdateNextImage.accept(imageBitmap);
-            this.mIsPresentationInProgress = true;
-        }
     }
 
     // return the diff between the currently displayed image creation date and the next image's creation date.

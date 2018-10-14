@@ -37,12 +37,17 @@ public class HomeActivity extends Activity {
         AnalyticsManager.getInstance().init(getApplicationContext()); // Init analytics
 
         this.mbtnNotifications = findViewById(R.id.btnNotifications);
-        mbtnNotifications.setText("Notifications");
+
+        Log.e(TAG, "onCreate <<");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume >>");
 
         DBManager dbManager = new DBManager();
         dbManager.fetchNumberOfNotifications(this::onFinishedFetchingNumberOfNotifications);
-
-        Log.e(TAG, "onCreate <<");
     }
 
     private void onFinishedFetchingNumberOfNotifications(int numberOfNotifications) {
