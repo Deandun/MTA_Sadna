@@ -5,16 +5,19 @@ import android.os.Bundle;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.Logger;
 import Logic.Models.Course;
 
 public class CourseEventsHelper {
 
-    private String mUserID;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private Logger mLogger;
 
-    public void init(FirebaseAnalytics firebaseAnalytics, String userID) {
-        this.mUserID = userID;
-        this.mFirebaseAnalytics = firebaseAnalytics;
+    public void init(Logger logger) {
+        this.mLogger = logger;
+    }
+
+    private void logEvent(String eventTypeString, Bundle params) {
+        this.mLogger.logEvent(eventTypeString, params);
     }
 
     public void trackViewedSuggestedCourses(int numberOfCoursesDisplayed) {
@@ -58,14 +61,8 @@ public class CourseEventsHelper {
         this.logEvent(eCourseEventType.CourseCreated.name(), params);
     }
 
-    private void logEvent(String eventTypeString, Bundle params) {
-        params.putString(ParamNames.USER_ID, this.mUserID);
-        this.mFirebaseAnalytics.logEvent(eventTypeString, params);
-    }
-
     private static class ParamNames {
         private static final String NUMBER_OF_DISPLAYED_COURSES = "numberOfDisplayedCourses";
-        private static final String USER_ID = "userID";
         private static final String COURSE_NAME = "courseName";
         private static final String NUMBER_OF_ADDED_ALBUMS = "numberOfAddedAlbums";
     }

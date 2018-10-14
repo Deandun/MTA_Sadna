@@ -2,14 +2,14 @@ package Logic.Managers.AnalyticsManager.EventParams;
 
 public class PictureEventParams {
     public PictureEventParams(String mPictureID) {
-        this.mPictureID = mPictureID;
+        this.mPicturePath = mPictureID;
     }
 
     public PictureEventParams() { }
 
-    private String mPictureID;
+    private String mPicturePath;
 
-    public String getmPictureID() {
-        return mPictureID;
+    public String getmPicturePath() {
+        return mPicturePath;
     }
 }

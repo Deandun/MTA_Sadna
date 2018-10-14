@@ -26,13 +26,13 @@ public class AnalyticsManager {
     private static AlbumEventsHelper mAlbumEventsHelper;
     private static UserEventsHelper mUserEventsHelper;
     private static PictureEventsHelper mPictureEventsHelper;
-
-
+    private static Logger mLogger;
     public static AnalyticsManager getInstance() {
         return ourInstance;
     }
 
     private AnalyticsManager() {
+        mLogger = new Logger();
         mCourseEventsHelper = new CourseEventsHelper();
         mAlbumEventsHelper = new AlbumEventsHelper();
         mUserEventsHelper = new UserEventsHelper();
@@ -44,9 +44,11 @@ public class AnalyticsManager {
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
-        mCourseEventsHelper.init(mFirebaseAnalytics, userID);
-        mAlbumEventsHelper.init(mFirebaseAnalytics, userID);
-        mUserEventsHelper.init(mFirebaseAnalytics, userID);
+        mLogger.init(mFirebaseAnalytics, userID);
+        mCourseEventsHelper.init(mLogger);
+        mAlbumEventsHelper.init(mLogger);
+        mUserEventsHelper.init(mLogger);
+        mPictureEventsHelper.init(mLogger);
     }
 
     public void trackSearchEvent(String searchedString, int numberOfMatches) {
@@ -122,7 +124,7 @@ public class AnalyticsManager {
 
         switch (eventType) {
             case StartCropingImage:
-                mPictureEventsHelper.trackStartCroppingImage(pictureEventParams.getmPictureID());
+                mPictureEventsHelper.trackStartCroppingImage(pictureEventParams.getmPicturePath());
                 break;
             case StartTakingPictures:
                 mPictureEventsHelper.trackStartTakingPictures();

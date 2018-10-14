@@ -4,19 +4,24 @@ import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-public class PictureEventsHelper {
-    private String mUserID;
-    private FirebaseAnalytics mFirebaseAnalytics;
+import Logic.Managers.AnalyticsManager.Logger;
 
-    public void init(FirebaseAnalytics firebaseAnalytics, String userID) {
-        this.mUserID = userID;
-        this.mFirebaseAnalytics = firebaseAnalytics;
+public class PictureEventsHelper {
+
+    private Logger mLogger;
+
+    public void init(Logger logger) {
+        this.mLogger = logger;
     }
 
-    public void trackStartCroppingImage(String pictureID) {
+    private void logEvent(String eventTypeString, Bundle params) {
+        this.mLogger.logEvent(eventTypeString, params);
+    }
+
+    public void trackStartCroppingImage(String picturePath) {
         Bundle params = new Bundle();
 
-        params.putString(ParamNames.PICTURE_ID, pictureID);
+        params.putString(ParamNames.PICTURE_PATH, picturePath);
 
         logEvent(ePictureEventType.StartCropingImage.name(), params);
     }
@@ -26,14 +31,8 @@ public class PictureEventsHelper {
         logEvent(ePictureEventType.StartTakingPictures.name(), params);
     }
 
-    private void logEvent(String eventTypeString, Bundle params) {
-        params.putString(ParamNames.USER_ID, this.mUserID);
-        this.mFirebaseAnalytics.logEvent(eventTypeString, params);
-    }
-
     private static class ParamNames {
-        private static final String PICTURE_ID = "pictureID";
-        public static final String USER_ID = "userID";
+        private static final String PICTURE_PATH = "picturePath";
     }
 
     public enum ePictureEventType {
