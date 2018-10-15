@@ -515,6 +515,5 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadImageFailure() {
         Toast.makeText(getApplicationContext(), "Failed to upload image.", Toast.LENGTH_SHORT).show();
     }
-
 }
 

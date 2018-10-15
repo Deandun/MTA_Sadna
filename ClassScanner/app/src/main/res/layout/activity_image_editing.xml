@@ -45,7 +45,9 @@
             android:layout_gravity="left|bottom"
             android:layout_margin="16dp"
             android:background="@drawable/black_tranp_circle_ripple"
+            android:clickable="false"
             android:padding="8dp"
+            android:visibility="invisible"
             app:srcCompat="@drawable/sharp" />
     </FrameLayout>
 
