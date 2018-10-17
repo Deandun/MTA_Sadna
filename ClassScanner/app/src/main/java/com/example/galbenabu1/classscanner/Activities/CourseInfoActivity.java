@@ -88,6 +88,7 @@ public class CourseInfoActivity extends AppCompatActivity {
         Log.e(TAG, "onShowCoursesClick >>");
 
         Intent showAlbumsIntent = new Intent(getApplicationContext(), ShowAlbumsActivity.class);
+        showAlbumsIntent.putExtra(IS_SELECTING_ALBUMS, false);
         showAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, false); // Should fetch shared albums and not private ones.
         showAlbumsIntent.putExtra(COURSE_ID_DATA, this.mCourse.getID());
         startActivity(showAlbumsIntent);

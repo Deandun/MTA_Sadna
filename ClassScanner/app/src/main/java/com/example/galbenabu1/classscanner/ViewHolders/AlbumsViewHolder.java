@@ -31,9 +31,10 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private Album mSelectedAlbum;
     private boolean mIsAlbumSelected;
     private MyConsumer<Album> mOnLongClickListener;
-    private ImageView mCheckedSign;
-    private boolean isAlbumChecked;
 
+    private ImageView mCheckedSign;
+
+    private boolean isAlbumChecked;
     public AlbumsViewHolder(View itemView, boolean isPrivateAlbum) {
         super(itemView);
 
@@ -81,6 +82,10 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
                     return true; // Return true to signal that we have done what we need to do for the long press.
                 }
         );
+    }
+
+    public ImageView getmCheckedSign() {
+        return mCheckedSign;
     }
 
 

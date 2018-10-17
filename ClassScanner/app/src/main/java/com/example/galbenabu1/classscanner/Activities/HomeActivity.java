@@ -17,8 +17,10 @@ import Logic.Managers.AnalyticsManager.AnalyticsManager;
 
 public class HomeActivity extends Activity {
 
-    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
     private static final String TAG = "HomeActivity";
+
+    private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums";
+    private static final String IS_SELECTING_ALBUMS = "is_selecting_albums"; // In an album selecting mode. Returns selected albums to previous activity.
     // Decides which courses will be displayed in the ShowCoursesActivity
     private static final String SHOW_COURSES_OPTIONS = "show_courses_options";
 
@@ -94,6 +96,7 @@ public class HomeActivity extends Activity {
         Log.e(TAG, "onShowPrivateAlbumsClick >>");
 
         Intent intent = new Intent(HomeActivity.this, ShowAlbumsActivity.class);
+        intent.putExtra(IS_SELECTING_ALBUMS, false);
         intent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
         startActivity(intent);
 

@@ -16,13 +16,9 @@ import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.Activities.CropImageActivity;
-import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
-import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
 import com.example.galbenabu1.classscanner.Activities.ViewImageActivity;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import Logic.Database.DBManager;
 import Logic.Models.Album;

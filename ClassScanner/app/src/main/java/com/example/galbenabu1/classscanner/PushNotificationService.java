@@ -45,24 +45,24 @@ public class PushNotificationService extends FirebaseMessagingService {
             // init channel
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-// The id of the channel.
+            // The id of the channel.
 
-// The user-visible name of the channel.
+            // The user-visible name of the channel.
             CharSequence name = "test channel name";
 
-// The user-visible description of the channel.
+            // The user-visible description of the channel.
             String description = "test channel description";
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
 
             NotificationChannel mChannel = new NotificationChannel(channelID, name, importance);
 
-// Configure the notification channel.
+            // Configure the notification channel.
             mChannel.setDescription(description);
 
             mChannel.enableLights(true);
-// Sets the notification light color for notifications posted to this
-// channel, if the device supports this feature.
+            // Sets the notification light color for notifications posted to this
+            // channel, if the device supports this feature.
             mChannel.setLightColor(Color.RED);
 
             mChannel.enableVibration(true);
@@ -130,15 +130,6 @@ public class PushNotificationService extends FirebaseMessagingService {
                         .setSmallIcon(icon)
                         .setSound(soundRri);
 
-
-
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, "notify_001")
-//                        .setContentTitle(title)
-//                        .setContentText(body)
-//                        .setContentIntent(pendingIntent)
-//                        .setSmallIcon(icon)
-//                        .setSound(soundRri);
 
         notificationBuilder.addAction(new NotificationCompat.Action(R.drawable.iconapp,"New Album Added", pendingIntent));
 

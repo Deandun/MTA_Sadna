@@ -100,7 +100,6 @@ public class TakePicActivity extends AppCompatActivity {
     private final Runnable mTakePictureRunnable = new Runnable() {
         public void run() {
            if(mActivityState.equals(eTakePicActivityState.InProgress)) {
-                mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
                 uploadImage(mTextureView.getBitmap());
                 Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(mTakePictureRunnable, 1000 * DELAY_BETWEEN_PICTURES);
@@ -141,7 +140,6 @@ public class TakePicActivity extends AppCompatActivity {
     private Button mBtnTakePicture;
     private Button mBtnFinishTakingPictures;
     private TextureView mTextureView;
-    private ImageView mIVSavedPicture;
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
 
         @Override
@@ -208,8 +206,6 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnClearPicturesTaken = findViewById(R.id.btnClearPicturesTaken);
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mBtnFinishTakingPictures = findViewById(R.id.btnFinishTakingPictures);
-        mIVSavedPicture = findViewById(R.id.ivSavedPic);
-        mIVSavedPicture.setVisibility(View.INVISIBLE);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/recordAudio.wav";
@@ -497,8 +493,6 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadImage(Bitmap imageBitmap) {
         //Prepare image to be uploaded
         Log.e(TAG, "Preparing image for upload");
-        mIVSavedPicture.setDrawingCacheEnabled(true);
-        mIVSavedPicture.buildDrawingCache();
         Bitmap bitmap = imageBitmap;
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
