@@ -101,7 +101,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 dbmanager.removePictureFromDB(albumId, userId, pictureId, pictureDbId, isPrivateAlbum);
 
                                 // toastMessage("Image saved successfully");
-                                album.getM_Pictures().remove(pictureDbId);
+                                album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
                                 Intent newIntent = new Intent(view.getContext(), AlbumInfoActivity.class);
                                 newIntent.putExtra("album_data", album);
                                 view.getContext().startActivity(newIntent);

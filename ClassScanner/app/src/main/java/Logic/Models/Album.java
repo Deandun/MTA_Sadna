@@ -134,5 +134,10 @@ public class Album implements Parcelable {
 
     public String getM_AlbumCreatorId(){ return this.m_AlbumCreatorId;}
 
-    public void setM_AlbumCreatorId(String m_AlbumCreatorId) { this.m_AlbumCreatorId = m_AlbumCreatorId; }
+    public void setM_AlbumCreatorId(String m_AlbumCreatorId) { this.m_AlbumCreatorId = m_AlbumCreatorId;
+    }
+
+    public void deletePictureFromAlbum (int pictureId){
+        m_Pictures.remove(pictureId);
+    };
 }

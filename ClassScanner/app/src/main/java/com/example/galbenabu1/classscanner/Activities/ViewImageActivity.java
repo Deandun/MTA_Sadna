@@ -88,7 +88,7 @@ public class ViewImageActivity extends AppCompatActivity {
                 boolean isPrivateAlbum=true;
                 dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
 
-                album.getM_Pictures().remove(pictureDbId);
+                album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
                 // toastMessage("Image saved successfully");
                 Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
                 newIntent.putExtra("album_data", album);
