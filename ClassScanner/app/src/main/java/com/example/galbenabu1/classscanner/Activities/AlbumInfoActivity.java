@@ -15,6 +15,9 @@ import com.example.galbenabu1.classscanner.R;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -25,7 +28,7 @@ public class AlbumInfoActivity extends Activity {
 
     private boolean mIsPrivateAlbum;
     private Album mAlbum;
-    private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<PictureAudioData>();
+    private ArrayList<PictureAudioData> mAlbumPhotosList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +46,22 @@ public class AlbumInfoActivity extends Activity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
+        
+        this.logViewAlbumImagesEvent();
 
-        fetchPhotoListFromDB();
         PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext(), this.mAlbum);
+        this.mAlbumPhotosList.addAll(this.mAlbum.getM_Pictures());
+
         recyclerView.setAdapter(adapter);
         Log.e(TAG, "onCreate <<");
     }
 
-    private void fetchPhotoListFromDB(){
-        long timeToDecrease = 10000;
-        
-        for(int i = 0; i < mAlbum.getM_Pictures().size(); i++) {
-            Date date = new Date();
-            date.setTime(date.getTime() - timeToDecrease);
-            timeToDecrease *= (i + 1);
-            PictureAudioData photo = new PictureAudioData(Integer.toString(i), date, String.valueOf(i+1), "Images/"+mAlbum.getM_Pictures().get(i).getM_Id());
-            mAlbumPhotosList.add(photo);
-        }
+    private void logViewAlbumImagesEvent() {
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmAlbum(this.mAlbum);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.ViewAlbumImages, albumEventParams);
     }
 
     public void onPresentAlbumClick(View v) {

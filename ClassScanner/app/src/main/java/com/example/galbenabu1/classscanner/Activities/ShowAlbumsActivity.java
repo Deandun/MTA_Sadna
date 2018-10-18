@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Models.Album;
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
@@ -40,6 +43,7 @@ public class ShowAlbumsActivity extends Activity {
     private AlbumsAdapter mAlbumsAdapter;
     private boolean mShouldShowPrivateAlbums;
     private boolean mIsUserSelectingPrivateAlbums;
+    private String mCourseID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +97,7 @@ public class ShowAlbumsActivity extends Activity {
 
     private void getAlbumsFromDB() {
         mAlbumsList.clear();
-        mAlbumsAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick, mShouldShowPrivateAlbums);
+        mAlbumsAdapter = new AlbumsAdapter(mAlbumsList, this::onItemLongClick, mShouldShowPrivateAlbums, this.mIsUserSelectingPrivateAlbums);
         mAlbumsRecycleView.setAdapter(mAlbumsAdapter);
         fetchAlbumsFromDB();
     }
@@ -105,14 +109,32 @@ public class ShowAlbumsActivity extends Activity {
         MyConsumer<List<Album>> onFinishFetchingAlbums = (fetchedAlbumList) -> {
             this.mAlbumsList.addAll(fetchedAlbumList);
             this.setUI();
+            this.logShowAlbumsEvent();
         };
 
         if(mShouldShowPrivateAlbums) {
             dbManager.fetchUserPrivateAlbumsFromDB(FirebaseAuth.getInstance().getCurrentUser().getUid(), onFinishFetchingAlbums);
         } else {
-            String courseID = getIntent().getExtras().getString(COURSE_ID_DATA);
-            dbManager.fetchCourseSharedAlbumsFromDB(courseID, onFinishFetchingAlbums);
+            this.mCourseID = getIntent().getExtras().getString(COURSE_ID_DATA);
+            dbManager.fetchCourseSharedAlbumsFromDB(this.mCourseID, onFinishFetchingAlbums);
         }
+    }
+
+    private void logShowAlbumsEvent() {
+        AlbumEventsHelper.eAlbumEventType eventType;
+
+        if(this.mShouldShowPrivateAlbums) {
+            eventType = AlbumEventsHelper.eAlbumEventType.ViewPrivateAlbums;
+        } else {
+            eventType = AlbumEventsHelper.eAlbumEventType.ViewCourseAlbums;
+        }
+
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmNumberOfAlbums(this.mAlbumsList.size());
+        albumEventParams.setmCourseID(this.mCourseID);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(eventType, albumEventParams);
     }
 
     public void onFinishSelectingAlbumsClick(View v) {
@@ -125,6 +147,7 @@ public class ShowAlbumsActivity extends Activity {
         Toast.makeText(getApplicationContext(), "Successfully added albums to course", Toast.LENGTH_SHORT).show();
         finish();
     }
+
 
     public void onItemLongClick(Album selectedAlbum) {
         Log.e(TAG, "onItemLongClick >> For album with ID: " + selectedAlbum.getM_Id() + " And name: " + selectedAlbum.getM_AlbumName());

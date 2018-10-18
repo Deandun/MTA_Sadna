@@ -13,6 +13,7 @@ public class LoggedInUserDetailsManager {
     private static final String UNKNOWN_USER_MAIL = "";
 
     private static final DBManager sfDBManager = new DBManager();
+    private static String sPushNotificationToken;
 
 
     private LoggedInUserDetailsManager() {
@@ -40,7 +41,7 @@ public class LoggedInUserDetailsManager {
     private static void onFetchedUserSuccess(User userInfo) {
         Log.e(TAG, "Fetched user info for user: " + userInfo.getM_Id());
         setsLoggedInUser(userInfo);
-        sfDBManager.onUserLogin(userInfo.getM_Id(), userInfo.getM_CourseIds());
+        sfDBManager.onUserLogin(userInfo.getM_Id(), userInfo.getM_CourseIds(), sPushNotificationToken);
     }
 
     private static void onFetchedUserFailure() {
@@ -60,5 +61,9 @@ public class LoggedInUserDetailsManager {
 
     public static void addCourseIDToUser(String courseID) {
         sLoggedInUser.getM_CourseIds().add(courseID);
+    }
+
+    public static void setPushNotificationToken(String pushNotificationToken) {
+        LoggedInUserDetailsManager.sPushNotificationToken = pushNotificationToken;
     }
 }

@@ -17,5 +17,8 @@
     <color name="btn_pass">#bb414141</color>
     <color name="btn_register">#0D47A1</color>
     <color name="btn_logut">#ff6861</color>
+    <color name="dark_pink">#7e1135</color>
+    <color name="light_pink">#f2a2bc</color>
+
 
 </resources>

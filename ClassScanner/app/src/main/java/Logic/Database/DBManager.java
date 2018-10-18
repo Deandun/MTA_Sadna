@@ -490,7 +490,7 @@ public class DBManager {
         this.writeCourseAction(courseActionData);
     }
 
-    public void onUserLogin(String userID, List<String> userCourseIDs) {
+    public void onUserLogin(String userID, List<String> userCourseIDs, String pushNotificationToken) {
         Log.e(TAG, "Writing user log in data for use with id: " + userID);
 
         DatabaseReference userActionsReference = FirebaseDBReferenceGenerator.getUserActionsReference();
@@ -500,6 +500,10 @@ public class DBManager {
         userActionData.setmUserCourseIDs(userCourseIDs);
 
         userActionsReference.child(userID).setValue(userActionData);
+
+        if(pushNotificationToken != null) {
+            this.regiterDevieToken(userID, pushNotificationToken);
+        }
     }
 
     // Course actions
@@ -551,6 +555,7 @@ public class DBManager {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap imageBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    Log.e(TAG, "onSuccess: image fetched from path: " + path);
                     onFinishedFetchingImage.accept(imageBitmap);
                 }
             }).addOnFailureListener((OnFailureListener) e ->  {
@@ -568,6 +573,14 @@ public class DBManager {
                 .child(audioFileID + StorageConstants.AudioFileType)
                 .getDownloadUrl()
                 .addOnSuccessListener(onFetchedRecordingDataSource::accept);
+    }
+
+    public void regiterDevieToken(String userID, String deviceToken) {
+        final String PUSH_TOKEN = "pushToken";
+        DatabaseReference pushTokenRef = FirebaseDBReferenceGenerator.getUserReference(userID).child(PUSH_TOKEN);
+
+        Log.e(TAG, "regiterDevieToken >> writting push token " + deviceToken + " to DB");
+        pushTokenRef.setValue(deviceToken);
     }
 
     private static class StorageConstants {

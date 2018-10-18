@@ -16,21 +16,11 @@ import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.Activities.CropImageActivity;
-import com.example.galbenabu1.classscanner.Activities.ImageEditingActivity;
-import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
 import com.example.galbenabu1.classscanner.Activities.ViewImageActivity;
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import Logic.Database.DBManager;
-
-import Logic.Managers.LoggedInUserDetailsManager;
-
-
-import Logic.Managers.LoggedInUserDetailsManager;
-
 import Logic.Models.Album;
 import Logic.Models.PictureAudioData;
 
@@ -48,9 +38,8 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
         this.mAlbum = album;
 
         view.setOnClickListener(this);
-       // if (withContextMenu) {
-            view.setOnCreateContextMenuListener(this);
-      //  }
+        view.setOnCreateContextMenuListener(this);
+
         mtvTitle = view.findViewById(R.id.tv_photo_title);
         mivPhoto = view.findViewById(R.id.iv_photo);
 
@@ -81,7 +70,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                             case R.id.Edit:
                                 //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(view.getContext(), CropImageActivity.class);
-                                String strName = null;
                                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
 
                                 intent.putExtra("ALBUM", mAlbum);
@@ -95,6 +83,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 String albumId = album.getM_Id();
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 String pictureDbId = mSelectedPhoto.getM_Id();
+                                //TODO: what's the '+ 7' for?
                                 String pictureId = mSelectedPhoto.getM_Path().substring(mSelectedPhoto.getM_Path().lastIndexOf("Images/") + 7);
                                 //todo: check if private album
                                 boolean isPrivateAlbum = true;
@@ -119,10 +108,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 //                            }
 
                                 // return super.onContextItemSelected(item);
-
-
                         }
-
 
                         return false;
                     }});

@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Logic.Database.DBManager;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.UserEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.UserEventParams;
 import Logic.Models.UserNotification;
 
 public class UserNotificationsActivity extends Activity {
@@ -57,15 +60,16 @@ public class UserNotificationsActivity extends Activity {
     }
 
     private void onFinishedFetchingUserNotifications(List<UserNotification> userNotifications) {
+        this.logNotificationsEvent(UserEventsHelper.eUserEventType.ViewNotifications, this.mNotificationList.size());
         this.mNotificationList.addAll(userNotifications);
         this.mNotificationsRecyclerView.getAdapter().notifyDataSetChanged();
     }
-
 
     // On clicks
 
     public void onClearNotifications(View v) {
         Log.e(TAG, "onBackClick >> ");
+        this.logNotificationsEvent(UserEventsHelper.eUserEventType.ClearNotifications, this.mNotificationList.size());
         this.mDBManager.removeUserNotificationsFromDB();
         this.mNotificationList.clear();
         this.mNotificationsRecyclerView.getAdapter().notifyDataSetChanged();
@@ -74,5 +78,13 @@ public class UserNotificationsActivity extends Activity {
     public void onBackClick(View v) {
         Log.e(TAG, "onBackClick >> ");
         super.onBackPressed();
+    }
+
+    private void logNotificationsEvent(UserEventsHelper.eUserEventType eventType, int numberOfNotifications) {
+        UserEventParams userEventParams = new UserEventParams();
+
+        userEventParams.setmNumberOfNotifications(numberOfNotifications);
+
+        AnalyticsManager.getInstance().trackUserEvent(eventType, userEventParams);
     }
 }

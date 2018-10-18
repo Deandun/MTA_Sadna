@@ -11,6 +11,10 @@ import android.widget.SeekBar;
 
 import com.example.galbenabu1.classscanner.Activities.Helpers.PlayAlbumManager;
 import com.example.galbenabu1.classscanner.R;
+
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.AlbumEventParams;
 import Logic.Models.Album;
 
 public class PlayAlbumActivity extends Activity {
@@ -20,6 +24,7 @@ public class PlayAlbumActivity extends Activity {
 
     private Album mAlbum;
     private int mNumberOfShownImages = 0;
+    private int mTotalNumberOfImagesToPresent;
     private boolean mIsPresentationInProgress;
 
     private ImageView mivDisplayedImage;
@@ -35,8 +40,6 @@ public class PlayAlbumActivity extends Activity {
 
         Log.e(TAG, "onCreate >>");
 
-        this.mAlbum = getIntent().getExtras().getParcelable(ALBUM_DATA);
-
         this.bindUI();
         this.init();
     }
@@ -48,6 +51,9 @@ public class PlayAlbumActivity extends Activity {
     }
 
     private void init() {
+        this.mAlbum = getIntent().getExtras().getParcelable(ALBUM_DATA);
+        this.mTotalNumberOfImagesToPresent = this.mAlbum.getM_Pictures().size();
+
         this.initSeekBar();
         this.mIsPresentationInProgress = false;
         this.mbtnPlayButton.setEnabled(false); // Set play button to false until the play album manager is ready.
@@ -74,7 +80,6 @@ public class PlayAlbumActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.e(TAG, "onStopTrackingTouch >> current progress: " + seekBar.getProgress());
                 handleProgressChange(seekBar.getProgress());
-
             }
         });
     }
@@ -86,6 +91,7 @@ public class PlayAlbumActivity extends Activity {
             indexOfShownImage = this.mAlbum.getM_Pictures().size() - 1; // get last picture
         }
 
+        Log.e(TAG, "handleProgressChange: progress - " +  newProgressValue + " index of shown picture - " + indexOfShownImage);
         this.mNumberOfShownImages = indexOfShownImage;
         this.mPlayAlbumManager.jumpTo(this.mNumberOfShownImages, newProgressValue);
     }
@@ -101,6 +107,7 @@ public class PlayAlbumActivity extends Activity {
             this.mNumberOfShownImages = 0;
             this.mbtnPlayButton.setEnabled(false);
         } else {
+            this.logPlayAlbumEvent();
             // Presentation not in progress, start it.
             this.mPlayAlbumManager.start();
             this.mbtnPlayButton.setText("Stop");
@@ -109,20 +116,37 @@ public class PlayAlbumActivity extends Activity {
         this.mIsPresentationInProgress = !this.mIsPresentationInProgress; // Toggle boolean.
     }
 
+    private void logPlayAlbumEvent() {
+        AlbumEventParams albumEventParams = new AlbumEventParams();
+
+        albumEventParams.setmAlbum(this.mAlbum);
+
+        AnalyticsManager.getInstance().trackAlbumEvent(AlbumEventsHelper.eAlbumEventType.ViewAlbumPresentation, albumEventParams);
+    }
+
     private void onUpdateNextImage(Bitmap imageBitmap) {
         this.mbtnPlayButton.setEnabled(true);
-        this.mNumberOfShownImages++;
+
         if(imageBitmap != null) {
             Log.e(TAG, "Showing next image");
             this.mivDisplayedImage.setImageBitmap(imageBitmap);
+
+            if(this.mIsPresentationInProgress) {
+                this.mNumberOfShownImages++;
+            }
         } else {
+            this.mTotalNumberOfImagesToPresent--; // One less image to show.
             Log.e(TAG, "Next image to present is null.");
         }
 
-        int totalImages = this.mAlbum.getM_Pictures().size();
-        float ratio = ((float)this.mNumberOfShownImages / (float)totalImages);
-        float progress =  ratio * 100;
+        int progress = this.calculateProgressPercentage();
+
         Log.e(TAG, "Updating progress to: " + progress);
-        this.mpbPlayAlbumProgress.setProgress((int)progress);
+        this.mpbPlayAlbumProgress.setProgress(progress);
+    }
+
+    private int calculateProgressPercentage() {
+        float ratio = ((float)this.mNumberOfShownImages / (float)this.mTotalNumberOfImagesToPresent);
+        return (int) (ratio * 100);
     }
 }

@@ -53,6 +53,9 @@ import java.util.List;
 
 import Logic.Database.DBManager;
 import Logic.Interfaces.MyConsumer;
+import Logic.Managers.AnalyticsManager.AnalyticsHelpers.PictureEventsHelper;
+import Logic.Managers.AnalyticsManager.AnalyticsManager;
+import Logic.Managers.AnalyticsManager.EventParams.PictureEventParams;
 import Logic.Models.PictureAudioData;
 
 public class TakePicActivity extends AppCompatActivity {
@@ -97,7 +100,6 @@ public class TakePicActivity extends AppCompatActivity {
     private final Runnable mTakePictureRunnable = new Runnable() {
         public void run() {
            if(mActivityState.equals(eTakePicActivityState.InProgress)) {
-                mIVSavedPicture.setImageBitmap(mTextureView.getBitmap());
                 uploadImage(mTextureView.getBitmap());
                 Toast.makeText(getApplicationContext(), "Taking a picture", Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(mTakePictureRunnable, 1000 * DELAY_BETWEEN_PICTURES);
@@ -138,7 +140,6 @@ public class TakePicActivity extends AppCompatActivity {
     private Button mBtnTakePicture;
     private Button mBtnFinishTakingPictures;
     private TextureView mTextureView;
-    private ImageView mIVSavedPicture;
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
 
         @Override
@@ -205,8 +206,6 @@ public class TakePicActivity extends AppCompatActivity {
         mBtnClearPicturesTaken = findViewById(R.id.btnClearPicturesTaken);
         mBtnTakePicture = findViewById(R.id.btnTakeAPic);
         mBtnFinishTakingPictures = findViewById(R.id.btnFinishTakingPictures);
-        mIVSavedPicture = findViewById(R.id.ivSavedPic);
-        mIVSavedPicture.setVisibility(View.INVISIBLE);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/recordAudio.wav";
@@ -221,7 +220,7 @@ public class TakePicActivity extends AppCompatActivity {
     protected void onPause() {
         this.closeCamera();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (mRecorder != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mRecorder.pause();
         }
 
@@ -350,6 +349,7 @@ public class TakePicActivity extends AppCompatActivity {
             case InActive:
                 // Button clicked when state was inactive.
                 // Start repetative action to take a picture, every 15 seconds
+                this.logStartTakingPicturesEvent();
                 startRecording();
                 mActivityState = eTakePicActivityState.InProgress;
                 mHandler.post(mTakePictureRunnable);
@@ -371,6 +371,11 @@ public class TakePicActivity extends AppCompatActivity {
         }
 
         handleUIForActivityStateChanged();
+    }
+
+    private void logStartTakingPicturesEvent() {
+        PictureEventParams pictureEventParams = new PictureEventParams();
+        AnalyticsManager.getInstance().trackPictureEvent(PictureEventsHelper.ePictureEventType.StartTakingPictures, pictureEventParams);
     }
 
     public void onFinishTakingPictures(View v) {
@@ -488,8 +493,6 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadImage(Bitmap imageBitmap) {
         //Prepare image to be uploaded
         Log.e(TAG, "Preparing image for upload");
-        mIVSavedPicture.setDrawingCacheEnabled(true);
-        mIVSavedPicture.buildDrawingCache();
         Bitmap bitmap = imageBitmap;
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -506,6 +509,5 @@ public class TakePicActivity extends AppCompatActivity {
     private void uploadImageFailure() {
         Toast.makeText(getApplicationContext(), "Failed to upload image.", Toast.LENGTH_SHORT).show();
     }
-
 }
 

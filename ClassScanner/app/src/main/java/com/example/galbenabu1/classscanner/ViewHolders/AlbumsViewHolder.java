@@ -27,12 +27,11 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
     private TextView mCreatorName;
     private TextView mAlbumName;
     private TextView mCreationDate;
-    private ImageView mAlbumImg;
     private Album mSelectedAlbum;
     private boolean mIsAlbumSelected;
     private MyConsumer<Album> mOnLongClickListener;
-    private ImageView mCheckedSign;
     private boolean isAlbumChecked;
+    private ImageView mCheckedSign;
 
     public AlbumsViewHolder(View itemView, boolean isPrivateAlbum) {
         super(itemView);
@@ -42,7 +41,6 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         this.mCreatorName = itemView.findViewById(R.id.tvAlbumPublisher);
         this.mAlbumName = itemView.findViewById(R.id.tvAlbumName);
         this.mCreationDate = itemView.findViewById(R.id.tvCreationDate);
-        this.mAlbumImg = itemView.findViewById(R.id.ivAlbumImage);
         this.mIsAlbumSelected = false;
         this.mCheckedSign = itemView.findViewById(R.id.ivCheckedSign);
 
@@ -83,6 +81,10 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
         );
     }
 
+    public ImageView getmCheckedSign() {
+        return mCheckedSign;
+    }
+
 
     public Album getSelectedAlbum() {
         return mSelectedAlbum;
@@ -114,14 +116,6 @@ public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
 
     public void setCreationDate(TextView creationDate) {
         this.mCreationDate = creationDate;
-    }
-
-    public ImageView getAlbumImg() {
-        return mAlbumImg;
-    }
-
-    public void setAlbumImg(ImageView albumImg) {
-        this.mAlbumImg = albumImg;
     }
 
     public CardView getAlbumCardView() {

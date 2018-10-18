@@ -99,7 +99,7 @@ public class ImageEditingActivity extends AppCompatActivity {
         sharpnessImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSharpnessImageViewClicked();
+                //onSharpnessImageViewClicked();
             }
         });
     }

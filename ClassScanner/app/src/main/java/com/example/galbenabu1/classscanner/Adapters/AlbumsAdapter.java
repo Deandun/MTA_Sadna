@@ -23,11 +23,13 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
     private List<Album> mAlbumsList;
     private MyConsumer<Album> mOnLongClickListener;
     private boolean mIsPrivateAlbum;
+    private boolean mShouldShowCheckedImage;
 
-    public AlbumsAdapter(List<Album> albumsList, MyConsumer<Album> onLongClickListener, boolean isPrivateAlbum) {
+    public AlbumsAdapter(List<Album> albumsList, MyConsumer<Album> onLongClickListener, boolean isPrivateAlbum, boolean isUserSelectingAlbums) {
         mAlbumsList = albumsList;
         mOnLongClickListener = onLongClickListener;
         this.mIsPrivateAlbum = isPrivateAlbum;
+        this.mShouldShowCheckedImage = isUserSelectingAlbums;
     }
 
     @Override
@@ -60,6 +62,10 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
         holder.getCreationDate().setText("Creation date: " + dateStr);
         holder.getAlbumCardView().setBackgroundColor(Color.WHITE);
         holder.setOnLongClickListener(mOnLongClickListener);
+
+        if(!this.mShouldShowCheckedImage) {
+            holder.getmCheckedSign().setVisibility(View.INVISIBLE); // Hide checked sign.
+        }
 
         Log.e(TAG, "onBindViewHolder() << " + position);
     }
