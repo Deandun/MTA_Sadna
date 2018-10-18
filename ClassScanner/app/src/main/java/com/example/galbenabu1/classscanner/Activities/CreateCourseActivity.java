@@ -21,6 +21,7 @@ import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Models.Album;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
 
@@ -30,11 +31,10 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private static final String SHOULD_SHOW_PRIVATE_ALBUMS_DATA = "should_show_private_albums"; // Showing private albums if true, shared albums if false.
     private static final String IS_SELECTING_ALBUMS_FOR_COURSE = "is_selecting_albums"; // In an album selecting mode. Returns selected albums to previous activity.
-    private static final String SELECTED_ALBUM_IDS_DATA = "selected_albums_data"; // The selected albums that return from show albums activity.
-    private final static String NEW_ALBUM_DATA = "new_album_data";
+    private static final String SELECTED_ALBUM_DATA = "selected_albums_data"; // The selected albums that return from show albums activity.
     private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
 
-    private List<String> mAlbumIDCollection;
+    private List<Album> mAlbumIDCollection;
 
     // UI
     private EditText metCourseName;
@@ -129,7 +129,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         Log.e(TAG, "onActivityResult >>");
 
         if(requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
-            this.mAlbumIDCollection = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
+            this.mAlbumIDCollection = data.getExtras().getParcelableArrayList(SELECTED_ALBUM_DATA);
             Log.e(TAG, "onActivityResult >> received album IDs: " + mAlbumIDCollection);
         }
 
@@ -150,7 +150,14 @@ public class CreateCourseActivity extends AppCompatActivity {
         newCourse.setCourseName(courseName);
         newCourse.setCreatorName(courseCreatorName);
         newCourse.setCreatorID(creatorID);
-        newCourse.setM_AlbumIds(this.mAlbumIDCollection != null ? this.mAlbumIDCollection : new ArrayList<>());
+
+        List<String> albumIDsList = new ArrayList<>();
+
+        for(Album album: this.mAlbumIDCollection) {
+            albumIDsList.add(album.getM_Id());
+        }
+
+        newCourse.setM_AlbumIds(albumIDsList);
 
         return newCourse;
     }

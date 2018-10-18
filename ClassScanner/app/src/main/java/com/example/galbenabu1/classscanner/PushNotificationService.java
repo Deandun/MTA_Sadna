@@ -16,12 +16,6 @@ import com.example.galbenabu1.classscanner.Activities.ShowAlbumsActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
-
-import Logic.Database.DBManager;
-import Logic.Models.Album;
-import Logic.Models.Course;
-
 import java.util.Map;
 
 public class PushNotificationService extends FirebaseMessagingService {
@@ -93,12 +87,12 @@ public class PushNotificationService extends FirebaseMessagingService {
         data = remoteMessage.getData();
         Log.e(TAG, "Message data : " + data);
 
-        String value = data.get("albumName");
+        String value = data.get(eNotificationDataKeys.courseID.name());
         if(value != null) {
             albumName = value;
         }
 
-        value = data.get("courseName");
+        value = data.get(eNotificationDataKeys.courseName.name());
         if(value != null) {
             courseName = value;
         }
@@ -106,7 +100,7 @@ public class PushNotificationService extends FirebaseMessagingService {
         title = "Album added to course";
         body = "The album \'" + albumName + "\' has been added to the course \'" + courseName + "\'";
 
-        value = data.get("courseID");
+        value = data.get(eNotificationDataKeys.courseID.name());
         if(value != null) {
             courseID = value;
         }
@@ -131,12 +125,18 @@ public class PushNotificationService extends FirebaseMessagingService {
                         .setSound(soundRri);
 
 
-        notificationBuilder.addAction(new NotificationCompat.Action(R.drawable.iconapp,"New Album Added", pendingIntent));
+        notificationBuilder.addAction(new NotificationCompat.Action(R.drawable.iconapp,"View New Album", pendingIntent));
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 , notificationBuilder.build());
 
         Log.e(TAG, "onMessageReceived() <<");
+    }
+
+    private enum eNotificationDataKeys {
+        courseID,
+        courseName,
+        albumName,
     }
 }

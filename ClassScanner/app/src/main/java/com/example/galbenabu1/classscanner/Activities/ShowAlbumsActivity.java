@@ -37,7 +37,7 @@ public class ShowAlbumsActivity extends Activity {
 
     private static final String TAG = "ShowAlbumsActivity";
 
-    private Set<String> mSelectedAlbumIDsSet = new HashSet<>();
+    private Set<Album> mSelectedAlbumIDsSet = new HashSet<>();
     private List<Album> mAlbumsList = new ArrayList<>();
     private RecyclerView mAlbumsRecycleView;
     private AlbumsAdapter mAlbumsAdapter;
@@ -140,9 +140,9 @@ public class ShowAlbumsActivity extends Activity {
     public void onFinishSelectingAlbumsClick(View v) {
         Log.e(TAG, "onFinishSelectingAlbumsClick >> ");
         Intent resultIntent = new Intent();
-        ArrayList<String> albumIDsList = new ArrayList<>(this.mSelectedAlbumIDsSet); // Convert set to list so it can be sent back to the previous activity.
+        ArrayList<Album> albumIDsList = new ArrayList<>(this.mSelectedAlbumIDsSet); // Convert set to list so it can be sent back to the previous activity.
 
-        resultIntent.putStringArrayListExtra(SELECTED_ALBUMS_DATA, albumIDsList);
+        resultIntent.putParcelableArrayListExtra(SELECTED_ALBUMS_DATA, albumIDsList);
         setResult(RESULT_OK, resultIntent);
         Toast.makeText(getApplicationContext(), "Successfully added albums to course", Toast.LENGTH_SHORT).show();
         finish();
@@ -154,7 +154,7 @@ public class ShowAlbumsActivity extends Activity {
         if (this.mSelectedAlbumIDsSet.contains(selectedAlbum.getM_Id())){
             this.mSelectedAlbumIDsSet.remove(selectedAlbum.getM_Id());
         }else{
-            this.mSelectedAlbumIDsSet.add(selectedAlbum.getM_Id());
+            this.mSelectedAlbumIDsSet.add(selectedAlbum);
         }
     }
 
