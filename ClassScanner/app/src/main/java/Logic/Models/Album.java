@@ -11,7 +11,6 @@ import java.util.List;
  * Created by galbenabu1 on 08/05/2018.
  */
 
-//TODO: Add missing fields to parcelable implementation
 public class Album implements Parcelable {
     private String m_Id;
     private String m_AlbumCreatorId;

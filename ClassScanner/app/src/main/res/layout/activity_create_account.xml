@@ -105,6 +105,7 @@
         android:layout_marginTop="8dp"
         android:width="20dp"
         android:allowUndo="false"
+        android:background="@drawable/btn_rounded"
         android:text="REGISTER"
         android:textSize="12sp"
         android:textStyle="bold"

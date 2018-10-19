@@ -13,7 +13,6 @@ import com.example.galbenabu1.classscanner.Adapters.PhotoGalleryAdapter;
 import com.example.galbenabu1.classscanner.R;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.AlbumEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
@@ -49,7 +48,7 @@ public class AlbumInfoActivity extends Activity {
         
         this.logViewAlbumImagesEvent();
 
-        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, getApplicationContext(), this.mAlbum);
+        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, this.mAlbum);
         this.mAlbumPhotosList.addAll(this.mAlbum.getM_Pictures());
 
         recyclerView.setAdapter(adapter);

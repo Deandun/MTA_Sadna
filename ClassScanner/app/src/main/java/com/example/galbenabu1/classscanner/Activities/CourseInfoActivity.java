@@ -14,12 +14,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
 import Logic.Managers.LoggedInUserDetailsManager;
+import Logic.Models.Album;
 import Logic.Models.Course;
 import Logic.Database.DBManager;
 
@@ -30,6 +32,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private static final String COURSE_DATA = "course_data";
     private static final String TAG = "CourseInfoActivity";
     private static final String IS_SELECTING_ALBUMS = "is_selecting_albums";
+    private static final String SELECTED_ALBUM_DATA = "selected_albums_data";
     private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
 
     private DBManager mDBManager = new DBManager();
@@ -128,7 +131,6 @@ public class CourseInfoActivity extends AppCompatActivity {
         chooseAlbumsIntent.putExtra(SHOULD_SHOW_PRIVATE_ALBUMS_DATA, true);
         chooseAlbumsIntent.putExtra(IS_SELECTING_ALBUMS, true);
         startActivityForResult(chooseAlbumsIntent, SELECT_ALBUMS_CODE);
-
     }
 
     @Override
@@ -136,21 +138,28 @@ public class CourseInfoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e(TAG, "onActivityResult >>");
 
-        String SELECTED_ALBUM_IDS_DATA = "selected_albums_data";
-
         if (requestCode == SELECT_ALBUMS_CODE && resultCode == RESULT_OK) {
-            List<String> albumIDList = data.getExtras().getStringArrayList(SELECTED_ALBUM_IDS_DATA);
-            Log.e(TAG, "onActivityResult >> received album IDs: " + albumIDList);
+            ArrayList<Album> albumList = data.getExtras().getParcelableArrayList(SELECTED_ALBUM_DATA);
+            Log.e(TAG, "onActivityResult >> received album IDs: " + albumList);
             Log.e(TAG, "onActivityResult >> Adding album IDs to existing course IDs: " + this.mCourse.getM_AlbumIds());
-            this.mCourse.getM_AlbumIds().addAll(albumIDList);
-            this.mDBManager.addAlbumsToExistsCourse(this.mCourse);
-            this.mDBManager.moveAlbumIDsFromPrivateToSharedHelper(this.mCourse.getID(), this.mCourse.getCreatorID(),
-                    this.mCourse.getM_AlbumIds());
+            this.addAlbumsToCourse(albumList);
+            this.mDBManager.moveAlbumsFromPrivateToShared(this.mCourse.getID(), albumList);
 
-            this.logAddedAlbumsToCourseEvent(albumIDList.size());
+            this.logAddedAlbumsToCourseEvent(albumList.size());
         }
 
         Log.e(TAG, "onActivityResult <<");
+    }
+
+    private void addAlbumsToCourse(ArrayList<Album> albumList) {
+        List<String> albumIDs = new ArrayList<>();
+
+        for(Album album: albumList) {
+            albumIDs.add(album.getM_Id());
+        }
+
+        this.mDBManager.addAlbumsToExistsCourse(this.mCourse.getID(), albumIDs);
+        this.mCourse.getM_AlbumIds().addAll(albumIDs);
     }
 
     private void logAddedAlbumsToCourseEvent(int numberOfAddedAlbums) {

@@ -137,34 +137,10 @@ public class DBManager {
     public void removePictureFromDB(String albumID, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
 
         List<PictureAudioData> pictureCollections = new ArrayList<>();
-        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/"+pictureId);
+        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
         pictureCollections.add(pictureAudioData);
-//
-//        int indexOfPicture = 4;
-//        Album album;
-//        album.getM_Pictures().remove(indexOfPicture);
-//        picturesRef.setValue(null);
-
-
-//        DatabaseReference picturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID).child(pictureDbId);
-//        picturesRef.setValue(null);
 
         removePicturesFromDB(albumID,userID,isPrivateAlbum,pictureCollections);
-
-
-//        DatabaseReference picturesRef;
-//
-//        if (isPrivateAlbum) {
-//            picturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
-//        } else {
-//            picturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
-//        }
-//
-//        picturesRef.updateChildren().addOnSuccessListener(
-//                (aVoid -> Log.e(TAG, "Pictures deleted successfully"))
-//        ).addOnFailureListener(
-//                (exception) -> Log.e(TAG, "Failed deleting pictures from DB with message: " + exception.getMessage())
-//        );
     }
 
     public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections) {
@@ -373,13 +349,23 @@ public class DBManager {
         }
     }
 
-    public void addAlbumsToExistsCourse(Course courseToUpdate) {
-        Log.e(TAG, "Adding Albums to course: " + courseToUpdate.getID() + " to DB");
+    public void addAlbumsToExistsCourse(String courseID, List<String> albumIDsList) {
+        Log.e(TAG, "Adding Albums to course: " + courseID + " to DB");
 
-        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getCourseReference(courseToUpdate.getID());
-        courseRef.child(ALBUMS_ID).setValue(courseToUpdate.getM_AlbumIds());
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getCourseReference(courseID);
+        courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Course course = dataSnapshot.getValue(Course.class);
+                course.getM_AlbumIds().addAll(albumIDsList);
+                dataSnapshot.getRef().setValue(course);
+            }
 
-        Log.e(TAG, "Added to DB albums to course: " + courseToUpdate.getID());
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void addNewCourseDetailsToDBAndSetCourseID(Course newCourse) {
@@ -395,6 +381,7 @@ public class DBManager {
                 (aVoid) -> {
                     Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID());
                     // Remove album IDs from private albums to shared albums.
+                    // Send course's creator ID as album creator ID (since those are private albums, its the same user ID).
                     this.moveAlbumIDsFromPrivateToShared(newCourse.getID(), newCourse.getCreatorID(), newCourse.getM_AlbumIds());
                     CourseActionData courseActionData = new CourseActionData();
                     courseActionData.setmCourseActionType(eCourseActionType.CourseCreated);
@@ -407,7 +394,7 @@ public class DBManager {
         );
     }
 
-    private void moveAlbumIDsFromPrivateToShared(String courseID, String albumCreatorUserID, List<String> albumIDs) {
+    public void moveAlbumIDsFromPrivateToShared(String courseID, String albumCreatorUserID, List<String> albumIDs) {
         Log.e(TAG, "Removing album IDs " + albumIDs + " From private albums of user with iD: " + albumCreatorUserID + " To shared albums of course with ID: " + courseID);
         DatabaseReference userPrivateAlbumsRef = FirebaseDBReferenceGenerator.getAllUserPrivateAlbumsReference(albumCreatorUserID);
         DatabaseReference courseSharedAlbumsRef = FirebaseDBReferenceGenerator.getAllCourseSharedAlbumsReference(courseID);
@@ -442,11 +429,17 @@ public class DBManager {
                 }
             });
         }
-
     }
 
-    public void moveAlbumIDsFromPrivateToSharedHelper(String courseID, String albumCreatorUserID, List<String> albumIDs) {
-        moveAlbumIDsFromPrivateToShared(courseID, albumCreatorUserID, albumIDs);
+    public void moveAlbumsFromPrivateToShared(String courseID, ArrayList<Album> albumList) {
+        String albumCreatorID = albumList.get(0).getM_AlbumCreatorId(); // Get the creator ID from the first album (all of the albums have the same creator).
+        List<String> albumIDsList = new ArrayList<>();
+
+        for(Album album: albumList) {
+            albumIDsList.add(album.getM_Id());
+        }
+
+        this.moveAlbumIDsFromPrivateToShared(courseID, albumCreatorID, albumIDsList);
     }
 
     public void addUserInfoToDataBase(User loggedInUser) {

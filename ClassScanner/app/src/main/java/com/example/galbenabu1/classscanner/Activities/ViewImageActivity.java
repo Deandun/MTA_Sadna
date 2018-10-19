@@ -3,28 +3,23 @@ package com.example.galbenabu1.classscanner.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
-import com.fenchtose.nocropper.CropperView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -69,7 +64,6 @@ public class ViewImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(imageView.getContext(), CropImageActivity.class);
-                String strName = null;
                 intent.putExtra("PATH", path);
                 intent.putExtra("ALBUM",album);
                 imageView.getContext().startActivity(intent);
@@ -83,6 +77,7 @@ public class ViewImageActivity extends AppCompatActivity {
                 String albumId=album.getM_Id();
                 String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 String pictureDbId=dbId;
+                //TODO: what's the '+ 7' for?
                 String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
                 //todo: check if private album
                 boolean isPrivateAlbum=true;
@@ -120,6 +115,8 @@ public class ViewImageActivity extends AppCompatActivity {
         btnDownload = (FloatingActionButton) findViewById(R.id.download_button);
         imageView = (ImageView) findViewById(R.id.picture_view);
         totalView = (ConstraintLayout) findViewById(R.id.total_view);
+        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
+        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
 
         if (getIntent().hasExtra("PATH")) {
             Bundle extras = getIntent().getExtras();
@@ -137,15 +134,19 @@ public class ViewImageActivity extends AppCompatActivity {
             dbId = extras.getString("DB_ID");
         }
 
-        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(this.album.getM_AlbumCreatorId())) { //only creator user can edit/delete pictures
-            setUIForCreatorUser();
+        if (!this.isUserTheCreator()) { //only creator user can edit/delete pictures
+            hideCreatorOnlyButtons();
         }
 
     }
 
-    private void setUIForCreatorUser() {
-        btnDelete = (FloatingActionButton) findViewById(R.id.delete_button);
-        btnEdit = (FloatingActionButton) findViewById(R.id.edit_button);
+    private void hideCreatorOnlyButtons() {
+        this.btnEdit.setVisibility(View.INVISIBLE);
+        this.btnDelete.setVisibility(View.INVISIBLE);
+    }
+
+   private boolean isUserTheCreator() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid().equals(this.album.getM_AlbumCreatorId());
    }
 
 }
