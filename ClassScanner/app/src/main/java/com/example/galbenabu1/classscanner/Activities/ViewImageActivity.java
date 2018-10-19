@@ -103,7 +103,6 @@ public class ViewImageActivity extends AppCompatActivity {
 
 
     private void getImageByPathAndBitmap() {
-
         String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
         DBManager dbManager = new DBManager();
         dbManager.fetchImageFromStoragePath(pictureId,
