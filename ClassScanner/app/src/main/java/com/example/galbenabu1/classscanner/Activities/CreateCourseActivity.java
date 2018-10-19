@@ -89,9 +89,8 @@ public class CreateCourseActivity extends AppCompatActivity {
         // Return to home screen
         Intent homeIntent = new Intent(CreateCourseActivity.this, HomeActivity.class);
         startActivity(homeIntent);
-        Toast.makeText(this, "Course created Successfully!", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, "Created course successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Created Course successfully!", Toast.LENGTH_SHORT).show();
         Log.e(TAG, "onFinishCreatingCourse <<");
 
     }
