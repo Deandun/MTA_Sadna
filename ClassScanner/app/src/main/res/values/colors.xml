@@ -19,6 +19,7 @@
     <color name="btn_logut">#ff6861</color>
     <color name="dark_pink">#7e1135</color>
     <color name="light_pink">#f2a2bc</color>
+    <color name="app_background">#676767</color>
 
 
 </resources>

@@ -12,10 +12,10 @@
 
 <item>
     <shape android:shape="rectangle">
-        <gradient android:angle="225" android:endColor="@color/colorPrimary" android:startColor="@color/colorPrimaryDark" />
+        <gradient android:angle="225" android:endColor="@color/app_background" android:startColor="@color/app_background" />
         <corners android:radius="10dp" />
         <corner android:radius="8dp"/>
-        <stroke android:width="2dp" android:color="@android:color/black" />
+        <stroke android:width="2dp" android:color="#ffcc99" />
     </shape>
 
 </item>
