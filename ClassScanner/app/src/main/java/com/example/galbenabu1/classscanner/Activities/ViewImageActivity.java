@@ -89,11 +89,11 @@ public class ViewImageActivity extends AppCompatActivity {
                 dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
 
                 album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
-                // toastMessage("Image saved successfully");
+
                 Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
                 newIntent.putExtra("album_data", album);
                 startActivity(newIntent);
-               // dbmanager.removePictureFromDB(albumId,userId,pictureId,isPrivateAlbum);
+
             }
         });
 
@@ -105,25 +105,14 @@ public class ViewImageActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void getImageByPathAndBitmap() {
-        try {
-            final File localFile = File.createTempFile("Images", "jpg");
-            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    mBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    imageView.setImageBitmap(mBitmap);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+        DBManager dbManager = new DBManager();
+        dbManager.fetchImageFromStoragePath(pictureId,
+        (bitmap) -> imageView.setImageBitmap(bitmap));
     }
 
     private void initViews() {
