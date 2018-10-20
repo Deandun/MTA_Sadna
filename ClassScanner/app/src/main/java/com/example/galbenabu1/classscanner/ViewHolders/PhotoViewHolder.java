@@ -66,31 +66,18 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 return true;
                             case R.id.Delete:
                                 DBManager dbmanager = new DBManager();
-                                String albumId = album.getM_Id();
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 String pictureDbId = findSelectedPhotoIndex();
                                 String pictureId = mSelectedPhoto.getM_Id();
                                 boolean isPrivateAlbum = mIsPrivateAlbum;
-                                dbmanager.removePictureFromDB(albumId, userId, pictureId, pictureDbId, isPrivateAlbum);
-                                album.deletePictureFromAlbum(Integer.parseInt(pictureDbId));
+                                dbmanager.removePictureFromDB(album, userId, pictureId, pictureDbId, isPrivateAlbum);
                                 Intent newIntent = new Intent(view.getContext(), AlbumInfoActivity.class);
                                 newIntent.putExtra("album_data", album);
                                 newIntent.putExtra("is_private_album", isPrivateAlbum);
                                 view.getContext().startActivity(newIntent);
                                 return true;
 
-                                default:
 
-
-//                            {
-//                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
-//                                String strName = null;
-//                                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
-//                                intent.putExtra("ALBUM",mAlbum);
-//                                view.getContext().startActivity(intent);
-//                            }
-
-                                // return super.onContextItemSelected(item);
                         }
 
                         return false;
@@ -124,10 +111,11 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
         int photoIndex=-1;
         for (int i=0; i<mAlbum.getM_Pictures().size()-1; i++ )
         {
-            if (mAlbum.getM_Pictures().get(i).getM_Id()==mSelectedPhoto.getM_Id())
-            {
-                photoIndex=i;
-                break;
+            if(mAlbum.getM_Pictures().get(i)!=null) {
+                if (mAlbum.getM_Pictures().get(i).getM_Id() == mSelectedPhoto.getM_Id()) {
+                    photoIndex = i;
+                    break;
+                }
             }
         }
         return Integer.toString(photoIndex);

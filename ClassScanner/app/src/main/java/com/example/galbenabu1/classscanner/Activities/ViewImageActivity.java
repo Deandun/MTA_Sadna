@@ -99,13 +99,10 @@ public class ViewImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DBManager dbmanager =new DBManager();
-                String albumId=album.getM_Id();
                 String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 String pictureDbId=dbId;
                 String pictureId=storageId;
-                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
-                int photoDbIndex=Integer.parseInt(pictureDbId);
-                album.deletePictureFromAlbum(photoDbIndex);
+                dbmanager.removePictureFromDB(album,userId,pictureId,pictureDbId,isPrivateAlbum);
                 Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
                 newIntent.putExtra("album_data", album);
                 newIntent.putExtra("is_private_album", isPrivateAlbum);

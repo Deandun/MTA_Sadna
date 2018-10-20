@@ -134,13 +134,40 @@ public class DBManager {
         );
     }
 
-    public void removePictureFromDB(String albumID, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
+    //todo: delete on the end
 
+//    public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum, Runnable onDeletedPictureSuccess) {
+//        String albumID = album.getM_Id();
+//        List<PictureAudioData> pictureCollections = new ArrayList<>();
+//        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
+//        pictureCollections.add(pictureAudioData);
+//
+//        removePicturesFromStorage(pictureCollections);
+//        int photoDbIndex=Integer.parseInt(pictureDbId);
+//        album.deletePictureFromAlbum(photoDbIndex);
+//
+//        DatabaseReference albumPicturesRef;
+//
+//        if (isPrivateAlbum) {
+//            albumPicturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
+//        } else {
+//            albumPicturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
+//        }
+//
+//        albumPicturesRef.setValue(album.getM_Pictures()).addOnSuccessListener(
+//                (aVoid) -> onDeletedPictureSuccess.run()
+//        );
+//    }
+
+    public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
+        String albumID = album.getM_Id();
         List<PictureAudioData> pictureCollections = new ArrayList<>();
         PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
         pictureCollections.add(pictureAudioData);
 
-        removePicturesFromDB(albumID,userID,isPrivateAlbum,pictureCollections);
+        removePicturesFromDB(albumID, userID, isPrivateAlbum, pictureCollections);
+        album.deletePictureFromAlbum(Integer.parseInt(pictureDbId));
+
     }
 
     public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections) {
