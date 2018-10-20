@@ -1,12 +1,15 @@
 package com.example.galbenabu1.classscanner.Activities;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.TooltipCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
@@ -36,45 +39,49 @@ public class CourseInfoActivity extends AppCompatActivity {
     private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
 
     private DBManager mDBManager = new DBManager();
+    private boolean mIsInEditState;
 
     // Course info
     private Course mCourse;
-    private TextView mtvCourseName;
-    private TextView mtvCourseCreationDate;
-    private TextView mtvCourseCreatorName;
+    private EditText metCourseName;
+    private EditText metCourseCreationDate;
+    private EditText metCourseCreatorName;
+    private EditText metCourseDescription;
     private Button mbtnAddCourseAlbum;
+    private ImageView mIVEditCourseDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_info);
-        Log.e(TAG, "onCreate >>");
 
-        mCourse = getIntent().getExtras().getParcelable(COURSE_DATA);
+        Log.e(TAG, "onCreate >>");
+        this.mCourse = getIntent().getExtras().getParcelable(COURSE_DATA);
         bindUI();
         setUI();
-
+        setIsEditableState(false);
         Log.e(TAG, "onCreate <<");
     }
 
     // UI
 
     private void bindUI() {
-        this.mtvCourseName = findViewById(R.id.tv_course_name);
-        this.mtvCourseCreationDate = findViewById(R.id.tv_course_creation_date);
-        this.mtvCourseCreatorName = findViewById(R.id.tv_course_publisher_name);
+        this.metCourseName = findViewById(R.id.et_course_name);
+        this.metCourseCreationDate = findViewById(R.id.et_course_creation_date);
+        this.metCourseCreatorName = findViewById(R.id.et_course_publisher_name);
+        this.metCourseDescription = findViewById(R.id.et_course_description);
         this.mbtnAddCourseAlbum = findViewById(R.id.btnAddCourseAlbum);
+        this.mIVEditCourseDetails = findViewById(R.id.ivEditCourseDetails);
     }
 
     private void setUI() {
         // Course info
-        this.mtvCourseName.setText("Course name: " + mCourse.getCourseName());
-
+        this.metCourseName.setText(mCourse.getCourseName());
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String dateStr = dateFormat.format(mCourse.getCreationDate());
-        this.mtvCourseCreationDate.setText("Created at:" + dateStr);
-
-        this.mtvCourseCreatorName.setText("Created by: " + mCourse.getCreatorName());
+        this.metCourseCreationDate.setText("Created at:" + dateStr);
+        this.metCourseCreatorName.setText("Created by: " + this.mCourse.getCreatorName());
+        this.metCourseDescription.setText("Description: " + this.mCourse.getDescription());
         this.setActionButtonUI();
     }
 
@@ -85,7 +92,14 @@ public class CourseInfoActivity extends AppCompatActivity {
         }else{
             this.mbtnAddCourseAlbum.setText("Join Course");
         }
+
+        if (isUserTheManager()){
+            this.mIVEditCourseDetails.setVisibility(View.VISIBLE);
+        }else{
+            this.mIVEditCourseDetails.setVisibility(View.INVISIBLE);
+        }
     }
+
 
     public void onDisplayCourseAlbumsClick(View v){
         Log.e(TAG, "onShowCoursesClick >>");
@@ -170,7 +184,33 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
 
     private boolean isUserJoinedCourse() {
-        return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ||
+        return isUserTheManager() ||
                 LoggedInUserDetailsManager.getsLoggedInUser().getM_CourseIds().contains(this.mCourse.getID());
+    }
+
+    private boolean isUserTheManager() {
+        return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    }
+
+    public void onEditCourseDetailsClick(){
+        Log.e(TAG, "onEditableState >>");
+        if (this.mIsInEditState){ //finish to edit - save changes
+            setIsEditableState(false);
+            this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.edit));
+            this.mCourse.setCourseName(this.metCourseName.getText().toString());
+            this.mCourse.setDescription(this.metCourseDescription.getText().toString());
+            TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Edit details");
+        }else{ //start to edit
+            setIsEditableState(true);
+            this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.oksign));
+            TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Save Changes");
+        }
+        Log.e(TAG, "onEditableState <<");
+    }
+
+    public void setIsEditableState(boolean isEditable){
+        this.mIsInEditState = isEditable;
+        this.metCourseName.setEnabled(this.mIsInEditState);
+        this.mIVEditCourseDetails.setEnabled(this.mIsInEditState);
     }
 }
