@@ -69,7 +69,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_gallery"
-        android:layout_width="407dp"
+        android:layout_width="382dp"
         android:layout_height="448dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -77,9 +77,9 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnPresentAlbum"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvShowPhotosTitle"
-        app:layout_constraintVertical_bias="0.0" />" />
+        app:layout_constraintVertical_bias="1.0" />" />
 
 </android.support.constraint.ConstraintLayout>
