@@ -14,12 +14,10 @@ import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
@@ -82,7 +80,8 @@ public class CourseInfoActivity extends AppCompatActivity {
         this.metCourseCreationDate.setText("Created at:" + dateStr);
         this.metCourseCreatorName.setText("Created by: " + this.mCourse.getCreatorName());
         this.metCourseDescription.setText("Description: " + this.mCourse.getDescription());
-        this.setActionButtonUI();
+        setActionButtonUI();
+        initET();
     }
 
     private void setActionButtonUI() {
@@ -192,13 +191,14 @@ public class CourseInfoActivity extends AppCompatActivity {
         return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
-    public void onEditCourseDetailsClick(){
+    public void onEditCourseDetailsClick(View v){
         Log.e(TAG, "onEditableState >>");
         if (this.mIsInEditState){ //finish to edit - save changes
             setIsEditableState(false);
             this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.edit));
             this.mCourse.setCourseName(this.metCourseName.getText().toString());
             this.mCourse.setDescription(this.metCourseDescription.getText().toString());
+            mDBManager.updateCourseDetailsToDB(this.mCourse);
             TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Edit details");
         }else{ //start to edit
             setIsEditableState(true);
@@ -210,7 +210,19 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     public void setIsEditableState(boolean isEditable){
         this.mIsInEditState = isEditable;
-        this.metCourseName.setEnabled(this.mIsInEditState);
-        this.mIVEditCourseDetails.setEnabled(this.mIsInEditState);
+        disableEditText(this.metCourseDescription, isEditable);
+        disableEditText(this.metCourseName, isEditable);
     }
+
+    private void disableEditText(EditText editText, boolean isDisable) {
+        editText.setEnabled(isDisable);
+    }
+
+    private void initET() {
+        disableEditText(this.metCourseName, false);
+        disableEditText(this.metCourseCreationDate, false);
+        disableEditText(this.metCourseDescription, false);
+        disableEditText(this.metCourseCreatorName, false);
+    }
+
 }
