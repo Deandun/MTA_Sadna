@@ -165,11 +165,6 @@ public class ImageEditingActivity extends AppCompatActivity {
         // Apply the scaled bitmap
         imageToEdit.setImageDrawable(result);
 
-        // Now change ImageView's dimensions to match the scaled image
-//        imageToEdit.setWi = width;
-//        params.height = height;
-//        imageToEdit.setLayoutParams(params);
-
         Log.i("Test", "done");
     }
 

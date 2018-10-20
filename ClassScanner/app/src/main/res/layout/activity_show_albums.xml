@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     tools:context=".Activities.ShowAlbumsActivity">
 
     <TextView
@@ -23,12 +24,13 @@
     <Button
         android:id="@+id/btnFinishSelectingAlbums"
         style="@android:style/Widget.Holo.Button.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/btn_rounded"
         android:onClick="onFinishSelectingAlbumsClick"
         android:text="Finish Selecting Albums"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,13 +44,14 @@
         android:id="@+id/btnShowAlbumsBack"
         style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Back"
+        android:background="@drawable/btn_rounded"
         android:onClick="onShowAlbumsBackButtonClick"
+        android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +61,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/course_info_recyclerView"
         android:layout_width="368dp"
-        android:layout_height="361dp"
+        android:layout_height="354dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"

@@ -108,8 +108,6 @@ public class CropTest extends AppCompatActivity {
 
     public void onContinueEditingBtnClicked(View v) {
         Intent intent = new Intent(CropTest.this, ImageEditingActivity.class);
-//        intent.putExtra("IMAGE", mBitmap);
-//        startActivity(intent);
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
         intent.putExtra("IMAGE", bs.toByteArray());

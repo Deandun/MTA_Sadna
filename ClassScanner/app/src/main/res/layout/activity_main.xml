@@ -50,6 +50,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
+        android:background="@drawable/btn_rounded"
         android:text="Create Account"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +65,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
+        android:background="@drawable/btn_rounded"
         android:text="@string/title_activity_login"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,18 +89,18 @@
 
     <ImageView
         android:id="@+id/ivAppIcon"
-        android:layout_width="133dp"
-        android:layout_height="118dp"
+        android:layout_width="209dp"
+        android:layout_height="168dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.548"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.11"
+        app:layout_constraintVertical_bias="0.034"
         app:srcCompat="@drawable/iconapp" />
 
 </android.support.constraint.ConstraintLayout>

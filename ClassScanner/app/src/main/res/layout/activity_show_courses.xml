@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     tools:context="com.example.galbenabu1.classscanner.Activities.MainActivity">
 
     <TextView
@@ -23,16 +24,17 @@
     <Button
         android:id="@+id/btnSearchCourses"
         style="@android:style/Widget.Holo.Button.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="69dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="72dp"
+        android:background="@drawable/btn_rounded"
         android:onClick="onSearchBtnClick"
         android:text="Search"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintLeft_toRightOf="@+id/etCourseNameToSearch"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -56,6 +58,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/btn_rounded"
         android:onClick="onShowCoursesBackButtonClick"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -4,15 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     tools:context=".Activities.UserNotificationsActivity">
+
+    <TextView
+        android:id="@+id/tvShowNotificationsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Whats new?"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnClearNotifications"
         style="@android:style/Widget.Holo.Button.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="40dp"
+        android:background="@drawable/btn_rounded"
         android:onClick="onClearNotifications"
         android:text="Clear Notifications"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="90dp"
+        android:background="@drawable/btn_rounded"
         android:onClick="onBackClick"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,13 +50,15 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_notifications_recycler_view"
         android:layout_width="368dp"
-        android:layout_height="443dp"
+        android:layout_height="384dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/btnClearNotifications"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShowNotificationsTitle" />
 </android.support.constraint.ConstraintLayout>
