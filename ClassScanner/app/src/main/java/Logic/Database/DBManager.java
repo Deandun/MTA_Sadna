@@ -359,6 +359,10 @@ public class DBManager {
         DatabaseReference courseRef = FirebaseDBReferenceGenerator.getAllCoursesReference();
         List<Course> updatedSuggestedCoursesList = new ArrayList<>();
 
+        if(courseIDsList == null || courseIDsList.isEmpty()) {
+            return; // No need to continue.
+        }
+
         for(String courseID: courseIDsList) {
             courseRef.child(courseID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
