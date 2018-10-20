@@ -48,11 +48,25 @@ public class AlbumInfoActivity extends Activity {
         
         this.logViewAlbumImagesEvent();
 
-        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, this.mAlbum);
-        this.mAlbumPhotosList.addAll(this.mAlbum.getM_Pictures());
+        PhotoGalleryAdapter adapter = new PhotoGalleryAdapter(mAlbumPhotosList, this.mAlbum, this.mIsPrivateAlbum);
+
+        fetchAlbumPhotos();
+
 
         recyclerView.setAdapter(adapter);
         Log.e(TAG, "onCreate <<");
+    }
+
+    private void fetchAlbumPhotos() {
+
+        for (int i=0; i<mAlbum.getM_NumOfPictures()-1; i++)
+        {
+            PictureAudioData photo=mAlbum.getM_Pictures().get(i);
+            if (photo!=null)
+            {
+                mAlbumPhotosList.add(photo);
+            }
+        }
     }
 
     private void logViewAlbumImagesEvent() {
@@ -72,5 +86,11 @@ public class AlbumInfoActivity extends Activity {
 
     public void onAlbumInfoBackBtnClick(View v){
         finish();
+    }
+
+    public void onHomeBtnClick(View v)
+    {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
     }
 }

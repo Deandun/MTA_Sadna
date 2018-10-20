@@ -134,13 +134,40 @@ public class DBManager {
         );
     }
 
-    public void removePictureFromDB(String albumID, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
+    //todo: delete on the end
 
+//    public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum, Runnable onDeletedPictureSuccess) {
+//        String albumID = album.getM_Id();
+//        List<PictureAudioData> pictureCollections = new ArrayList<>();
+//        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
+//        pictureCollections.add(pictureAudioData);
+//
+//        removePicturesFromStorage(pictureCollections);
+//        int photoDbIndex=Integer.parseInt(pictureDbId);
+//        album.deletePictureFromAlbum(photoDbIndex);
+//
+//        DatabaseReference albumPicturesRef;
+//
+//        if (isPrivateAlbum) {
+//            albumPicturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
+//        } else {
+//            albumPicturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
+//        }
+//
+//        albumPicturesRef.setValue(album.getM_Pictures()).addOnSuccessListener(
+//                (aVoid) -> onDeletedPictureSuccess.run()
+//        );
+//    }
+
+    public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
+        String albumID = album.getM_Id();
         List<PictureAudioData> pictureCollections = new ArrayList<>();
         PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
         pictureCollections.add(pictureAudioData);
 
-        removePicturesFromDB(albumID,userID,isPrivateAlbum,pictureCollections);
+        removePicturesFromDB(albumID, userID, isPrivateAlbum, pictureCollections);
+        album.deletePictureFromAlbum(Integer.parseInt(pictureDbId));
+
     }
 
     public void removePicturesFromDB(String albumID, String userID, boolean isPrivateAlbum, Collection<PictureAudioData> pictureCollections) {
@@ -372,27 +399,32 @@ public class DBManager {
         Log.e(TAG, "Adding new course details with ID: " + newCourse.getID() + " to DB");
 
         // Set new course ID.
-        DatabaseReference privateCourseRef = FirebaseDBReferenceGenerator.getAllCoursesReference().push();
-        String courseID = privateCourseRef.getKey();
+        DatabaseReference newCourseRef = FirebaseDBReferenceGenerator.getAllCoursesReference().push();
+        String courseID = newCourseRef.getKey();
 
         newCourse.setId(courseID);
 
-        privateCourseRef.setValue(newCourse).addOnSuccessListener(
+        updateCourseDetailsToDB(newCourse);
+
+    }
+
+    public void updateCourseDetailsToDB(Course course){
+        DatabaseReference courseRef = FirebaseDBReferenceGenerator.getCourseReference(course.getID());
+        courseRef.setValue(course).addOnSuccessListener(
                 (aVoid) -> {
-                    Log.e(TAG, "Successfully added course details for course with ID: " + newCourse.getID());
+                    Log.e(TAG, "Successfully update course details for course with ID: " + course.getID());
                     // Remove album IDs from private albums to shared albums.
                     // Send course's creator ID as album creator ID (since those are private albums, its the same user ID).
-                    this.moveAlbumIDsFromPrivateToShared(newCourse.getID(), newCourse.getCreatorID(), newCourse.getM_AlbumIds());
+                    this.moveAlbumIDsFromPrivateToShared(course.getID(), course.getCreatorID(), course.getM_AlbumIds());
                     CourseActionData courseActionData = new CourseActionData();
                     courseActionData.setmCourseActionType(eCourseActionType.CourseCreated);
-                    courseActionData.setmCourseID(newCourse.getID());
+                    courseActionData.setmCourseID(course.getID());
                     this.writeCourseAction(courseActionData);
                 }
         ).addOnFailureListener(
-                (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + newCourse.getID() + System.lineSeparator() +
-                        "Error message: " + exception.getMessage())
-        );
+                (exception) -> Log.e(TAG, "failed to add course details for course with ID: " + course.getID() + System.lineSeparator()));
     }
+
 
     public void moveAlbumIDsFromPrivateToShared(String courseID, String albumCreatorUserID, List<String> albumIDs) {
         Log.e(TAG, "Removing album IDs " + albumIDs + " From private albums of user with iD: " + albumCreatorUserID + " To shared albums of course with ID: " + courseID);

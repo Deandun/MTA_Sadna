@@ -137,6 +137,6 @@ public class Album implements Parcelable {
     }
 
     public void deletePictureFromAlbum (int pictureId){
-        m_Pictures.remove(pictureId);
-    };
+        m_Pictures.set(pictureId,null);
+    }
 }

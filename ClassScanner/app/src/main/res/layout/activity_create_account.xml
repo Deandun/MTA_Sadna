@@ -16,6 +16,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Create Account"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

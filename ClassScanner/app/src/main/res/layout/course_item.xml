@@ -16,6 +16,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:elevation="16dp"
+        android:background="@color/app_background"
         card_view:cardCornerRadius="4dp">
 
         <android.support.constraint.ConstraintLayout
@@ -23,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="#FFFFFF"
+            android:background="@color/app_background"
             android:padding="4dp">
 
 

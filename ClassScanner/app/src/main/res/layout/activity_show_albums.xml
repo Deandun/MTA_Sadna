@@ -15,6 +15,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
         android:text="Albums List"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -60,8 +62,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/course_info_recyclerView"
-        android:layout_width="368dp"
-        android:layout_height="354dp"
+        android:layout_width="397dp"
+        android:layout_height="399dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"

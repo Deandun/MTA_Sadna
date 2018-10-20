@@ -2,8 +2,11 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.widget.Toast;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -21,11 +24,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import Logic.Database.DBManager;
 
 import Logic.Models.Album;
+import Logic.Services.CapturePhotoUtils;
 
 
 /**
@@ -43,10 +48,12 @@ public class ViewImageActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private String path;
     private String dbId;
+    private String storageId;
     private Album album;
 
     private FirebaseStorage storage;
     private StorageReference ref;
+    private boolean isPrivateAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +67,31 @@ public class ViewImageActivity extends AppCompatActivity {
 
         getImageByPathAndBitmap();
 
+        btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageView.setDrawingCacheEnabled(true);
+                Bitmap bitmap = imageView.getDrawingCache();
+                try
+                {
+                    MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "classImage" , "");
+                    Toast.makeText(getApplicationContext(),  "Image saved to gallery", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(imageView.getContext(), CropImageActivity.class);
                 intent.putExtra("PATH", path);
                 intent.putExtra("ALBUM",album);
+                intent.putExtra("is_private_album",isPrivateAlbum);
                 imageView.getContext().startActivity(intent);
             }
         });
@@ -74,36 +100,25 @@ public class ViewImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DBManager dbmanager =new DBManager();
-                String albumId=album.getM_Id();
                 String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 String pictureDbId=dbId;
-                //TODO: what's the '+ 7' for?
-                String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
-                //todo: check if private album
-                boolean isPrivateAlbum=true;
-                dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
-
-                album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
-
+                String pictureId=storageId;
+                dbmanager.removePictureFromDB(album,userId,pictureId,pictureDbId,isPrivateAlbum);
                 Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
                 newIntent.putExtra("album_data", album);
+                newIntent.putExtra("is_private_album", isPrivateAlbum);
                 startActivity(newIntent);
 
             }
         });
 
-        btnDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //
-            }
-        });
+
     }
 
 
 
     private void getImageByPathAndBitmap() {
-        String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+        String pictureId=storageId;
         DBManager dbManager = new DBManager();
         dbManager.fetchImageFromStoragePath(pictureId,
         (bitmap) -> imageView.setImageBitmap(bitmap));
@@ -131,6 +146,16 @@ public class ViewImageActivity extends AppCompatActivity {
         if (getIntent().hasExtra("DB_ID")) {
             Bundle extras = getIntent().getExtras();
             dbId = extras.getString("DB_ID");
+        }
+
+        if (getIntent().hasExtra("STORAGE_ID")) {
+            Bundle extras = getIntent().getExtras();
+            storageId = extras.getString("STORAGE_ID");
+        }
+
+        if (getIntent().hasExtra("is_private_album")) {
+            Bundle extras = getIntent().getExtras();
+            isPrivateAlbum = extras.getBoolean("is_private_album");
         }
 
         if (!this.isUserTheCreator()) { //only creator user can edit/delete pictures
