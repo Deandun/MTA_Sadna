@@ -66,6 +66,7 @@ public class CropImageActivity extends AppCompatActivity {
         ref = storage.getReference().child(path);
 
         getImageByPathAndBitmap();
+        mBitmap=cropperView.getCroppedBitmap();
 
         btnToggleGesture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +176,7 @@ public class CropImageActivity extends AppCompatActivity {
 
     public void onContinueEditingBtnClicked(View v)
     {
+        mBitmap=cropperView.getCroppedBitmap();
         Intent intent = new Intent(CropImageActivity.this, ImageEditingActivity.class);
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);

@@ -16,11 +16,13 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:elevation="16dp"
+        android:background="@color/app_background"
         card_view:cardCornerRadius="4dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/app_background"
             android:orientation="vertical"
             android:padding="4dp">
 
@@ -82,9 +84,9 @@
                 android:layout_marginTop="8dp"
                 android:src="@drawable/unchecked"
                 card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintHorizontal_bias="0.889"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.889"
                 card_view:layout_constraintVertical_bias="1.0" />
 
 
