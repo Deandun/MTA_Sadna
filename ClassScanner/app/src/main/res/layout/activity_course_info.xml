@@ -61,7 +61,7 @@
  <Button
      android:id="@+id/btnShowCourseAlbums"
      style="@android:style/Widget.Holo.Button.Small"
-     android:layout_width="wrap_content"
+     android:layout_width="93dp"
      android:layout_height="47dp"
      android:layout_marginLeft="120dp"
      android:layout_marginRight="8dp"
@@ -77,7 +77,7 @@
  <Button
      android:id="@+id/btnAddCourseAlbum"
      style="@android:style/Widget.Holo.Button.Small"
-     android:layout_width="wrap_content"
+     android:layout_width="88dp"
      android:layout_height="wrap_content"
      android:layout_marginLeft="8dp"
      android:layout_marginRight="16dp"
@@ -94,7 +94,7 @@
      android:id="@+id/onCreateInfoBackBtnClick"
      style="@android:style/Widget.Holo.Button.Small"
      android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
+     android:layout_height="30dp"
      android:layout_marginBottom="8dp"
      android:layout_marginLeft="8dp"
      android:layout_marginRight="8dp"
