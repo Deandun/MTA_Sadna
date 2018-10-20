@@ -50,6 +50,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
         this.getAlbumAndCourseID();
+        mAlbumIDCollection=new ArrayList<>();
         this.bindUI();
         this.setUI();
     }
