@@ -35,6 +35,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private static final String IS_SELECTING_ALBUMS = "is_selecting_albums";
     private static final String SELECTED_ALBUM_DATA = "selected_albums_data";
     private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
+    private static final String DESCRIPTION_STR = "Description:";
 
     private DBManager mDBManager = new DBManager();
     private boolean mIsInEditState;
@@ -92,6 +93,7 @@ public class CourseInfoActivity extends AppCompatActivity {
             this.mbtnAddCourseAlbum.setText("Join Course");
         }
 
+        // Can edit course details
         if (isUserTheManager()){
             this.mIVEditCourseDetails.setVisibility(View.VISIBLE);
         }else{
@@ -193,18 +195,20 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     public void onEditCourseDetailsClick(View v){
         Log.e(TAG, "onEditableState >>");
+
         if (this.mIsInEditState){ //finish to edit - save changes
             setIsEditableState(false);
             this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.edit));
             this.mCourse.setCourseName(this.metCourseName.getText().toString());
-            this.mCourse.setDescription(this.metCourseDescription.getText().toString());
-            mDBManager.updateCourseDetailsToDB(this.mCourse);
+            this.mCourse.setDescription(getSubDescription());
+            this.mDBManager.updateCourseDetailsToDB(this.mCourse);
             TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Edit details");
-        }else{ //start to edit
+        } else{ //start to edit
             setIsEditableState(true);
             this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.oksign));
             TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Save Changes");
         }
+
         Log.e(TAG, "onEditableState <<");
     }
 
@@ -223,6 +227,16 @@ public class CourseInfoActivity extends AppCompatActivity {
         disableEditText(this.metCourseCreationDate, false);
         disableEditText(this.metCourseDescription, false);
         disableEditText(this.metCourseCreatorName, false);
+    }
+
+    private String getSubDescription(){
+        if (this.metCourseDescription.getText().toString().contains(DESCRIPTION_STR)){
+            String[] subString = this.metCourseDescription.getText().toString().split(DESCRIPTION_STR);
+            System.out.println(subString[1]);
+            return subString[1];
+        }else{
+            return this.metCourseDescription.getText().toString();
+        }
     }
 
 }
