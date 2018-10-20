@@ -12,6 +12,7 @@ import com.example.galbenabu1.classscanner.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import Logic.Models.Album;
@@ -57,6 +58,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsViewHolder> {
         holder.getCreatorName().setText("Publisher: " + album.getM_AlbumCreatorName());
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        if(album.getM_CreationDate()==null)
+            album.setM_CreationDate(Calendar.getInstance().getTime());
         String dateStr = dateFormat.format(album.getM_CreationDate());
 
         holder.getCreationDate().setText("Creation date: " + dateStr);

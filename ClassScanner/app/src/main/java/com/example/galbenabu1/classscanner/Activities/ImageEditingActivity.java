@@ -59,7 +59,7 @@ public class ImageEditingActivity extends AppCompatActivity {
         getDataFromIntentExtra();
 
         storage = FirebaseStorage.getInstance();
-        ref = storage.getReference().child(path);
+        ref = storage.getReference().child("Images/").child(path.substring(path.lastIndexOf("Images/") + 7));
 
         frameLayout=(FrameLayout)findViewById(R.id.top_frame);
         sb_value = (SeekBar) findViewById(R.id.sb_value);

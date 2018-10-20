@@ -138,8 +138,13 @@ public class PlayAlbumManager {
             // Begin fetching next image.
             this.fetchNextImage();
 
-            // Start timer until showing next image.
-            this.mShowNextPictueTimer.schedule(this.mShowNextPictureTask, updateNextImageDelay);
+            try {
+                // Start timer until showing next image.
+                this.mShowNextPictueTimer.schedule(this.mShowNextPictureTask, updateNextImageDelay);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                this.mShowNextPictueTimer = new Timer();
+            }
         }
     }
 

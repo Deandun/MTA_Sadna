@@ -54,6 +54,7 @@ public class ViewImageActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference ref;
     private boolean isPrivateAlbum;
+    private Bitmap imageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,9 @@ public class ViewImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageView.setDrawingCacheEnabled(true);
-                Bitmap bitmap = imageView.getDrawingCache();
                 try
                 {
-                    MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "classImage" , "");
+                    MediaStore.Images.Media.insertImage(getContentResolver(), imageBitmap, "classImage" , "");
                     Toast.makeText(getApplicationContext(),  "Image saved to gallery", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e)
@@ -121,7 +121,10 @@ public class ViewImageActivity extends AppCompatActivity {
         String pictureId=storageId;
         DBManager dbManager = new DBManager();
         dbManager.fetchImageFromStoragePath(pictureId,
-        (bitmap) -> imageView.setImageBitmap(bitmap));
+        (bitmap) -> {
+            imageView.setImageBitmap(bitmap);
+            imageBitmap=bitmap;
+        });
     }
 
     private void initViews() {

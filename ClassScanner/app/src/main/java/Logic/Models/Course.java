@@ -58,6 +58,10 @@ public class Course implements Parcelable {
     }
 
     public List<String> getM_AlbumIds() {
+        if(m_AlbumIds == null) {
+            m_AlbumIds = new ArrayList<>();
+        }
+
         return m_AlbumIds;
     }
 

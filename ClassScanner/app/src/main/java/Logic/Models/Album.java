@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +38,10 @@ public class Album implements Parcelable {
         m_AlbumName = in.readString();
         m_AlbumCreatorName = in.readString();
         long tempDateAsLong = in.readLong();
-        m_CreationDate = tempDateAsLong == -1 ? null : new Date(tempDateAsLong);
+        if(tempDateAsLong==-1)
+            m_CreationDate=Calendar.getInstance().getTime();
+        else
+            m_CreationDate=new Date(tempDateAsLong);
         m_Description = in.readString();
         m_NumOfPictures = in.readInt();
 
@@ -138,5 +142,9 @@ public class Album implements Parcelable {
 
     public void deletePictureFromAlbum (int pictureId){
         m_Pictures.set(pictureId,null);
+    }
+
+    public void setM_CreationDate(Date m_CreationDate) {
+        this.m_CreationDate = m_CreationDate;
     }
 }
