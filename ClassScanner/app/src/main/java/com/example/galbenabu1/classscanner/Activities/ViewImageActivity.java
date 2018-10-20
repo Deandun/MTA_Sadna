@@ -2,6 +2,7 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.widget.Toast;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,10 +48,12 @@ public class ViewImageActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private String path;
     private String dbId;
+    private String storageId;
     private Album album;
 
     private FirebaseStorage storage;
     private StorageReference ref;
+    private boolean isPrivateAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,21 +72,16 @@ public class ViewImageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageView.setDrawingCacheEnabled(true);
                 Bitmap bitmap = imageView.getDrawingCache();
-//                File root = Environment.getExternalStorageDirectory();
-//                File file = new File(root.getAbsolutePath()+"/DCIM/Camera/img.jpg");
                 try
                 {
-//                    file.createNewFile();
-//                    FileOutputStream ostream = new FileOutputStream(file);
-//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "classImage" , "");
-                   // CapturePhotoUtils.insertImage(getContentResolver(), bitmap, "classImage" , "");
-                   //t ostream.close();
+                    Toast.makeText(getApplicationContext(),  "Image saved to gallery", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
                 }
+
             }
         });
 
@@ -104,16 +102,13 @@ public class ViewImageActivity extends AppCompatActivity {
                 String albumId=album.getM_Id();
                 String userId=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 String pictureDbId=dbId;
-                //TODO: what's the '+ 7' for?
-                String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
-                //todo: check if private album
-                boolean isPrivateAlbum=true;
+                String pictureId=storageId;
                 dbmanager.removePictureFromDB(albumId,userId,pictureId,pictureDbId,isPrivateAlbum);
-
-                album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
-
+                int photoDbIndex=Integer.parseInt(pictureDbId);
+                album.deletePictureFromAlbum(photoDbIndex);
                 Intent newIntent = new Intent(v.getContext(), AlbumInfoActivity.class);
                 newIntent.putExtra("album_data", album);
+                newIntent.putExtra("is_private_album", isPrivateAlbum);
                 startActivity(newIntent);
 
             }
@@ -125,7 +120,7 @@ public class ViewImageActivity extends AppCompatActivity {
 
 
     private void getImageByPathAndBitmap() {
-        String pictureId=path.substring(path.lastIndexOf("Images/") + 7);
+        String pictureId=storageId;
         DBManager dbManager = new DBManager();
         dbManager.fetchImageFromStoragePath(pictureId,
         (bitmap) -> imageView.setImageBitmap(bitmap));
@@ -153,6 +148,16 @@ public class ViewImageActivity extends AppCompatActivity {
         if (getIntent().hasExtra("DB_ID")) {
             Bundle extras = getIntent().getExtras();
             dbId = extras.getString("DB_ID");
+        }
+
+        if (getIntent().hasExtra("STORAGE_ID")) {
+            Bundle extras = getIntent().getExtras();
+            storageId = extras.getString("STORAGE_ID");
+        }
+
+        if (getIntent().hasExtra("is_private_album")) {
+            Bundle extras = getIntent().getExtras();
+            isPrivateAlbum = extras.getBoolean("is_private_album");
         }
 
         if (!this.isUserTheCreator()) { //only creator user can edit/delete pictures

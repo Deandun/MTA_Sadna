@@ -31,6 +31,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     private ImageView mivPhoto;
     private PictureAudioData mSelectedPhoto;
     private Album mAlbum;
+    private boolean mIsPrivateAlbum;
 
     @SuppressLint("ClickableViewAccessibility")
     public PhotoViewHolder(View view, Album album) {
@@ -43,20 +44,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
         mtvTitle = view.findViewById(R.id.tv_photo_title);
         mivPhoto = view.findViewById(R.id.iv_photo);
 
-
-//        mivPhoto.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
-//                intent.putExtra("PATH", mSelectedPhoto.getM_Path());
-//                intent.putExtra("ALBUM", mAlbum);
-//                view.getContext().startActivity(intent);
-//
-//                return true;
-//            }
-//        });
-
-
         mivPhoto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -68,7 +55,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
                         switch (menuItem.getItemId()) {
                             case R.id.Edit:
-                                //Toast.makeText(view, "Option 1 selected", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(view.getContext(), CropImageActivity.class);
                                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
 
@@ -82,17 +68,14 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 DBManager dbmanager = new DBManager();
                                 String albumId = album.getM_Id();
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                String pictureDbId = mSelectedPhoto.getM_Id();
-                                //TODO: what's the '+ 7' for?
-                                String pictureId = mSelectedPhoto.getM_Path().substring(mSelectedPhoto.getM_Path().lastIndexOf("Images/") + 7);
-                                //todo: check if private album
-                                boolean isPrivateAlbum = true;
+                                String pictureDbId = findSelectedPhotoIndex();
+                                String pictureId = mSelectedPhoto.getM_Id();
+                                boolean isPrivateAlbum = mIsPrivateAlbum;
                                 dbmanager.removePictureFromDB(albumId, userId, pictureId, pictureDbId, isPrivateAlbum);
-
-                                // toastMessage("Image saved successfully");
-                                album.deletePictureFromAlbum(Integer.getInteger(pictureDbId));
+                                album.deletePictureFromAlbum(Integer.parseInt(pictureDbId));
                                 Intent newIntent = new Intent(view.getContext(), AlbumInfoActivity.class);
                                 newIntent.putExtra("album_data", album);
+                                newIntent.putExtra("is_private_album", isPrivateAlbum);
                                 view.getContext().startActivity(newIntent);
                                 return true;
 
@@ -129,8 +112,8 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                 intent.putExtra("ALBUM",mAlbum);
-                intent.putExtra("DB_ID",mSelectedPhoto.getM_Id());
-                intent.putExtra("STORAGE_ID",findSelectedPhotoIndex());
+                intent.putExtra("DB_ID",findSelectedPhotoIndex());
+                intent.putExtra("STORAGE_ID",mSelectedPhoto.getM_Id());
                 view.getContext().startActivity(intent);
             }
         });
@@ -191,6 +174,10 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         return false;
+    }
+
+    public void setIsPrivateAlbum(boolean isPrivateAlbum) {
+        this.mIsPrivateAlbum = isPrivateAlbum;
     }
 }
 
