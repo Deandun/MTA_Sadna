@@ -126,20 +126,28 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
             public void onClick(View view) {
 
                 Log.e(TAG, "CardView.onClick() >> Photo: " + mSelectedPhoto.toString());
-
-               // Context context = view.getContext();
-
-
                 Intent intent = new Intent(view.getContext(), ViewImageActivity.class);
                 intent.putExtra("PATH", mSelectedPhoto.getM_Path());
                 intent.putExtra("ALBUM",mAlbum);
                 intent.putExtra("DB_ID",mSelectedPhoto.getM_Id());
+                intent.putExtra("STORAGE_ID",findSelectedPhotoIndex());
                 view.getContext().startActivity(intent);
-                //Intent intent = new Intent(context, DareDetailsActivity.class);
-                //intent.putExtra("course", mSelectedCourse);
-                //context.startActivity(intent);
             }
         });
+    }
+
+    public String findSelectedPhotoIndex()
+    {
+        int photoIndex=-1;
+        for (int i=0; i<mAlbum.getM_Pictures().size()-1; i++ )
+        {
+            if (mAlbum.getM_Pictures().get(i).getM_Id()==mSelectedPhoto.getM_Id())
+            {
+                photoIndex=i;
+                break;
+            }
+        }
+        return Integer.toString(photoIndex);
     }
 
 
