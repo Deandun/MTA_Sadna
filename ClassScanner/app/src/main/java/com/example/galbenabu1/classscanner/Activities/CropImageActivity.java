@@ -66,6 +66,7 @@ public class CropImageActivity extends AppCompatActivity {
         ref = storage.getReference().child(path);
 
         getImageByPathAndBitmap();
+        mBitmap=cropperView.getCroppedBitmap();
 
         btnToggleGesture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,35 +114,6 @@ public class CropImageActivity extends AppCompatActivity {
 
     }
 
-//    private void getImageByPathAndBitmap()
-//    {
-//        try {
-//            final File localFile = File.createTempFile("Images", "jpg");
-//            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                    mBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-//                    cropperView.setImageBitmap(mBitmap);
-//
-//                    btnCrop.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            cropImage();
-//                        }
-//                    });
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-//                }
-//            });
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
@@ -175,6 +147,7 @@ public class CropImageActivity extends AppCompatActivity {
 
     public void onContinueEditingBtnClicked(View v)
     {
+        mBitmap=cropperView.getCroppedBitmap();
         Intent intent = new Intent(CropImageActivity.this, ImageEditingActivity.class);
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);

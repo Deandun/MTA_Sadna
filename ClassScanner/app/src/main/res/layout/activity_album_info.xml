@@ -21,6 +21,8 @@
         android:text="Photos List"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:visibility="visible"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +47,7 @@
         style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="65dp"
         android:layout_height="31dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="9dp"
         android:layout_marginEnd="70dp"
         android:background="@drawable/btn_rounded"
         android:onClick="onPresentAlbumClick"
@@ -65,5 +67,19 @@
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/backToHomeBtn"
+        style="@android:style/Widget.Holo.Button.Small"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/btn_rounded"
+        android:onClick="onAlbumInfoBackBtnClick"
+        android:text="Back Home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintStart_toStartOf="parent" />" />
 
 </android.support.constraint.ConstraintLayout>
