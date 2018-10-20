@@ -78,7 +78,7 @@ public class ViewImageActivity extends AppCompatActivity {
 //                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "classImage" , "");
                    // CapturePhotoUtils.insertImage(getContentResolver(), bitmap, "classImage" , "");
-                   // ostream.close();
+                   //t ostream.close();
                 }
                 catch (Exception e)
                 {
