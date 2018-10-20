@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     tools:context=".Activities.PlayAlbumActivity">
 
     <ImageView
@@ -13,7 +14,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:src="@android:drawable/btn_star_big_on"
+        android:src="@drawable/playvideo"
         app:layout_constraintBottom_toTopOf="@+id/pbAlbumPresentation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
