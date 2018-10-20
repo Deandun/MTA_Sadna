@@ -11,7 +11,6 @@ import Logic.Managers.LoggedInUserDetailsManager;
 public class PushTokenHandler extends FirebaseInstanceIdService {
 
     private static final String TAG = "PushTokenHandler";
-    private static String deviceToken;
 
     @Override
     public void onTokenRefresh() {
