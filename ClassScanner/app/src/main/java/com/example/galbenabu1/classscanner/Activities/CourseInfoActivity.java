@@ -14,12 +14,10 @@ import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.R;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.CourseEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.CourseEventParams;
@@ -37,6 +35,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private static final String IS_SELECTING_ALBUMS = "is_selecting_albums";
     private static final String SELECTED_ALBUM_DATA = "selected_albums_data";
     private final static int SELECT_ALBUMS_CODE = 100; // Code to identify that the user has selected album IDs in the returning intent
+    private static final String DESCRIPTION_STR = "Description:";
 
     private DBManager mDBManager = new DBManager();
     private boolean mIsInEditState;
@@ -82,7 +81,8 @@ public class CourseInfoActivity extends AppCompatActivity {
         this.metCourseCreationDate.setText("Created at:" + dateStr);
         this.metCourseCreatorName.setText("Created by: " + this.mCourse.getCreatorName());
         this.metCourseDescription.setText("Description: " + this.mCourse.getDescription());
-        this.setActionButtonUI();
+        setActionButtonUI();
+        initET();
     }
 
     private void setActionButtonUI() {
@@ -93,6 +93,7 @@ public class CourseInfoActivity extends AppCompatActivity {
             this.mbtnAddCourseAlbum.setText("Join Course");
         }
 
+        // Can edit course details
         if (isUserTheManager()){
             this.mIVEditCourseDetails.setVisibility(View.VISIBLE);
         }else{
@@ -192,25 +193,50 @@ public class CourseInfoActivity extends AppCompatActivity {
         return this.mCourse.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
-    public void onEditCourseDetailsClick(){
+    public void onEditCourseDetailsClick(View v){
         Log.e(TAG, "onEditableState >>");
+
         if (this.mIsInEditState){ //finish to edit - save changes
             setIsEditableState(false);
             this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.edit));
             this.mCourse.setCourseName(this.metCourseName.getText().toString());
-            this.mCourse.setDescription(this.metCourseDescription.getText().toString());
+            this.mCourse.setDescription(getSubDescription());
+            this.mDBManager.updateCourseDetailsToDB(this.mCourse);
             TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Edit details");
-        }else{ //start to edit
+        } else{ //start to edit
             setIsEditableState(true);
             this.mIVEditCourseDetails.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.oksign));
             TooltipCompat.setTooltipText(this.mIVEditCourseDetails,"Save Changes");
         }
+
         Log.e(TAG, "onEditableState <<");
     }
 
     public void setIsEditableState(boolean isEditable){
         this.mIsInEditState = isEditable;
-        this.metCourseName.setEnabled(this.mIsInEditState);
-        this.mIVEditCourseDetails.setEnabled(this.mIsInEditState);
+        disableEditText(this.metCourseDescription, isEditable);
+        disableEditText(this.metCourseName, isEditable);
     }
+
+    private void disableEditText(EditText editText, boolean isDisable) {
+        editText.setEnabled(isDisable);
+    }
+
+    private void initET() {
+        disableEditText(this.metCourseName, false);
+        disableEditText(this.metCourseCreationDate, false);
+        disableEditText(this.metCourseDescription, false);
+        disableEditText(this.metCourseCreatorName, false);
+    }
+
+    private String getSubDescription(){
+        if (this.metCourseDescription.getText().toString().contains(DESCRIPTION_STR)){
+            String[] subString = this.metCourseDescription.getText().toString().split(DESCRIPTION_STR);
+            System.out.println(subString[1]);
+            return subString[1];
+        }else{
+            return this.metCourseDescription.getText().toString();
+        }
+    }
+
 }

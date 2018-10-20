@@ -26,30 +26,32 @@
         style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="155dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/btn_rounded"
         android:onClick="onClearNotifications"
         android:text="Clear Notifications"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnUserNotificationsBack"
         style="@android:style/Widget.Holo.Button.Small"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="90dp"
+        android:layout_height="31dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/btn_rounded"
         android:onClick="onBackClick"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_notifications_recycler_view"
-        android:layout_width="368dp"
+        android:layout_width="398dp"
         android:layout_height="384dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"

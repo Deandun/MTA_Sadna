@@ -14,10 +14,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="24dp"
-        android:editable="false"
         android:text="Course Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="104dp"
-        android:editable="false"
+        android:inputType="none"
         android:text="Creation Date:"
         android:textColor="@color/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -42,24 +42,23 @@
          android:layout_marginStart="16dp"
          android:layout_marginTop="16dp"
          android:text="Created by: "
-         android:editable="false"
          android:textColor="@color/colorAccent"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintStart_toStartOf="parent"
          app:layout_constraintTop_toBottomOf="@+id/et_course_creation_date" />
 
 
-     <EditText
-         android:id="@+id/et_course_description"
-         android:layout_width="199dp"
-         android:layout_height="wrap_content"
-         android:layout_marginLeft="16dp"
-         android:layout_marginTop="16dp"
-         android:editable="false"
-         android:text="Description:"
-         android:textColor="@color/colorAccent"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/et_course_publisher_name" />
+    <EditText
+        android:id="@+id/et_course_description"
+        android:layout_width="199dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:editable="true"
+        android:text="Description:"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_course_publisher_name" />
 
     <Button
         android:id="@+id/btnShowCourseAlbums"
@@ -91,6 +90,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnShowCourseAlbums"
         app:layout_constraintTop_toBottomOf="@+id/et_course_description" />
+
+    <!--android:onClick="onActionButtonClick"-->
 
     <Button
         android:id="@+id/onCreateInfoBackBtnClick"
