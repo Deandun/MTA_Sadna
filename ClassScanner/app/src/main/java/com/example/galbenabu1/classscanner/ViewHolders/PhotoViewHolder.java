@@ -60,7 +60,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
                                 intent.putExtra("ALBUM", mAlbum);
 
-                                intent.putExtra("ALBUM",mAlbum);
+                                intent.putExtra("is_private_album",mIsPrivateAlbum);
 
                                 view.getContext().startActivity(intent);
                                 return true;

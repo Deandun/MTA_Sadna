@@ -91,6 +91,7 @@ public class ViewImageActivity extends AppCompatActivity {
                 Intent intent = new Intent(imageView.getContext(), CropImageActivity.class);
                 intent.putExtra("PATH", path);
                 intent.putExtra("ALBUM",album);
+                intent.putExtra("is_private_album",isPrivateAlbum);
                 imageView.getContext().startActivity(intent);
             }
         });
