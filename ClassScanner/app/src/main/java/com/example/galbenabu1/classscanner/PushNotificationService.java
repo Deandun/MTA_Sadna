@@ -1,5 +1,6 @@
 package com.example.galbenabu1.classscanner;
 
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
