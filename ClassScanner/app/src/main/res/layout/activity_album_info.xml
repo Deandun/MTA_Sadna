@@ -60,7 +60,7 @@
         android:layout_height="30dp"
         android:layout_marginBottom="9dp"
         android:background="@drawable/btn_rounded"
-        android:onClick="onAlbumInfoBackBtnClick"
+        android:onClick="onHomeBtnClick"
         android:text="Back Home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

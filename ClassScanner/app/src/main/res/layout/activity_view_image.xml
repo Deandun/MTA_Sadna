@@ -37,13 +37,9 @@
         app:layout_constraintHorizontal_bias="0.975"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-<<<<<<< HEAD
         app:layout_constraintVertical_bias="0.017"
         tools:ignore="MissingConstraints"
         tools:srcCompat="@android:drawable/gallery_thumb" />
-=======
-        tools:ignore="MissingConstraints" />
->>>>>>> origin
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/delete_button"
