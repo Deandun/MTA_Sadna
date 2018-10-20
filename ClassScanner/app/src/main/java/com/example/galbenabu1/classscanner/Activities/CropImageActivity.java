@@ -52,6 +52,7 @@ public class CropImageActivity extends AppCompatActivity {
     private boolean isSnappedtoCenter = false;
     private FirebaseStorage storage;
     private StorageReference ref;
+    private boolean isPrivateAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +144,11 @@ public class CropImageActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             album = (Album)extras.getParcelable("ALBUM");
         }
+
+        if (getIntent().hasExtra("is_private_album")) {
+            Bundle extras = getIntent().getExtras();
+            isPrivateAlbum = (boolean)extras.getBoolean("is_private_album");
+        }
     }
 
     public void onContinueEditingBtnClicked(View v)
@@ -154,6 +160,7 @@ public class CropImageActivity extends AppCompatActivity {
         intent.putExtra("IMAGE", bs.toByteArray());
         intent.putExtra("ALBUM", album);
         intent.putExtra("PATH", path);
+        intent.putExtra("is_private_album", isPrivateAlbum);
         startActivity(intent);
     }
 

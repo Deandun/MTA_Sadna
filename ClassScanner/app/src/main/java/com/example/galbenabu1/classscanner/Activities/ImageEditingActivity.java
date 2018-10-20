@@ -46,6 +46,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private SeekBar sb_value;
     private String path;
     private Album album;
+    private boolean isPrivateAlbum;
     private boolean isSharpnessClicked = false;
     private FirebaseStorage storage;
     private StorageReference ref;
@@ -114,6 +115,11 @@ public class ImageEditingActivity extends AppCompatActivity {
         if (getIntent().hasExtra("PATH")) {
             Bundle extras = getIntent().getExtras();
             path = extras.getString("PATH");
+        }
+
+        if (getIntent().hasExtra("is_private_album")) {
+            Bundle extras = getIntent().getExtras();
+            isPrivateAlbum = (boolean)extras.getBoolean("is_private_album");
         }
     }
 
@@ -233,6 +239,7 @@ public class ImageEditingActivity extends AppCompatActivity {
                 toastMessage("Image saved successfully");
                 Intent intent = new Intent(ImageEditingActivity.this, AlbumInfoActivity.class);
                 intent.putExtra("album_data", album);
+                intent.putExtra("is_private_album", isPrivateAlbum);
                 startActivity(intent);
             }
         });
