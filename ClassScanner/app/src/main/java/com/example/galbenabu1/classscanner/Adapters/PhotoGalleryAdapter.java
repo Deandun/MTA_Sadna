@@ -16,12 +16,14 @@ import Logic.Models.PictureAudioData;
 
 public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private static final String TAG = "PhotoGalleryAdapter";
+    private final boolean mIsPrivateAlbum;
     private ArrayList<PictureAudioData> mPhotoList;
     private Album mAlbum;
 
-    public PhotoGalleryAdapter(ArrayList<PictureAudioData> photoList, Album album) {
+    public PhotoGalleryAdapter(ArrayList<PictureAudioData> photoList, Album album, boolean isPrivateAlbum) {
         mPhotoList = photoList;
         this.mAlbum = album;
+        this.mIsPrivateAlbum = isPrivateAlbum;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
         holder.setSelectedPhoto(photo);
         holder.getTvTitle().setText(photo.getM_Description());
+        holder.setIsPrivateAlbum(this.mIsPrivateAlbum);
 
         DBManager dbManager = new DBManager();
         dbManager.fetchImageFromStoragePath(photo.getM_Id(),
