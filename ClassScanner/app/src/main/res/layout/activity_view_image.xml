@@ -10,11 +10,16 @@
 
     <ImageView
         android:id="@+id/picture_view"
-        android:layout_width="385dp"
-        android:layout_height="505dp"
+        android:layout_width="455dp"
+        android:layout_height="620dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
         app:srcCompat="@color/input_login"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="3dp"
         tools:ignore="MissingConstraints" />
 
     <android.support.design.widget.FloatingActionButton
@@ -26,15 +31,19 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:src="@android:drawable/stat_sys_download"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/download"
+        app:layout_constraintBottom_toTopOf="@+id/edit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.975"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+<<<<<<< HEAD
         app:layout_constraintVertical_bias="0.017"
         tools:ignore="MissingConstraints"
         tools:srcCompat="@android:drawable/gallery_thumb" />
+=======
+        tools:ignore="MissingConstraints" />
+>>>>>>> origin
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/delete_button"
@@ -45,7 +54,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_delete"
+        android:src="@drawable/delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.975"
@@ -61,15 +70,14 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="68dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/edit"
+        app:layout_constraintBottom_toTopOf="@+id/delete_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.975"
+        app:layout_constraintHorizontal_bias="0.977"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.123"
-        android:src="@android:drawable/ic_menu_edit"
         tools:ignore="MissingConstraints" />
 
 
