@@ -97,8 +97,6 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
                                 return true;
 
                                 default:
-
-
 //                            {
 //                                Intent intent = new Intent(view.getContext(), ShowAlbumsActivity.class);
 //                                String strName = null;

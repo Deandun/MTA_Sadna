@@ -87,23 +87,23 @@ public class PushNotificationService extends FirebaseMessagingService {
         data = remoteMessage.getData();
         Log.e(TAG, "Message data : " + data);
 
-        String value = data.get(eNotificationDataKeys.courseID.name());
+        String value = data.get(NotificationDataKeys.COURSE_ID);
         if(value != null) {
-            albumName = value;
+            courseID = value;
         }
 
-        value = data.get(eNotificationDataKeys.courseName.name());
+        value = data.get(NotificationDataKeys.COURSE_NAME);
         if(value != null) {
             courseName = value;
         }
 
+        value = data.get(NotificationDataKeys.ALBUM_NAME);
+        if(value != null) {
+            albumName = value;
+        }
+
         title = "Album added to course";
         body = "The album \'" + albumName + "\' has been added to the course \'" + courseName + "\'";
-
-        value = data.get(eNotificationDataKeys.courseID.name());
-        if(value != null) {
-            courseID = value;
-        }
 
         Intent intent = new Intent(this, ShowAlbumsActivity.class);
 
@@ -134,9 +134,9 @@ public class PushNotificationService extends FirebaseMessagingService {
         Log.e(TAG, "onMessageReceived() <<");
     }
 
-    private enum eNotificationDataKeys {
-        courseID,
-        courseName,
-        albumName,
+    private static class NotificationDataKeys {
+        private static final String COURSE_ID = "courseID";
+        private static final String ALBUM_NAME = "albumName";
+        private static final String COURSE_NAME = "courseName";
     }
 }
