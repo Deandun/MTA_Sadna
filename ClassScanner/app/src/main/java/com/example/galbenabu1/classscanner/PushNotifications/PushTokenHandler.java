@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import Logic.Database.DBManager;
 import Logic.Managers.LoggedInUserDetailsManager;
 
 public class PushTokenHandler extends FirebaseInstanceIdService {

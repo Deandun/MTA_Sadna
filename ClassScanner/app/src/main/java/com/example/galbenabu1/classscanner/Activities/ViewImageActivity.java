@@ -21,11 +21,6 @@ import Logic.Database.DBManager;
 import Logic.Models.Album;
 
 
-/**
- * Created by chen capon on 11/10/2018.
- */
-
-
 public class ViewImageActivity extends AppCompatActivity {
 
     private FloatingActionButton btnDownload;

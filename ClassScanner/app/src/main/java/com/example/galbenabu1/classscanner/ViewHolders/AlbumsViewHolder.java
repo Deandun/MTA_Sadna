@@ -1,6 +1,5 @@
 package com.example.galbenabu1.classscanner.ViewHolders;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,8 +13,8 @@ import android.widget.TextView;
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.R;
 
-import Logic.Models.Album;
 import Logic.Interfaces.MyConsumer;
+import Logic.Models.Album;
 
 public class AlbumsViewHolder  extends RecyclerView.ViewHolder{
 

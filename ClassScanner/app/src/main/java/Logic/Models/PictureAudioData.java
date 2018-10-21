@@ -8,10 +8,6 @@ import java.util.Date;
 
 import Logic.Enums.eDataType;
 
-/**
- * Created by galbenabu1 on 08/05/2018.
- */
-
     public class PictureAudioData implements Parcelable, Serializable {
     private String m_Id;
     private Date m_CreationDate;

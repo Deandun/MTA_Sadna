@@ -6,10 +6,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by galbenabu1 on 08/05/2018.
- */
-
 public class User implements Parcelable{
 
     private String m_Id;

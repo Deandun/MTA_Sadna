@@ -2,41 +2,26 @@ package com.example.galbenabu1.classscanner.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.graphics.Matrix;
+
 import com.example.galbenabu1.classscanner.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
+import com.fenchtose.nocropper.CropperView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-
-import com.fenchtose.nocropper.CropperView;
 
 import Logic.Database.DBManager;
 import Logic.Managers.AnalyticsManager.AnalyticsHelpers.PictureEventsHelper;
 import Logic.Managers.AnalyticsManager.AnalyticsManager;
 import Logic.Managers.AnalyticsManager.EventParams.PictureEventParams;
 import Logic.Models.Album;
-
-
-/**
- * Created by galbenabu1 on 25/08/2018.
- */
-
 
 public class CropImageActivity extends AppCompatActivity {
 

@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by galbenabu1 on 08/05/2018.
- */
 
 public class Course implements Parcelable {
     private String m_Id;

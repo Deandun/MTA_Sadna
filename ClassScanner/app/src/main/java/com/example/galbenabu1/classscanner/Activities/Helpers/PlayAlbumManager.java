@@ -73,7 +73,6 @@ public class PlayAlbumManager {
 
         if (mMediaPlayer.isPlaying()) {
             Log.e(TAG, "Stop presentation >> Stop the media player");
-            //Stop the media player
             mMediaPlayer.stop();
             mMediaPlayer.reset();
         }

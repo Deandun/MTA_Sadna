@@ -1,18 +1,15 @@
 package com.example.galbenabu1.classscanner.ViewHolders;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.galbenabu1.classscanner.Activities.AlbumInfoActivity;
 import com.example.galbenabu1.classscanner.Activities.CropImageActivity;

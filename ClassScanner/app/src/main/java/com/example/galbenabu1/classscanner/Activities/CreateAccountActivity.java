@@ -22,8 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
-
 import Logic.Database.DBManager;
 import Logic.Managers.LoggedInUserDetailsManager;
 import Logic.Models.User;

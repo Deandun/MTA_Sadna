@@ -2,12 +2,8 @@ package Logic.Database;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Picture;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +21,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -38,19 +33,13 @@ import Logic.Database.DBModels.CourseActions.CourseActionData;
 import Logic.Database.DBModels.CourseActions.eCourseActionType;
 import Logic.Database.DBModels.UserActionData;
 import Logic.Enums.eDataType;
-import Logic.Models.Album;
-import Logic.Models.Course;
 import Logic.Interfaces.MyConsumer;
 import Logic.Interfaces.MyFunction;
+import Logic.Models.Album;
+import Logic.Models.Course;
 import Logic.Models.PictureAudioData;
 import Logic.Models.User;
 import Logic.Models.UserNotification;
-
-import static Logic.Database.KeysForDBModels.*;
-
-/**
- * Created by galbenabu1 on 08/05/2018.
- */
 
 public class DBManager {
     private static String TAG = "DATABASE";
@@ -133,31 +122,6 @@ public class DBManager {
                 }
         );
     }
-
-    //todo: delete on the end
-
-//    public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum, Runnable onDeletedPictureSuccess) {
-//        String albumID = album.getM_Id();
-//        List<PictureAudioData> pictureCollections = new ArrayList<>();
-//        PictureAudioData pictureAudioData=new PictureAudioData(pictureDbId,null,null,"Images/" + pictureId);
-//        pictureCollections.add(pictureAudioData);
-//
-//        removePicturesFromStorage(pictureCollections);
-//        int photoDbIndex=Integer.parseInt(pictureDbId);
-//        album.deletePictureFromAlbum(photoDbIndex);
-//
-//        DatabaseReference albumPicturesRef;
-//
-//        if (isPrivateAlbum) {
-//            albumPicturesRef = FirebaseDBReferenceGenerator.getPrivateAlbumPictureReference(albumID, userID);
-//        } else {
-//            albumPicturesRef = FirebaseDBReferenceGenerator.getSharedAlbumPictureReference(albumID, userID);
-//        }
-//
-//        albumPicturesRef.setValue(album.getM_Pictures()).addOnSuccessListener(
-//                (aVoid) -> onDeletedPictureSuccess.run()
-//        );
-//    }
 
     public void removePictureFromDB(Album album, String userID, String pictureId, String pictureDbId, boolean isPrivateAlbum) {
         String albumID = album.getM_Id();
